@@ -72,6 +72,7 @@ class Player {
   attackImage: HTMLImageElement;
   specialAttackSound: HTMLAudioElement;
   specialAttackSprite: HTMLImageElement;
+  enemy: Player;
   attacks: Array<Attack>;
   isUsingSpecialAttack: boolean;
   score: number;
@@ -89,7 +90,8 @@ class Player {
     attackSound: HTMLAudioElement,
     attackImage: HTMLImageElement,
     specialAttackSound: HTMLAudioElement,
-    specialAttackSprite: HTMLImageElement
+    specialAttackSprite: HTMLImageElement,
+    enemy: Player
   ) {
     this.x = x;
     this.y = y;
@@ -107,6 +109,7 @@ class Player {
     this.attackImage = attackImage;
     this.specialAttackSound = specialAttackSound;
     this.specialAttackSprite = specialAttackSprite;
+    this.enemy = enemy;
     this.attacks = [];
     this.isUsingSpecialAttack = false;
     this.score = 0;
@@ -128,13 +131,14 @@ class Player {
     }
   }
 
-  attack() {
+  simpleAttack() {
     if (!this.isUsingSpecialAttack) {
       this.attackSound.currentTime = 0; // Rewind the sound to the beginning
       this.attackSound.play();
       this.attacks.push(
         new Attack(
           this,
+          "simple",
           basicSettings.attackSpriteWidth,
           basicSettings.attackSpriteHeight,
           this.attackImage
@@ -154,6 +158,7 @@ class Player {
       this.attacks.push(
         new Attack(
           this,
+          "special",
           basicSettings.attackSpriteWidth * 2,
           basicSettings.attackSpriteHeight * 2,
           this.attackImage
@@ -167,7 +172,7 @@ class Player {
         this.currentSprite = this.spriteImage;
         this.height -= basicSettings.playerSizeVariation * 2;
         this.isUsingSpecialAttack = !this.isUsingSpecialAttack;
-      }, 10000);
+      }, 1000);
     }
   }
 
@@ -190,6 +195,7 @@ class Player {
 
 class Attack {
   owner: Player;
+  type: string;
   width: number;
   height: number;
   x: number;
@@ -199,11 +205,13 @@ class Attack {
   sprite: HTMLImageElement;
   constructor(
     owner: Player,
+    type: string,
     width: number,
     height: number,
     sprite: HTMLImageElement
   ) {
     this.owner = owner;
+    this.type = type;
     this.width = width;
     this.height = height;
     this.x =
@@ -222,6 +230,16 @@ class Attack {
     this.x += direction;
   }
 
+  inflictDamage() {
+    // Reduce HP of the other Player
+    this.owner.enemy.hp -= this.strength;
+  }
+
+  removeAttack() {
+    // Delete the attack from the Player attack list
+    this.owner.attacks.splice(this.owner.attacks.indexOf(this), 1);
+  }
+
   detectCollision() {
     // Removes enemy's HP if attack matches the XY enemy's position
     const detectionMargin = 10;
@@ -231,10 +249,10 @@ class Attack {
         this.y > game1.player2.y - this.height + detectionMargin &&
         this.y < game1.player2.y + game1.player2.height - detectionMargin
       ) {
-        game1.player2.hp -= this.strength;
-        this.owner.attacks.splice(this.owner.attacks.indexOf(this), 1);
+        this.inflictDamage();
+        this.removeAttack();
       } else if (this.x > canvas.width) {
-        this.owner.attacks.splice(this.owner.attacks.indexOf(this), 1);
+        this.removeAttack();
       }
     } else {
       if (
@@ -242,10 +260,10 @@ class Attack {
         this.y > game1.player1.y - this.height - detectionMargin &&
         this.y < game1.player1.y + game1.player1.height - detectionMargin
       ) {
-        game1.player1.hp -= this.strength;
-        this.owner.attacks.splice(this.owner.attacks.indexOf(this), 1);
+        this.inflictDamage();
+        this.removeAttack();
       } else if (this.x > canvas.width) {
-        this.owner.attacks.splice(this.owner.attacks.indexOf(this), 1);
+        this.removeAttack();
       }
     }
   }
@@ -337,7 +355,7 @@ class Game {
         this.player1.heal();
         break;
       case "d":
-        this.player1.attack();
+        this.player1.simpleAttack();
         break;
       case "e":
         this.player1.specialAttack();
@@ -352,7 +370,7 @@ class Game {
         this.player2.heal();
         break;
       case "ArrowLeft":
-        this.player2.attack();
+        this.player2.simpleAttack();
         break;
       case "PageUp":
         this.player2.specialAttack();
@@ -390,7 +408,8 @@ start.onclick = () => {
     fireballMp3,
     fireballPng,
     aceMp3,
-    aceGif
+    aceGif,
+    game1.player2
   );
   game1.player2 = new Player(
     450,
@@ -405,7 +424,8 @@ start.onclick = () => {
     swooshMp3,
     punchPng,
     luffyMp3,
-    luffyGif
+    luffyGif,
+    game1.player1
   );
   game1.defaultDisplay();
   game1.runGame();
