@@ -39,6 +39,7 @@ const basicSettings = {
     attackSpriteWidth: 30,
     player1DefaultPosition: { x: 0, y: 0 },
     player2DefaultPosition: { x: 450, y: 0 },
+    refreshRate: 1000 / 10,
 };
 class Player {
     constructor(x, y, name, spriteImage, hp, mana, healingAbility, attackStrength, attackSpeed, attackSound, attackImage, specialAttackSound, specialAttackSprite, enemy) {
@@ -105,7 +106,7 @@ class Player {
     }
     reloadMana() {
         if (this.mana < 100) {
-            this.mana += 10;
+            this.mana += 1;
         }
     }
     heal() {
@@ -130,7 +131,10 @@ class Attack {
                 : this.owner.x - this.width;
         this.y = this.owner.y + this.owner.height / 2 - this.height / 2;
         this.strength = this.owner.attackStrength;
-        this.speed = this.owner.attackSpeed;
+        this.speed =
+            this.type === "simple"
+                ? this.owner.attackSpeed
+                : this.owner.attackSpeed * 2;
         this.sprite = sprite;
     }
     moveTowardEnemy() {
@@ -140,7 +144,8 @@ class Attack {
     }
     inflictDamage() {
         // Reduce HP of the other Player
-        this.owner.enemy.hp -= this.strength;
+        if (this.owner.enemy != null)
+            this.owner.enemy.hp -= this.strength;
     }
     removeAttack() {
         // Delete the attack from the Player attack list
@@ -236,7 +241,7 @@ class Game {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             this.displayPlayer1();
             this.displayPlayer2();
-        }, 1000 / 10);
+        }, basicSettings.refreshRate);
     }
     checkKeyPress(event) {
         // Keywboard controls
@@ -289,8 +294,10 @@ class Game {
 const game1 = new Game();
 start.onclick = () => {
     start.style.display = "none";
-    game1.player1 = new Player(0, 0, "Ace", acePng, 150, 100, 3, 10, 10, fireballMp3, fireballPng, aceMp3, aceGif, game1.player2);
-    game1.player2 = new Player(450, 0, "Luffy", luffyPng, 150, 100, 3, 10, 10, swooshMp3, punchPng, luffyMp3, luffyGif, game1.player1);
+    game1.player1 = new Player(0, 0, "Ace", acePng, 150, 100, 3, 10, 10, fireballMp3, fireballPng, aceMp3, aceGif, null);
+    game1.player2 = new Player(450, 0, "Luffy", luffyPng, 150, 100, 3, 10, 10, swooshMp3, punchPng, luffyMp3, luffyGif, null);
+    game1.player1.enemy = game1.player2;
+    game1.player2.enemy = game1.player1;
     game1.defaultDisplay();
     game1.runGame();
     restart.onclick = () => {

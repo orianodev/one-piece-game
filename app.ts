@@ -43,6 +43,7 @@ const basicSettings: {
   attackSpriteWidth: number;
   player1DefaultPosition: { x: number; y: number };
   player2DefaultPosition: { x: number; y: number };
+  refreshRate: number;
 } = {
   playerHeight: 100,
   playerWidth: 50,
@@ -53,6 +54,7 @@ const basicSettings: {
   attackSpriteWidth: 30,
   player1DefaultPosition: { x: 0, y: 0 },
   player2DefaultPosition: { x: 450, y: 0 },
+  refreshRate: 1000 / 10,
 };
 
 class Player {
@@ -72,7 +74,7 @@ class Player {
   attackImage: HTMLImageElement;
   specialAttackSound: HTMLAudioElement;
   specialAttackSprite: HTMLImageElement;
-  enemy: Player;
+  enemy: Player | null;
   attacks: Array<Attack>;
   isUsingSpecialAttack: boolean;
   score: number;
@@ -91,7 +93,7 @@ class Player {
     attackImage: HTMLImageElement,
     specialAttackSound: HTMLAudioElement,
     specialAttackSprite: HTMLImageElement,
-    enemy: Player
+    enemy: Player | null
   ) {
     this.x = x;
     this.y = y;
@@ -115,23 +117,23 @@ class Player {
     this.score = 0;
   }
 
-  drawPlayer() {
+  drawPlayer(): void {
     ctx.drawImage(this.currentSprite, this.x, this.y, this.width, this.height);
   }
 
-  moveUp() {
+  moveUp(): void {
     if (this.y > 0) {
       this.y -= basicSettings.playerStep;
     }
   }
 
-  moveDown() {
+  moveDown(): void {
     if (this.y < canvas.height - basicSettings.playerHeight) {
       this.y += basicSettings.playerStep;
     }
   }
 
-  simpleAttack() {
+  simpleAttack(): void {
     if (!this.isUsingSpecialAttack) {
       this.attackSound.currentTime = 0; // Rewind the sound to the beginning
       this.attackSound.play();
@@ -151,7 +153,7 @@ class Player {
     }
   }
 
-  specialAttack() {
+  specialAttack(): void {
     if (!this.isUsingSpecialAttack) {
       this.specialAttackSound.currentTime = 0; // Rewind the sound to the beginning
       this.specialAttackSound.play();
@@ -176,13 +178,13 @@ class Player {
     }
   }
 
-  reloadMana() {
+  reloadMana(): void {
     if (this.mana < 100) {
-      this.mana += 10;
+      this.mana += 1;
     }
   }
 
-  heal() {
+  heal(): void {
     if (this.hp < 200) {
       this.hp += Math.floor(Math.random() * this.healingAbility);
       this.height -= basicSettings.playerSizeVariation;
@@ -220,27 +222,30 @@ class Attack {
         : this.owner.x - this.width;
     this.y = this.owner.y + this.owner.height / 2 - this.height / 2;
     this.strength = this.owner.attackStrength;
-    this.speed = this.owner.attackSpeed;
+    this.speed =
+      this.type === "simple"
+        ? this.owner.attackSpeed
+        : this.owner.attackSpeed * 2;
     this.sprite = sprite;
   }
 
-  moveTowardEnemy() {
+  moveTowardEnemy(): void {
     // Calculate the right direction on the X axis
     const direction = this.owner === game1.player1 ? this.speed : -this.speed;
     this.x += direction;
   }
 
-  inflictDamage() {
+  inflictDamage(): void {
     // Reduce HP of the other Player
-    this.owner.enemy.hp -= this.strength;
+    if (this.owner.enemy != null) this.owner.enemy.hp -= this.strength;
   }
 
-  removeAttack() {
+  removeAttack(): void {
     // Delete the attack from the Player attack list
     this.owner.attacks.splice(this.owner.attacks.indexOf(this), 1);
   }
 
-  detectCollision() {
+  detectCollision(): void {
     // Removes enemy's HP if attack matches the XY enemy's position
     const detectionMargin = 10;
     if (this.owner === game1.player1) {
@@ -268,7 +273,7 @@ class Attack {
     }
   }
 
-  drawAttackSprite() {
+  drawAttackSprite(): void {
     // Update X axis, check for collision and display the attack sprite
     this.moveTowardEnemy();
     this.detectCollision();
@@ -283,7 +288,7 @@ class Game {
     this.player1 = null;
     this.player2 = null;
   }
-  defaultDisplay() {
+  defaultDisplay(): void {
     // Display the default
     p1_name.innerText = "Name : " + this.player1.name;
     this.player1.drawPlayer();
@@ -292,7 +297,7 @@ class Game {
     this.player2.drawPlayer();
   }
 
-  displayPlayer1() {
+  displayPlayer1(): void {
     this.player1.reloadMana();
     this.player1.drawPlayer();
     // p1_position.innerText = `Axe : ${this.player1.x}x ${this.player1.y}y`;
@@ -304,7 +309,7 @@ class Game {
     });
   }
 
-  displayPlayer2() {
+  displayPlayer2(): void {
     this.player2.reloadMana();
     this.player2.drawPlayer();
     // p2_position.innerText = `Axe : ${this.player2.x}x ${this.player2.y}y`;
@@ -316,7 +321,7 @@ class Game {
     });
   }
 
-  runGame() {
+  runGame(): void {
     this.defaultDisplay();
     document.addEventListener("keydown", (event: KeyboardEvent) => {
       this.checkKeyPress(event);
@@ -339,7 +344,7 @@ class Game {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       this.displayPlayer1();
       this.displayPlayer2();
-    }, 1000 / 10);
+    }, basicSettings.refreshRate);
   }
 
   checkKeyPress(event: KeyboardEvent) {
@@ -378,7 +383,7 @@ class Game {
     }
   }
 
-  resetGame() {
+  resetGame(): void {
     this.player1.x = 0;
     this.player1.y = 0;
     this.player1.attacks = [];
@@ -409,7 +414,7 @@ start.onclick = () => {
     fireballPng,
     aceMp3,
     aceGif,
-    game1.player2
+    null
   );
   game1.player2 = new Player(
     450,
@@ -425,8 +430,10 @@ start.onclick = () => {
     punchPng,
     luffyMp3,
     luffyGif,
-    game1.player1
+    null
   );
+  game1.player1.enemy = game1.player2;
+  game1.player2.enemy = game1.player1;
   game1.defaultDisplay();
   game1.runGame();
 
