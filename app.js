@@ -41,7 +41,7 @@ const basicSettings = {
     player2DefaultPosition: { x: 450, y: 0 },
 };
 class Player {
-    constructor(x, y, name, spriteImage, hp, mana, healingAbility, attackStrength, attackSpeed, attackSound, attackImage, specialAttackSound, specialAttackSprite) {
+    constructor(x, y, name, spriteImage, hp, mana, healingAbility, attackStrength, attackSpeed, attackSound, attackImage, specialAttackSound, specialAttackSprite, enemy) {
         this.x = x;
         this.y = y;
         this.width = basicSettings.playerWidth;
@@ -58,6 +58,7 @@ class Player {
         this.attackImage = attackImage;
         this.specialAttackSound = specialAttackSound;
         this.specialAttackSprite = specialAttackSprite;
+        this.enemy = enemy;
         this.attacks = [];
         this.isUsingSpecialAttack = false;
         this.score = 0;
@@ -75,11 +76,11 @@ class Player {
             this.y += basicSettings.playerStep;
         }
     }
-    attack() {
+    simpleAttack() {
         if (!this.isUsingSpecialAttack) {
             this.attackSound.currentTime = 0; // Rewind the sound to the beginning
             this.attackSound.play();
-            this.attacks.push(new Attack(this, basicSettings.attackSpriteWidth, basicSettings.attackSpriteHeight, this.attackImage));
+            this.attacks.push(new Attack(this, "simple", basicSettings.attackSpriteWidth, basicSettings.attackSpriteHeight, this.attackImage));
             this.height += basicSettings.playerSizeVariation;
             setTimeout(() => {
                 this.height -= basicSettings.playerSizeVariation;
@@ -90,7 +91,7 @@ class Player {
         if (!this.isUsingSpecialAttack) {
             this.specialAttackSound.currentTime = 0; // Rewind the sound to the beginning
             this.specialAttackSound.play();
-            this.attacks.push(new Attack(this, basicSettings.attackSpriteWidth * 2, basicSettings.attackSpriteHeight * 2, this.attackImage));
+            this.attacks.push(new Attack(this, "special", basicSettings.attackSpriteWidth * 2, basicSettings.attackSpriteHeight * 2, this.attackImage));
             this.currentSprite = this.specialAttackSprite;
             this.isUsingSpecialAttack = !this.isUsingSpecialAttack;
             this.mana = 0;
@@ -99,7 +100,7 @@ class Player {
                 this.currentSprite = this.spriteImage;
                 this.height -= basicSettings.playerSizeVariation * 2;
                 this.isUsingSpecialAttack = !this.isUsingSpecialAttack;
-            }, 10000);
+            }, 1000);
         }
     }
     reloadMana() {
@@ -118,8 +119,9 @@ class Player {
     }
 }
 class Attack {
-    constructor(owner, width, height, sprite) {
+    constructor(owner, type, width, height, sprite) {
         this.owner = owner;
+        this.type = type;
         this.width = width;
         this.height = height;
         this.x =
@@ -136,6 +138,14 @@ class Attack {
         const direction = this.owner === game1.player1 ? this.speed : -this.speed;
         this.x += direction;
     }
+    inflictDamage() {
+        // Reduce HP of the other Player
+        this.owner.enemy.hp -= this.strength;
+    }
+    removeAttack() {
+        // Delete the attack from the Player attack list
+        this.owner.attacks.splice(this.owner.attacks.indexOf(this), 1);
+    }
     detectCollision() {
         // Removes enemy's HP if attack matches the XY enemy's position
         const detectionMargin = 10;
@@ -143,22 +153,22 @@ class Attack {
             if (this.x >= game1.player2.x - this.width + detectionMargin &&
                 this.y > game1.player2.y - this.height + detectionMargin &&
                 this.y < game1.player2.y + game1.player2.height - detectionMargin) {
-                game1.player2.hp -= this.strength;
-                this.owner.attacks.splice(this.owner.attacks.indexOf(this), 1);
+                this.inflictDamage();
+                this.removeAttack();
             }
             else if (this.x > canvas.width) {
-                this.owner.attacks.splice(this.owner.attacks.indexOf(this), 1);
+                this.removeAttack();
             }
         }
         else {
             if (this.x <= game1.player1.x + this.width + detectionMargin &&
                 this.y > game1.player1.y - this.height - detectionMargin &&
                 this.y < game1.player1.y + game1.player1.height - detectionMargin) {
-                game1.player1.hp -= this.strength;
-                this.owner.attacks.splice(this.owner.attacks.indexOf(this), 1);
+                this.inflictDamage();
+                this.removeAttack();
             }
             else if (this.x > canvas.width) {
-                this.owner.attacks.splice(this.owner.attacks.indexOf(this), 1);
+                this.removeAttack();
             }
         }
     }
@@ -241,7 +251,7 @@ class Game {
                 this.player1.heal();
                 break;
             case "d":
-                this.player1.attack();
+                this.player1.simpleAttack();
                 break;
             case "e":
                 this.player1.specialAttack();
@@ -256,7 +266,7 @@ class Game {
                 this.player2.heal();
                 break;
             case "ArrowLeft":
-                this.player2.attack();
+                this.player2.simpleAttack();
                 break;
             case "PageUp":
                 this.player2.specialAttack();
@@ -279,8 +289,8 @@ class Game {
 const game1 = new Game();
 start.onclick = () => {
     start.style.display = "none";
-    game1.player1 = new Player(0, 0, "Ace", acePng, 150, 100, 3, 10, 10, fireballMp3, fireballPng, aceMp3, aceGif);
-    game1.player2 = new Player(450, 0, "Luffy", luffyPng, 150, 100, 3, 10, 10, swooshMp3, punchPng, luffyMp3, luffyGif);
+    game1.player1 = new Player(0, 0, "Ace", acePng, 150, 100, 3, 10, 10, fireballMp3, fireballPng, aceMp3, aceGif, game1.player2);
+    game1.player2 = new Player(450, 0, "Luffy", luffyPng, 150, 100, 3, 10, 10, swooshMp3, punchPng, luffyMp3, luffyGif, game1.player1);
     game1.defaultDisplay();
     game1.runGame();
     restart.onclick = () => {
