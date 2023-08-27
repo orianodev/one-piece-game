@@ -10,18 +10,39 @@
         margin: 0;
         font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
           sans-serif;
-        transition: all 0.1s ease;
+        transition: all 0.2s ease;
+        box-sizing: border-box;
       }
       body {
-        background-color: whitesmoke;
+        background-color: lightgray;
+        color: whitesmoke;
         padding: 0 10px;
+        max-height: 100vh;
+        max-width: 100vw;
+      }
+      #wallpaper {
+        height: 100vh;
+        width: 100vw;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        background-image: url(./images/wallpapers/luffy-and-law.jpg);
+        filter: brightness(0.8) blur(8px);
+
+        /* Center and scale the image nicely */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
       }
       h1 {
-        padding: 5px;
+        padding: 8px;
+        font-size: 45px;
         text-align: center;
+        text-transform: uppercase;
       }
       canvas {
-        border: 1px solid black;
+        border: 1px solid whitesmoke;
       }
       img {
         display: none;
@@ -29,40 +50,80 @@
       section {
         display: flex;
         justify-content: center;
-        column-gap: 10px;
+        column-gap: 20px;
       }
       .player_infos {
-        min-width: 105px;
+        min-width: 120px;
       }
+      .player_infos > p {
+        font-size: x-large;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+      #start,
       #restart,
       #winner {
+        font-size: xx-large;
+        position: absolute;
+        text-align: center;
+      }
+      .button {
+        width: 350px;
+        height: 100px;
+        top: calc(50vh - 100px);
+        left: calc(50vw - 350px / 2);
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 0 30px rgba(255, 0, 0, 1);
+        background-color: red;
+        color: whitesmoke;
+      }
+      .button:hover {
+        transform: scale(1.1);
+      }
+      #restart {
         display: none;
+      }
+      #winner {
+        display: none;
+        width: 500px;
+        height: 100px;
+        text-align: center;
+        top: calc(40vh - 100px);
+        left: calc(50vw - 500px / 2);
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
       }
     </style>
   </head>
   <body>
     <h1>One Piece Fight !</h1>
+    <div id="wallpaper"></div>
     <!-- PLAYER INFOS DISPLAY -->
     <section>
       <div class="player_infos">
-        <p id="p1_name"></p>
-        <!-- <p id="p1_position"></p> -->
-        <p id="p1_hp"></p>
-        <p id="p1_mana"></p>
+        <h2 id="p1_name"></h2>
         <p id="p1_score"></p>
+        <br />
+        <p id="p1_hp"></p>
+        <p id="p1_hp_display"></p>
+        <br />
+        <p id="p1_mana"></p>
+        <p id="p1_mana_display"></p>
       </div>
-      <canvas id="canvas" width="500" height="300"></canvas>
+      <canvas id="canvas" width="900" height="400"></canvas>
       <div class="player_infos">
-        <p id="p2_name"></p>
-        <!-- <p id="p2_position"></p> -->
-        <p id="p2_hp"></p>
-        <p id="p2_mana"></p>
+        <h2 id="p2_name"></h2>
         <p id="p2_score"></p>
+        <br />
+        <p id="p2_hp"></p>
+        <p id="p2_hp_display"></p>
+        <br />
+        <p id="p2_mana"></p>
+        <p id="p2_mana_display"></p>
       </div>
     </section>
     <!-- GAME CONTROL -->
-    <button id="start">Commencer</button>
-    <button id="restart">Recommencer</button>
+    <button id="start" class="button">Commencer</button>
+    <button id="restart" class="button">Recommencer</button>
     <h2 id="winner">Vainqueur :</h2>
     <!-- IMAGE SOURCE -->
     <div id="images">
@@ -91,6 +152,15 @@
       </audio>
       <audio id="aceMp3" preload="auto">
         <source src="/audio/special/kyokaen.mp3" type="audio/mpeg" />
+      </audio>
+      <audio id="yeahMp3" preload="auto">
+        <source src="/audio/sfx/yeah.mp3" type="audio/mpeg" />
+      </audio>
+      <audio id="gearSecondMp3" preload="auto">
+        <source src="/audio/sfx/gear-second.mp3" type="audio/mpeg" />
+      </audio>
+      <audio id="overtakenMp3" preload="auto">
+        <source src="/audio/ost/overtaken.mp3" type="audio/mpeg" />
       </audio>
     </div>
     <!-- TS OOP SCRIPT -->
