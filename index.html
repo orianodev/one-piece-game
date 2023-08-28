@@ -69,7 +69,7 @@
       section {
         display: flex;
         justify-content: center;
-        column-gap: 20px;
+        column-gap: 12px;
       }
       .player_infos {
         min-width: 120px;
@@ -124,7 +124,7 @@
       #choose-player1,
       #choose-player2 {
         border: 1px solid rgb(255, 255, 255);
-        width: 35%;
+        width: 40%;
         text-align: center;
         display: flex;
         justify-content: center;
@@ -233,6 +233,14 @@
             value="franky1" />
           <img src="/images/icons/franky.png" alt="franky"
         /></label>
+        <label for="sanji1">
+          <input
+            type="radio"
+            name="choose-player1"
+            id="sanji1"
+            value="sanji1" />
+          <img src="/images/icons/sanji.png" alt="sanji"
+        /></label>
       </form>
       <form id="choose-wallpaper">
         <h4>Choisir un terrain</h4>
@@ -293,10 +301,19 @@
             value="franky2" />
           <img src="/images/icons/franky.png" alt="franky"
         /></label>
+        <label for="sanji2">
+          <input
+            type="radio"
+            name="choose-player2"
+            id="sanji2"
+            value="sanji2" />
+          <img src="/images/icons/sanji.png" alt="sanji"
+        /></label>
       </form>
     </section>
     <!-- AUDIO SOURCE -->
     <div id="sounds">
+      <!-- ATTACK -->
       <audio id="fireballMp3" preload="auto">
         <source src="/audio/attack/fireball.mp3" type="audio/mpeg" />
       </audio>
@@ -309,6 +326,7 @@
       <audio id="cannonballMp3" preload="auto">
         <source src="/audio/attack/cannonball.mp3" type="audio/mpeg" />
       </audio>
+      <!-- SPECIAL ATTACk -->
       <audio id="luffyMp3" preload="auto">
         <source
           src="/audio/special/gomu-gomu-no-pistol.mp3"
@@ -324,6 +342,26 @@
       <audio id="frankyMp3" preload="auto">
         <source src="/audio/special/super.mp3" type="audio/mpeg" />
       </audio>
+      <audio id="sanjiMp3" preload="auto">
+        <source src="/audio/special/diable-jambe.mp3" type="audio/mpeg" />
+      </audio>
+      <!-- VICTORY SOUNDS -->
+      <audio id="luffyWinMp3" preload="auto">
+        <source src="/audio/win/luffy.mp3" type="audio/mpeg" />
+      </audio>
+      <audio id="aceWinMp3" preload="auto">
+        <source src="/audio/win/ace.mp3" type="audio/mpeg" />
+      </audio>
+      <audio id="zoroWinMp3" preload="auto">
+        <source src="/audio/win/zoro.mp3" type="audio/mpeg" />
+      </audio>
+      <audio id="frankyWinMp3" preload="auto">
+        <source src="/audio/win/franky.mp3" type="audio/mpeg" />
+      </audio>
+      <audio id="sanjiWinMp3" preload="auto">
+        <source src="/audio/win/sanji.mp3" type="audio/mpeg" />
+      </audio>
+      <!-- SFX -->
       <audio id="yeahMp3" preload="auto">
         <source src="/audio/sfx/yeah.mp3" type="audio/mpeg" />
       </audio>
@@ -336,6 +374,7 @@
       <audio id="gearSecondMp3" preload="auto">
         <source src="/audio/sfx/gear-second.mp3" type="audio/mpeg" />
       </audio>
+      <!-- OST MUSICS -->
       <audio id="overtakenMp3" preload="auto">
         <source src="/audio/ost/overtaken.mp3" type="audio/mpeg" />
       </audio>

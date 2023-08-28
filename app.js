@@ -36,6 +36,7 @@ const players = {
         specialAttackSpeed: 5,
         specialAttackSound: "#aceMp3",
         specialAttackSprite: "/images/players/ace.webm",
+        victorySound: "#aceWinMp3",
     },
     luffy: {
         name: "Monkey D. Luffy",
@@ -52,6 +53,7 @@ const players = {
         specialAttackSpeed: 10,
         specialAttackSound: "#luffyMp3",
         specialAttackSprite: "/images/players/luffy.webm",
+        victorySound: "#luffyWinMp3",
     },
     zoro: {
         name: "Roronoa Zoro",
@@ -68,6 +70,7 @@ const players = {
         specialAttackSpeed: 7,
         specialAttackSound: "#zoroMp3",
         specialAttackSprite: "/images/players/zoro.webm",
+        victorySound: "#zoroWinMp3",
     },
     franky: {
         name: "Fanky, Cuty Flam",
@@ -75,7 +78,7 @@ const players = {
         shadowColor: "blue",
         hp: 240,
         mana: 110,
-        healingAbility: 1.5,
+        healingAbility: 1.6,
         attackStrength: 11,
         attackSpeed: 3.1,
         attackSound: "#cannonballMp3",
@@ -84,6 +87,24 @@ const players = {
         specialAttackSpeed: 8,
         specialAttackSound: "#frankyMp3",
         specialAttackSprite: "/images/players/franky.webm",
+        victorySound: "#frankyWinMp3",
+    },
+    sanji: {
+        name: "Vinsmoke Sanji",
+        spriteImage: "/images/players/sanji.png",
+        shadowColor: "yellow",
+        hp: 250,
+        mana: 100,
+        healingAbility: 1.5,
+        attackStrength: 12,
+        attackSpeed: 3.4,
+        attackSound: "#swooshMp3",
+        attackSprite: "/images/attacks/slash.png",
+        specialAttackStrength: 37,
+        specialAttackSpeed: 9,
+        specialAttackSound: "#sanjiMp3",
+        specialAttackSprite: "/images/players/sanji.webm",
+        victorySound: "#sanjiWinMp3",
     },
 };
 const settings = {
@@ -142,6 +163,9 @@ document.body.addEventListener("change", (e) => {
         case "franky1":
             player1 = players.franky;
             break;
+        case "sanji1":
+            player1 = players.sanji;
+            break;
         case "luffy2":
             player2 = players.luffy;
             break;
@@ -154,6 +178,9 @@ document.body.addEventListener("change", (e) => {
         case "franky2":
             player2 = players.franky;
             break;
+        case "sanji2":
+            player2 = players.sanji;
+            break;
     }
 });
 // Sounds
@@ -165,6 +192,12 @@ const aceMp3 = document.querySelector("#aceMp3");
 const luffyMp3 = document.querySelector("#luffyMp3");
 const zoroMp3 = document.querySelector("#zoroMp3");
 const frankyMp3 = document.querySelector("#frankyMp3");
+const sanjiMp3 = document.querySelector("#sanjiMp3");
+const aceWinMp3 = document.querySelector("#aceWinMp3");
+const luffyWinMp3 = document.querySelector("#luffyWinMp3");
+const zoroWinMp3 = document.querySelector("#zoroWinMp3");
+const frankyWinMp3 = document.querySelector("#frankyWinMp3");
+const sanjiWinMp3 = document.querySelector("#sanjiWinMp3");
 const healMp3 = document.querySelector("#healMp3");
 const hitMp3 = document.querySelector("#hitMp3");
 const yeahMp3 = document.querySelector("#yeahMp3");
@@ -201,7 +234,7 @@ v2.height = settings.playerHeight * 1.2;
 v2.loop = true;
 // OOP
 class Player {
-    constructor(x, y, name, spriteImage, shadowColor, hp, mana, healingAbility, attackStrength, attackSpeed, attackSound, attackSprite, specialAttackStrength, specialAttackSpeed, specialAttackSound, specialAttackSprite, enemy) {
+    constructor(x, y, name, spriteImage, shadowColor, hp, mana, healingAbility, attackStrength, attackSpeed, attackSound, attackSprite, specialAttackStrength, specialAttackSpeed, specialAttackSound, specialAttackSprite, victorySound, enemy) {
         this.x = x;
         this.y = y;
         this.width = settings.playerWidth;
@@ -215,12 +248,13 @@ class Player {
         this.healingAbility = healingAbility;
         this.attackStrength = attackStrength;
         this.attackSpeed = attackSpeed;
-        this.attackSound = this.createSound(attackSound, "simple");
+        this.attackSound = this.createSound(attackSound, 0.4);
         this.attackSprite = this.createSprite(attackSprite);
         this.specialAttackStrength = specialAttackStrength;
         this.specialAttackSpeed = specialAttackSpeed;
-        this.specialAttackSound = this.createSound(specialAttackSound, "special");
+        this.specialAttackSound = this.createSound(specialAttackSound, 1);
         this.specialAttackSprite = specialAttackSprite;
+        this.victorySound = this.createSound(victorySound, 0.7);
         this.enemy = enemy;
         this.attacks = [];
         this.isUsingAttack = false;
@@ -232,9 +266,9 @@ class Player {
         newSprite.src = imageUrl;
         return newSprite;
     }
-    createSound(soundId, attackType) {
+    createSound(soundId, volume) {
         const newSound = document.querySelector(soundId);
-        newSound.volume = attackType === "simple" ? 0.4 : 0.9;
+        newSound.volume = volume;
         return newSound;
     }
     drawPlayer() {
@@ -318,10 +352,11 @@ class Player {
         }
     }
     win() {
+        overtakenMp3.pause();
         fight.blockRadioInput(false);
         fight.isPlaying = false;
-        yeahMp3.currentTime = 0;
-        yeahMp3.play();
+        this.victorySound.currentTime = 0;
+        this.victorySound.play();
         this.score++;
         winner.style.display = "block";
         winner.innerText = `Le vainqueur est ${this.name} !`;
@@ -415,8 +450,8 @@ class Game {
                 input.disabled = blockStatus;
             });
         };
-        this.player1 = new Player(settings.player1DefaultPosition.x, settings.player1DefaultPosition.y, player1.name, player1.spriteImage, player1.shadowColor, player1.hp, player1.mana, player1.healingAbility, player1.attackStrength, player1.attackSpeed, player1.attackSound, player1.attackSprite, player1.specialAttackStrength, player1.specialAttackSpeed, player1.specialAttackSound, player1.specialAttackSprite, null);
-        this.player2 = new Player(settings.player2DefaultPosition.x, settings.player2DefaultPosition.y, player2.name, player2.spriteImage, player2.shadowColor, player2.hp, player2.mana, player2.healingAbility, player2.attackStrength, player2.attackSpeed, player2.attackSound, player2.attackSprite, player2.specialAttackStrength, player2.specialAttackSpeed, player2.specialAttackSound, player2.specialAttackSprite, null);
+        this.player1 = new Player(settings.player1DefaultPosition.x, settings.player1DefaultPosition.y, player1.name, player1.spriteImage, player1.shadowColor, player1.hp, player1.mana, player1.healingAbility, player1.attackStrength, player1.attackSpeed, player1.attackSound, player1.attackSprite, player1.specialAttackStrength, player1.specialAttackSpeed, player1.specialAttackSound, player1.specialAttackSprite, player1.victorySound, null);
+        this.player2 = new Player(settings.player2DefaultPosition.x, settings.player2DefaultPosition.y, player2.name, player2.spriteImage, player2.shadowColor, player2.hp, player2.mana, player2.healingAbility, player2.attackStrength, player2.attackSpeed, player2.attackSound, player2.attackSprite, player2.specialAttackStrength, player2.specialAttackSpeed, player2.specialAttackSound, player2.specialAttackSprite, player2.victorySound, null);
         this.isPlaying = false;
     }
     defaultDisplay() {
@@ -539,12 +574,13 @@ start.onclick = () => {
         fight.player1.healingAbility = player1.healingAbility;
         fight.player1.attackStrength = player1.attackStrength;
         fight.player1.attackSpeed = player1.attackSpeed;
-        fight.player1.attackSound = fight.player1.createSound(player1.attackSound, "simple");
+        fight.player1.attackSound = fight.player1.createSound(player1.attackSound, 0.4);
         fight.player1.attackSprite = fight.player1.createSprite(player1.attackSprite);
         fight.player1.specialAttackStrength = player1.specialAttackStrength;
         fight.player1.specialAttackSpeed = player1.specialAttackSpeed;
-        fight.player1.specialAttackSound = fight.player1.createSound(player1.specialAttackSound, "special");
+        fight.player1.specialAttackSound = fight.player1.createSound(player1.specialAttackSound, 1);
         fight.player1.specialAttackSprite = player1.specialAttackSprite;
+        fight.player1.victorySound = fight.player1.createSound(player1.victorySound, 0.9);
         // Update player 2
         fight.player2.name = player2.name;
         fight.player2.spriteImage = fight.player2.createSprite(player2.spriteImage);
@@ -555,12 +591,13 @@ start.onclick = () => {
         fight.player2.healingAbility = player2.healingAbility;
         fight.player2.attackStrength = player2.attackStrength;
         fight.player2.attackSpeed = player2.attackSpeed;
-        fight.player2.attackSound = fight.player2.createSound(player2.attackSound, "simple");
+        fight.player2.attackSound = fight.player2.createSound(player2.attackSound, 0.4);
         fight.player2.attackSprite = fight.player2.createSprite(player2.attackSprite);
         fight.player2.specialAttackStrength = player2.specialAttackStrength;
         fight.player2.specialAttackSpeed = player2.specialAttackSpeed;
-        fight.player2.specialAttackSound = fight.player2.createSound(player2.specialAttackSound, "special");
+        fight.player2.specialAttackSound = fight.player2.createSound(player2.specialAttackSound, 1);
         fight.player2.specialAttackSprite = player2.specialAttackSprite;
+        fight.player2.victorySound = fight.player2.createSound(player2.victorySound, 0.9);
         fight.blockRadioInput(true);
         fight.isPlaying = true;
         start.style.display = "none";
@@ -581,12 +618,13 @@ start.onclick = () => {
             fight.player1.healingAbility = player1.healingAbility;
             fight.player1.attackStrength = player1.attackStrength;
             fight.player1.attackSpeed = player1.attackSpeed;
-            fight.player1.attackSound = fight.player1.createSound(player1.attackSound, "simple");
+            fight.player1.attackSound = fight.player1.createSound(player1.attackSound, 0.4);
             fight.player1.attackSprite = fight.player1.createSprite(player1.attackSprite);
             fight.player1.specialAttackStrength = player1.specialAttackStrength;
             fight.player1.specialAttackSpeed = player1.specialAttackSpeed;
-            fight.player1.specialAttackSound = fight.player1.createSound(player1.specialAttackSound, "special");
+            fight.player1.specialAttackSound = fight.player1.createSound(player1.specialAttackSound, 1);
             fight.player1.specialAttackSprite = player1.specialAttackSprite;
+            fight.player1.victorySound = fight.player1.createSound(player1.victorySound, 1);
             // Update player 2
             fight.player2.name = player2.name;
             fight.player2.spriteImage = fight.player2.createSprite(player2.spriteImage);
@@ -597,12 +635,13 @@ start.onclick = () => {
             fight.player2.healingAbility = player2.healingAbility;
             fight.player2.attackStrength = player2.attackStrength;
             fight.player2.attackSpeed = player2.attackSpeed;
-            fight.player2.attackSound = fight.player2.createSound(player2.attackSound, "simple");
+            fight.player2.attackSound = fight.player2.createSound(player2.attackSound, 0.4);
             fight.player2.attackSprite = fight.player2.createSprite(player2.attackSprite);
             fight.player2.specialAttackStrength = player2.specialAttackStrength;
             fight.player2.specialAttackSpeed = player2.specialAttackSpeed;
-            fight.player2.specialAttackSound = fight.player2.createSound(player2.specialAttackSound, "special");
+            fight.player2.specialAttackSound = fight.player2.createSound(player2.specialAttackSound, 1);
             fight.player2.specialAttackSprite = player2.specialAttackSprite;
+            fight.player2.victorySound = fight.player2.createSound(player2.victorySound, 1);
             fight.blockRadioInput(true);
             fight.isPlaying = true;
             winner.style.display = "none";
