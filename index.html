@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/images/icons/luffy.png" type="image/apng" />
     <title>One Piece Fight !</title>
     <style>
       * {
@@ -12,9 +13,10 @@
           sans-serif;
         transition: all 0.2s ease;
         box-sizing: border-box;
+        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
       }
       body {
-        background-color: lightgray;
+        background-color: rgb(0, 0, 0);
         color: whitesmoke;
         padding: 0 10px;
         max-height: 100vh;
@@ -27,25 +29,42 @@
         top: 0;
         left: 0;
         z-index: -1;
-        background-image: url(./images/wallpapers/luffy-and-law.jpg);
         filter: brightness(0.8) blur(8px);
-
-        /* Center and scale the image nicely */
         background-position: center;
-        background-repeat: no-repeat;
         background-size: cover;
       }
-      h1 {
-        padding: 8px;
-        font-size: 45px;
-        text-align: center;
-        text-transform: uppercase;
+      header {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 5px;
       }
       canvas {
         border: 1px solid whitesmoke;
       }
-      img {
-        display: none;
+      #canvas_container {
+        position: relative;
+      }
+      #virtual_canvas {
+        position: absolute;
+        z-index: -1;
+        background-color: rgba(0, 0, 255, 0.214);
+        display: flex;
+        justify-content: space-between;
+        top: 0;
+        left: 0;
+        width: 100%; /* Couvre toute la largeur du canvas container */
+        height: 100%; /* Couvre toute la hauteur du canvas container */
+      }
+      /* video {
+        border: 1px solid black;
+      } */
+      #v1 {
+        justify-self: flex-start;
+      }
+      #v2 {
+        transform: scale(-1, 1);
       }
       section {
         display: flex;
@@ -56,8 +75,7 @@
         min-width: 120px;
       }
       .player_infos > p {
-        font-size: x-large;
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        font-size: large;
       }
       #start,
       #restart,
@@ -90,12 +108,67 @@
         text-align: center;
         top: calc(40vh - 100px);
         left: calc(50vw - 500px / 2);
-        text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      }
+      #settings {
+        width: 100%;
+        padding: 0 15%;
+        display: flex;
+        justify-content: space-between;
+      }
+      #choose-wallpaper {
+        display: flex;
+        flex-direction: column;
+        row-gap: 5px;
+        width: 20%;
+      }
+      #choose-player1,
+      #choose-player2 {
+        border: 1px solid rgb(255, 255, 255);
+        width: 35%;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      label {
+        display: flex;
+        column-gap: 5px;
+        align-items: center;
+      }
+      label > img {
+        width: 50px;
+        height: 50px;
+        padding: 5px;
+      }
+      input[type="radio"]:checked + img {
+        filter: drop-shadow(0 0 4px #ff0000);
+      }
+      input[type="radio"] {
+        display: none;
+      }
+      label:hover {
+        color: rgb(255, 43, 43);
+        transform: scale(1.1);
+      }
+      h4 {
+        font-size: larger;
+      }
+      section#settings {
+        margin-top: 10px;
       }
     </style>
   </head>
   <body>
-    <h1>One Piece Fight !</h1>
+    <header>
+      <img
+        src="/images/icons/one-piece-logo.webp"
+        alt="one-piece-logo"
+        id="one-piece-logo"
+        height="50px"
+        width="150px"
+      />
+    </header>
     <div id="wallpaper"></div>
     <!-- PLAYER INFOS DISPLAY -->
     <section>
@@ -109,7 +182,14 @@
         <p id="p1_mana"></p>
         <p id="p1_mana_display"></p>
       </div>
-      <canvas id="canvas" width="900" height="400"></canvas>
+      <div id="canvas_container">
+        <canvas id="canvas" width="900" height="400"></canvas>
+        <div id="virtual_canvas">
+          <video src="" id="v1"></video>
+          <div id="video_space"></div>
+          <video src="" id="v2"></video>
+        </div>
+      </div>
       <div class="player_infos">
         <h2 id="p2_name"></h2>
         <p id="p2_score"></p>
@@ -125,17 +205,96 @@
     <button id="start" class="button">Commencer</button>
     <button id="restart" class="button">Recommencer</button>
     <h2 id="winner">Vainqueur :</h2>
-    <!-- IMAGE SOURCE -->
-    <div id="images">
-      <img id="acePng" src="/images/players/ace.png" alt="Ace" />
-      <img id="aceGif" src="/images/players/ace.gif" alt="Ace" />
-
-      <img id="luffyPng" src="/images/players/luffy.png" alt="Luffy" />
-      <img id="luffyGif" src="/images/players/luffy.gif" alt="Luffy" />
-
-      <img id="fireballPng" src="/images/attacks/fireball.png" alt="Fireball" />
-      <img id="punchPng" src="/images/attacks/punch.png" alt="Punch" />
-    </div>
+    <section id="settings">
+      <form id="choose-player1">
+        <h4>Joueur 1</h4>
+        <label for="luffy1">
+          <input
+            type="radio"
+            name="choose-player1"
+            id="luffy1"
+            value="luffy1"
+            checked />
+          <img src="/images/icons/luffy.png" alt="luffy"
+        /></label>
+        <label for="ace1">
+          <input type="radio" name="choose-player1" id="ace1" value="ace1" />
+          <img src="/images/icons/ace.png" alt="ace"
+        /></label>
+        <label for="zoro1">
+          <input type="radio" name="choose-player1" id="zoro1" value="zoro1" />
+          <img src="/images/icons/zoro.png" alt="zoro"
+        /></label>
+        <label for="franky1">
+          <input
+            type="radio"
+            name="choose-player1"
+            id="franky1"
+            value="franky1" />
+          <img src="/images/icons/franky.png" alt="franky"
+        /></label>
+      </form>
+      <form id="choose-wallpaper">
+        <h4>Choisir un terrain</h4>
+        <label for="luffy_law">
+          <input
+            type="radio"
+            name="choose-wallpaper"
+            id="luffy_law"
+            value="luffy_law"
+            checked
+          />Luffy et Law</label
+        >
+        <label for="sabaody">
+          <input
+            type="radio"
+            name="choose-wallpaper"
+            id="sabaody"
+            value="sabaody"
+          />Archipel des Saboady</label
+        >
+        <label for="marineford">
+          <input
+            type="radio"
+            name="choose-wallpaper"
+            id="marineford"
+            value="marineford"
+          />QG de la Marine</label
+        >
+      </form>
+      <form id="choose-player2">
+        <h4>Joueur 2</h4>
+        <label for="luffy2">
+          <input
+            type="radio"
+            name="choose-player2"
+            id="luffy2"
+            value="luffy2" />
+          <img src="/images/icons/luffy.png" alt="luffy"
+        /></label>
+        <label for="ace2">
+          <input
+            type="radio"
+            name="choose-player2"
+            id="ace2"
+            value="ace2"
+            checked />
+          <img src="/images/icons/ace.png" alt="ace"
+        /></label>
+        <label for="zoro2">
+          <input type="radio" name="choose-player2" id="zoro2" value="zoro2" />
+          <img src="/images/icons/zoro.png" alt="zoro"
+        /></label>
+        <label for="franky2">
+          <input
+            type="radio"
+            name="choose-player2"
+            id="franky2"
+            value="franky2" />
+          <img src="/images/icons/franky.png" alt="franky"
+        /></label>
+      </form>
+    </section>
     <!-- AUDIO SOURCE -->
     <div id="sounds">
       <audio id="fireballMp3" preload="auto">
@@ -143,6 +302,12 @@
       </audio>
       <audio id="swooshMp3" preload="auto">
         <source src="/audio/attack/swoosh.mp3" type="audio/mpeg" />
+      </audio>
+      <audio id="slashMp3" preload="auto">
+        <source src="/audio/attack/slash.mp3" type="audio/mpeg" />
+      </audio>
+      <audio id="cannonballMp3" preload="auto">
+        <source src="/audio/attack/cannonball.mp3" type="audio/mpeg" />
       </audio>
       <audio id="luffyMp3" preload="auto">
         <source
@@ -153,8 +318,20 @@
       <audio id="aceMp3" preload="auto">
         <source src="/audio/special/kyokaen.mp3" type="audio/mpeg" />
       </audio>
+      <audio id="zoroMp3" preload="auto">
+        <source src="/audio/special/santoryu.mp3" type="audio/mpeg" />
+      </audio>
+      <audio id="frankyMp3" preload="auto">
+        <source src="/audio/special/super.mp3" type="audio/mpeg" />
+      </audio>
       <audio id="yeahMp3" preload="auto">
         <source src="/audio/sfx/yeah.mp3" type="audio/mpeg" />
+      </audio>
+      <audio id="healMp3" preload="auto">
+        <source src="/audio/sfx/heal.mp3" type="audio/mpeg" />
+      </audio>
+      <audio id="hitMp3" preload="auto">
+        <source src="/audio/sfx/hit.mp3" type="audio/mpeg" />
       </audio>
       <audio id="gearSecondMp3" preload="auto">
         <source src="/audio/sfx/gear-second.mp3" type="audio/mpeg" />
