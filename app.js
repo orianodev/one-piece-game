@@ -7,9 +7,9 @@ ctx.shadowOffsetX = 3;
 ctx.shadowOffsetY = 3;
 // Import data
 const background_url = {
-    luffy_law: {
-        name: "Luffy and Law",
-        url: "./images/wallpapers/luffy-and-law.webp",
+    loguetown: {
+        name: "Loguetown",
+        url: "./images/wallpapers/loguetown.webp",
     },
     sabaody: {
         name: "Luffy and Law",
@@ -132,7 +132,7 @@ const winner = document.querySelector("#winner");
 const radioInputs = document.querySelectorAll('input[type="radio"]');
 // Change background wallpaper
 const bg = document.querySelector("#wallpaper");
-bg.style.backgroundImage = `url(${background_url.luffy_law.url})`;
+bg.style.backgroundImage = `url(${background_url.loguetown.url})`;
 document.body.addEventListener("change", (e) => {
     let target = e.target; // Use type assertion to HTMLElement
     switch (target.id) {
@@ -142,8 +142,8 @@ document.body.addEventListener("change", (e) => {
         case "sabaody":
             bg.style.backgroundImage = `url(${background_url.sabaody.url})`;
             break;
-        case "luffy_law":
-            bg.style.backgroundImage = `url(${background_url.luffy_law.url})`;
+        case "loguetown":
+            bg.style.backgroundImage = `url(${background_url.loguetown.url})`;
             break;
     }
 });
