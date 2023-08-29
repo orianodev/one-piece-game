@@ -10,6 +10,7 @@ interface PlayerStats {
   name: string;
   spriteImage: string;
   shadowColor: string;
+  step: number;
   hp: number;
   healingSpeed: number;
   mana: number;
@@ -42,6 +43,7 @@ const players: PlayerStatsCollection = {
     name: "Monkey D. Luffy",
     spriteImage: "images/players/luffy.png",
     shadowColor: "red",
+    step: canvas.height / 11,
     hp: 250,
     healingSpeed: 2.5,
     mana: 70,
@@ -61,10 +63,11 @@ const players: PlayerStatsCollection = {
     name: "Portgas D. Ace",
     spriteImage: "images/players/ace.png",
     shadowColor: "orange",
+    step: canvas.height / 12,
     hp: 270,
     healingSpeed: 2,
     mana: 50,
-    manaCost: 120,
+    manaCost: 125,
     manaSpeed: 1,
     attackStrength: 15,
     attackSpeed: 2,
@@ -80,6 +83,7 @@ const players: PlayerStatsCollection = {
     name: "Roronoa Zoro",
     spriteImage: "images/players/zoro.png",
     shadowColor: "green",
+    step: canvas.height / 13,
     hp: 300,
     healingSpeed: 2,
     mana: 60,
@@ -99,6 +103,7 @@ const players: PlayerStatsCollection = {
     name: "Fanky, Cuty Flam",
     spriteImage: "images/players/franky.png",
     shadowColor: "blue",
+    step: canvas.height / 12,
     hp: 240,
     healingSpeed: 2.1,
     mana: 110,
@@ -118,6 +123,7 @@ const players: PlayerStatsCollection = {
     name: "Vinsmoke Sanji",
     spriteImage: "images/players/sanji.png",
     shadowColor: "yellow",
+    step: canvas.height / 12,
     hp: 250,
     healingSpeed: 2,
     mana: 100,
@@ -137,6 +143,7 @@ const players: PlayerStatsCollection = {
     name: "Brook",
     spriteImage: "images/players/brook.png",
     shadowColor: "black",
+    step: canvas.height / 10,
     hp: 280,
     healingSpeed: 1.5,
     mana: 90,
@@ -156,6 +163,7 @@ const players: PlayerStatsCollection = {
     name: "Trafalgar Law",
     spriteImage: "images/players/law.png",
     shadowColor: "brown",
+    step: canvas.height / 9,
     hp: 220,
     healingSpeed: 3,
     mana: 95,
@@ -175,6 +183,7 @@ const players: PlayerStatsCollection = {
     name: "Jinbe",
     spriteImage: "images/players/jinbe.png",
     shadowColor: "cyan",
+    step: canvas.height / 14,
     hp: 250,
     healingSpeed: 1.5,
     mana: 100,
@@ -196,7 +205,6 @@ interface Settings {
   playerHeight: number;
   playerWidth: number;
   collisionMargin: number;
-  playerStep: number;
   playerSizeVariation: number;
   attackSpriteHeight: number;
   attackSpriteWidth: number;
@@ -209,34 +217,43 @@ interface Settings {
   player1DefaultPosition: { x: number; y: number };
   player2DefaultPosition: { x: number; y: number };
   refreshRate: number;
+  aiPlayRate: number;
+  step: number;
 }
 
 const settings: Settings = {
-  playerHeight: canvas.height / 2,
+  playerHeight: canvas.height / 2.5,
   playerWidth: canvas.width / 9,
   collisionMargin: 15,
-  playerStep: canvas.height / 20,
   playerSizeVariation: 20,
   attackSpriteHeight: canvas.height / 10,
   attackSpriteWidth: canvas.height / 10,
   maxHp: 350,
   maxMana: 150,
-  healingTime: 50,
-  simpleAttackDelay: 200,
+  healingTime: 150,
+  simpleAttackDelay: 150,
   specialAttackDelay: 1500,
   specialAttackAudioDelay: 1500,
   player1DefaultPosition: { x: 0, y: 0 },
   player2DefaultPosition: { x: canvas.width - canvas.width / 9, y: 0 },
-  refreshRate: 1000 / 100,
+  refreshRate: 10,
+  aiPlayRate: 100,
+  step: canvas.height / 10,
 };
 
 const background_url: {
   loguetown: string;
+  enies_lobby: string;
+  thriller_bark: string;
   sabaody: string;
+  impel_down: string;
   marineford: string;
 } = {
   loguetown: "images/wallpapers/loguetown.webp",
+  enies_lobby: "images/wallpapers/enies_lobby.webp",
+  thriller_bark: "images/wallpapers/thriller_bark.webp",
   sabaody: "images/wallpapers/sabaody.webp",
+  impel_down: "images/wallpapers/impel_down.webp",
   marineford: "images/wallpapers/marineford.webp",
 };
 
@@ -246,27 +263,27 @@ const restart = document.querySelector(
   "#controls_restart"
 ) as HTMLButtonElement;
 const winner = document.querySelector("#controls_winner") as HTMLTitleElement;
+const help_btn = document.querySelector("#help_btn") as HTMLButtonElement;
+const infos_btn = document.querySelector("#infos_btn") as HTMLButtonElement;
+const help = document.querySelector("#main_help") as HTMLDivElement;
+help.style.display = "none";
+const infos = document.querySelector("#main_infos") as HTMLDivElement;
+const ai_btn = document.querySelector("#settings_ai") as HTMLButtonElement;
 const radioInputs: NodeListOf<HTMLInputElement> = document.querySelectorAll(
   'input[type="radio"]'
 );
 
-// Change background wallpaper
-const wallpaper = document.querySelector("#main_wallpaper") as HTMLDivElement;
-wallpaper.style.backgroundImage = `url(${background_url.loguetown})`;
-document.body.addEventListener("change", (e: Event) => {
-  let target = e.target as HTMLElement; // Use type assertion to HTMLElement
-  switch (target.id) {
-    case "loguetown":
-      wallpaper.style.backgroundImage = `url(${background_url.loguetown})`;
-      break;
-    case "sabaody":
-      wallpaper.style.backgroundImage = `url(${background_url.sabaody})`;
-      break;
-    case "marineford":
-      wallpaper.style.backgroundImage = `url(${background_url.marineford})`;
-      break;
-  }
-});
+help_btn.onclick = () => {
+  help.style.display = help.style.display === "none" ? "flex" : "none";
+};
+
+let isAiActivated = false;
+ai_btn.onclick = () => {
+  isAiActivated = !isAiActivated;
+  ai_btn.style.backgroundColor = isAiActivated ? "lime" : "whitesmoke";
+  ai_btn.innerHTML = isAiActivated ? "Contre l'ordi" : "Mode 2 joueurs";
+  settings.simpleAttackDelay *= isAiActivated ? 2 : 0.5;
+};
 
 // Change players
 document.body.addEventListener("change", (e: Event) => {
@@ -363,11 +380,73 @@ const gearSecondMp3 = document.querySelector(
 const overtakenMp3 = document.querySelector(
   "#overtakenMp3"
 ) as HTMLAudioElement;
+const thrillerBarkMp3 = document.querySelector(
+  "#thrillerBarkMp3"
+) as HTMLAudioElement;
+const eniesLobbyMp3 = document.querySelector(
+  "#eniesLobbyMp3"
+) as HTMLAudioElement;
+const eniesLobbyMarchMp3 = document.querySelector(
+  "#eniesLobbyMarchMp3"
+) as HTMLAudioElement;
+const difficultMp3 = document.querySelector(
+  "#difficultMp3"
+) as HTMLAudioElement;
+const katakuriMp3 = document.querySelector("#katakuriMp3") as HTMLAudioElement;
 healMp3.volume = 0.4;
 hitMp3.volume = 0.4;
 yeahMp3.volume = 0.5;
 gearSecondMp3.volume = 0.8;
 overtakenMp3.volume = 0.3;
+thrillerBarkMp3.volume = 0.3;
+eniesLobbyMp3.volume = 0.3;
+eniesLobbyMarchMp3.volume = 0.3;
+difficultMp3.volume = 0.3;
+katakuriMp3.volume = 0.3;
+
+// Change background wallpaper
+const wallpaper = document.querySelector("#main_wallpaper") as HTMLDivElement;
+let currentOst: HTMLAudioElement = overtakenMp3;
+const wallpaper_select = document.querySelector(
+  "#select_wallpaper"
+) as HTMLSelectElement;
+// const jinbe1 = document.querySelector("#jinbe-1") as HTMLInputElement;
+// const jinbe2 = document.querySelector("#jinbe-2") as HTMLInputElement;
+// jinbe1.disabled = true;
+wallpaper_select.options[1].disabled = true;
+wallpaper_select.options[2].disabled = true;
+wallpaper_select.options[3].disabled = true;
+wallpaper_select.options[4].disabled = true;
+wallpaper_select.options[5].disabled = true;
+wallpaper.style.backgroundImage = `url(${background_url.loguetown})`;
+wallpaper_select.addEventListener("change", (e: Event) => {
+  switch (wallpaper_select.value) {
+    case "loguetown":
+      wallpaper.style.backgroundImage = `url(${background_url.loguetown})`;
+      currentOst = overtakenMp3;
+      break;
+    case "enies_lobby":
+      wallpaper.style.backgroundImage = `url(${background_url.enies_lobby})`;
+      currentOst = eniesLobbyMp3;
+      break;
+    case "thriller_bark":
+      wallpaper.style.backgroundImage = `url(${background_url.thriller_bark})`;
+      currentOst = thrillerBarkMp3;
+      break;
+    case "sabaody":
+      wallpaper.style.backgroundImage = `url(${background_url.sabaody})`;
+      currentOst = eniesLobbyMarchMp3;
+      break;
+    case "impel_down":
+      wallpaper.style.backgroundImage = `url(${background_url.impel_down})`;
+      currentOst = katakuriMp3;
+      break;
+    case "marineford":
+      wallpaper.style.backgroundImage = `url(${background_url.marineford})`;
+      currentOst = difficultMp3;
+      break;
+  }
+});
 
 // Display infos
 const p1_name = document.querySelector("#stats_name-1") as HTMLTitleElement;
@@ -422,6 +501,7 @@ class Player {
   currentSprite: HTMLImageElement;
   spriteImage: HTMLImageElement;
   shadowColor: string;
+  step: number;
   hp: number;
   healingSpeed: number;
   mana: number;
@@ -448,6 +528,7 @@ class Player {
     name: string,
     spriteImage: string,
     shadowColor: string,
+    step: number,
     hp: number,
     healingSpeed: number,
     mana: number,
@@ -472,6 +553,7 @@ class Player {
     this.currentSprite = this.createSprite(spriteImage);
     this.spriteImage = this.createSprite(spriteImage);
     this.shadowColor = shadowColor;
+    this.step = step;
     this.hp = hp;
     this.healingSpeed = healingSpeed;
     this.mana = mana;
@@ -512,14 +594,28 @@ class Player {
   }
 
   moveUp(): void {
+    console.log(
+      settings.step,
+      this.y,
+      canvas.height,
+      this.height,
+      (canvas.height - this.height) / settings.step
+    );
     if (this.y > 0) {
-      this.y -= settings.playerStep;
+      this.y -= settings.step;
     }
   }
 
   moveDown(): void {
+    console.log(
+      settings.step,
+      this.y,
+      canvas.height,
+      this.height,
+      (canvas.height - this.height) / settings.step
+    );
     if (this.y < canvas.height - settings.playerHeight) {
-      this.y += settings.playerStep;
+      this.y += settings.step;
     }
   }
 
@@ -592,7 +688,7 @@ class Player {
 
   reloadMana(): void {
     if (this.mana < settings.maxMana && !this.isUsingSpecialAttack) {
-      this.mana += this.manaSpeed / settings.refreshRate;
+      this.mana += this.manaSpeed / 10;
     }
   }
 
@@ -602,23 +698,32 @@ class Player {
       !this.isUsingAttack &&
       !this.isUsingSpecialAttack
     ) {
+      this.isUsingAttack = true;
       healMp3.currentTime = 0;
       healMp3.play();
       this.hp += (1 + Math.random()) * this.healingSpeed;
       this.height -= settings.playerSizeVariation;
       setTimeout(() => {
+        this.isUsingAttack = false;
         this.height += settings.playerSizeVariation;
       }, settings.healingTime);
     }
   }
 
   win(): void {
-    overtakenMp3.pause();
+    currentOst.pause();
     fight.blockRadioInput(false);
     fight.isPlaying = false;
     this.victorySound.currentTime = 0;
     this.victorySound.play();
     this.score++;
+    for (
+      let index = 0;
+      index <= fight.player1.score + fight.player2.score;
+      index++
+    ) {
+      wallpaper_select.options[index].disabled = false;
+    }
     winner.style.display = "block";
     winner.innerText = `Le vainqueur est ${this.name} !`;
     restart.style.display = "block";
@@ -671,7 +776,6 @@ class Attack {
   inflictDamage(): void {
     // Reduce HP of the other Player
     if (this.owner.enemy != null) {
-      console.log("hit");
       hitMp3.currentTime = 0;
       hitMp3.play();
       this.owner.enemy.hp -=
@@ -725,6 +829,8 @@ class Game {
   player1: Player;
   player2: Player;
   isPlaying: boolean;
+  isAiPlaying: boolean;
+  refreshInterval: number | null;
   constructor() {
     this.player1 = new Player(
       settings.player1DefaultPosition.x,
@@ -732,6 +838,7 @@ class Game {
       player1.name,
       player1.spriteImage,
       player1.shadowColor,
+      player1.step,
       player1.hp,
       player1.healingSpeed,
       player1.mana,
@@ -754,6 +861,7 @@ class Game {
       player2.name,
       player2.spriteImage,
       player2.shadowColor,
+      player2.step,
       player2.hp,
       player2.healingSpeed,
       player2.mana,
@@ -771,10 +879,13 @@ class Game {
       null
     );
     this.isPlaying = false;
+    this.isAiPlaying = false;
+    this.refreshInterval = null;
   }
 
   defaultDisplay(): void {
     // Display the default positions
+    this.resetGame();
     p1_name.innerText = this.player1.name;
     this.player1.drawPlayer();
     p2_name.innerText = this.player2.name;
@@ -811,43 +922,81 @@ class Game {
     });
   }
 
-  setEnemies() {
+  setEnemies(): void {
     this.player1.enemy = this.player2;
     this.player2.enemy = this.player1;
   }
 
+  exitGame(): void {
+    currentOst.pause();
+    fight.isPlaying = false;
+    clearInterval(fight.refreshInterval!);
+    fight.resetGame();
+    start.style.display = "block";
+    fight.blockRadioInput(false);
+  }
+
   runGame(): void {
-    if (!this.isPlaying) return;
+    if (!this.isPlaying) {
+      return;
+    }
     this.defaultDisplay();
-    document.addEventListener("keydown", (event: KeyboardEvent) => {
-      this.checkKeyPress(event);
-    });
-    const refresh: number = setInterval(() => {
-      if (this.player1.hp < 1) {
-        clearInterval(refresh);
+    this.refreshInterval = setInterval(() => {
+      if (this.player1.hp <= 1) {
+        clearInterval(this.refreshInterval!);
         this.player2.win();
       }
-      if (this.player2.hp < 1) {
-        clearInterval(refresh);
+      if (this.player2.hp <= 1) {
+        clearInterval(this.refreshInterval!);
         this.player1.win();
       }
+      if (isAiActivated && !this.isAiPlaying)
+        this.runAi(Math.floor(Math.random() * 4));
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       this.displayPlayer1();
       this.displayPlayer2();
     }, settings.refreshRate);
   }
 
+  runAi(action: number): void {
+    switch (action) {
+      case 0:
+        fight.player2.simpleAttack();
+        break;
+      case 1:
+        fight.player2.heal();
+        break;
+      case 2:
+        if (fight.player2.y < fight.player1.y) {
+          fight.player2.moveDown();
+        } else {
+          fight.player2.moveUp();
+        }
+        break;
+      case 3:
+        fight.player2.specialAttack();
+        break;
+    }
+    this.isAiPlaying = true;
+    setTimeout(() => {
+      this.isAiPlaying = false;
+    }, settings.aiPlayRate);
+  }
+
   playStartSound = (): void => {
     gearSecondMp3.currentTime = 0;
     gearSecondMp3.play();
-    overtakenMp3.currentTime = 0;
-    overtakenMp3.play();
+    currentOst.pause();
+    currentOst.currentTime = 0;
+    currentOst.play();
   };
 
   blockRadioInput = (blockStatus: boolean): void => {
     radioInputs.forEach((input: HTMLInputElement) => {
       input.disabled = blockStatus;
     });
+    wallpaper_select.disabled = blockStatus;
+    ai_btn.disabled = blockStatus;
   };
 
   checkKeyPress(event: KeyboardEvent) {
@@ -882,6 +1031,9 @@ class Game {
         break;
       case "PageUp":
         this.player2.specialAttack();
+        break;
+      case " ":
+        this.exitGame();
         break;
     }
   }
@@ -984,8 +1136,11 @@ start.onclick = () => {
       );
       fight.player1.currentSprite = fight.player1.spriteImage;
       fight.player1.shadowColor = player1.shadowColor;
+      fight.player1.step = player1.step;
       fight.player1.hp = player1.hp;
       fight.player1.mana = player1.mana;
+      fight.player1.manaCost = player1.manaCost;
+      fight.player1.manaSpeed = player1.manaSpeed;
       fight.player1.healingSpeed = player1.healingSpeed;
       fight.player1.attackStrength = player1.attackStrength;
       fight.player1.attackSpeed = player1.attackSpeed;
@@ -1015,8 +1170,11 @@ start.onclick = () => {
       );
       fight.player2.currentSprite = fight.player2.spriteImage;
       fight.player2.shadowColor = player2.shadowColor;
+      fight.player2.step = player2.step;
       fight.player2.hp = player2.hp;
       fight.player2.mana = player2.mana;
+      fight.player2.manaCost = player2.manaCost;
+      fight.player2.manaSpeed = player2.manaSpeed;
       fight.player2.healingSpeed = player2.healingSpeed;
       fight.player2.attackStrength = player2.attackStrength;
       fight.player2.attackSpeed = player2.attackSpeed;
@@ -1041,12 +1199,18 @@ start.onclick = () => {
 
       fight.blockRadioInput(true);
       fight.isPlaying = true;
+
       winner.style.display = "none";
       restart.style.display = "none";
 
       fight.resetGame();
+      clearInterval(fight.refreshInterval!);
       fight.defaultDisplay();
       fight.runGame();
     }, 1000);
   };
 };
+
+document.addEventListener("keydown", (event: KeyboardEvent) => {
+  fight.checkKeyPress(event);
+});

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="images/icons/luffy.png" type="image/apng" />
     <title>One Piece Fight !</title>
+    <meta name="description" content="Jeu de combat One Piece gratuit et débloqué (unblocked) pour jouer en solo contre une IA ou en duo avec le MEME clavier. Jeu flash One Piece 2023-2024.">
     <style>
       /* GENERAL */
       * {
@@ -12,7 +13,7 @@
         margin: 0;
         font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
           sans-serif;
-        transition: all 0.2s ease;
+        transition: all 0.25s ease-in-out;
         box-sizing: border-box;
         text-shadow: 0 0 10px rgba(0, 0, 0, 0.9);
       }
@@ -20,9 +21,9 @@
       header {
         width: 100vw;
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         align-items: center;
-        padding: 8px 0;
+        padding: 8px 5vw;
       }
       /* BACKGROUND */
       body {
@@ -42,6 +43,58 @@
         background-position: center;
         background-repeat: no-repeat;
         background-size: cover;
+      }
+      header > button {
+        font-size: large;
+        height: 30px;
+        width: 30px;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+      }
+      header > button:hover {
+        transform: scale(1.2);
+        background-color: lightgray;
+      }
+      #main_help {
+        position: absolute;
+        z-index: 1;
+        top: 11vh;
+        left: calc(50vw - 35vw);
+        width: 70vw;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 5vh 5vw 8vh 5vw;
+        column-gap: 50px;
+        row-gap: 15px;
+        font-size: large;
+        background-color: rgb(77, 77, 77);
+        border-radius: 10px;
+        box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+        display: none;
+      }
+      span, header>button {
+        text-shadow: 0 0 0 black;
+      }
+      .help_commands > h4 {
+        text-align: center;
+        padding-bottom: 3px;
+      }
+      #help_characters > h4 {
+        text-align: center;
+        padding: 10px;
+      }      
+      ul {
+        list-style: none;
+      }
+      #help_characters > ul {
+        display: flex;
+        column-gap: 15px;
+        flex-wrap: wrap;
+      }
+      #help_characters > ul > li {
+        display: flex;
+        flex-direction: column;
       }
       /* GAME DISPLAY */
       #game {
@@ -96,39 +149,42 @@
         display: none;
         transform: scale(-1, 1);
       }
-      .button {
+      #game_screen > .button {
         width: 30vw;
         height: 17vh;
         position: absolute;
-        top: calc(60% - 17vh);
+        top: calc(55% - 17vh);
         left: calc(50% - 15vw);
-        border: none;
         border-radius: 15px;
-        box-shadow: 0 0 30px rgba(255, 0, 0, 1);
-        background-color: red;
+        border: none;
         color: whitesmoke;
         text-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+        text-align: center;
+        border: none;
+        color: whitesmoke;
       }
-      .button:hover {
+      #game_screen > .button:hover {
         transform: scale(1.1);
       }
-      #controls_start,
-      #controls_restart,
-      #controls_winner {
+      #controls_start {
         font-size: xx-large;
-        position: absolute;
-        text-align: center;
-      }
+        box-shadow: 0 0 30px rgba(255, 0, 0);
+        background-color: rgb(245, 0, 0);
+      }      
       #controls_restart {
         display: none;
+        font-size: xx-large;
+        box-shadow: 0 0 30px rgba(255, 0, 0, 1);
+        background-color: rgb(245, 0, 0);
       }
       #controls_winner {
         display: none;
+        position: absolute;
         width: 40vw;
         height: 17vh;
-        text-align: center;
         top: calc(45% - 17vh);
         left: calc(50% - 20vw);
+        text-align: center;
       }
       /* SETTINGS */
       #settings {
@@ -137,6 +193,7 @@
         display: flex;
         justify-content: space-around;
         column-gap: 10px;
+        margin-top: 10px;
       }
       .settings_title {
         font-size: larger;
@@ -174,13 +231,38 @@
         color: rgb(255, 50, 50);
         transform: scale(1.15);
       }
-      section#settings {
-        margin-top: 10px;
+      #settings_ai {
+        width: 12vw;
+        height: 6vh;
+        font-size: medium;
+        text-shadow: 0 0 0 black;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        border: none;
+        border-radius: 3px;
+      }
+      button:hover {
+        filter: brightness(0.9)
+      }
+      select {
+        width: 12vw;
+        height: 5vh;
+        text-shadow: 0 0 0 black;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        border: none;
+        border-radius: 1px;
+      }
+      textarea:focus, input:focus, option:focus, select:focus{
+        outline: none;
       }
       #settings_wallpaper {
         display: flex;
         flex-direction: column;
+        justify-content: center;
         row-gap: 5px;
+      }
+      #settings_wallpaper > h4 {
+        padding: 0;
+        text-align: center;
       }
       /* MEDIA QUERIES */
       @media screen and (max-width: 1000px) {
@@ -199,6 +281,9 @@
         #controls_winner {
           font-size: x-large;
         }
+        #settings_ai {
+          font-size: medium;
+        }
         .button {
           height: 10vh;
           top: calc(60% - 10vh);
@@ -208,6 +293,7 @@
   </head>
   <body>
     <header>
+      <button id="help_btn">?</button>
       <img
         id="header_logo"
         src="images/icons/one-piece-logo.webp"
@@ -215,9 +301,44 @@
         height="50px"
         width="150px"
       />
+      <button id="infos_btn">!</button>
     </header>
     <main>
       <div id="main_wallpaper"></div>
+      <div id="main_help">
+        <ul class="help_commands">
+      <h4>Joueur 1</h4>
+        <li>Z : Aller vers le haut</li>
+        <li>S : Aller vers le bas</li>
+        <li>Q : Se soigner</li>
+        <li>D : Attaquer</li>
+        <li>A : Transfomation</li>
+        <li>E : Attaque speciale</li>
+        <li>Esp : Quitter le combat</li>
+    </ul>
+      <ul class="help_commands">
+        <h4>Joueur 2</h4>
+          <li>↑ : Aller vers le haut</li>
+          <li>↓ : Aller vers le bas</li>
+          <li>→ : Se soigner</li>
+          <li>← : Attaquer</li>
+          <li>⇞ : Transfomation</li>
+          <li>⇟ : Attaque speciale</li>
+          <li>Esp : Quitter le combat</li>
+      </ul>
+    <div id="help_characters">
+    <h4>Personnages</h4>
+    <ul>
+    <li>Luffy <span>❤❤</span><span>⚡⚡⚡</span><span>💪🏼💪🏼</span></li>
+    <li>Ace <span>❤❤</span><span>⚡</span><span>💪🏼💪🏼💪🏼</span></li>
+    <li>Zoro <span>❤❤</span><span>⚡⚡</span><span>💪🏼💪🏼💪🏼</span></li>
+    <li>Franky <span>❤❤</span><span>⚡⚡⚡</span><span>💪🏼💪🏼</span></li>
+    <li>Sanji <span>❤❤</span><span>⚡⚡⚡</span><span>💪🏼💪🏼</span></li>
+    <li>Brook <span>❤❤❤</span><span>⚡⚡</span><span>💪🏼💪🏼</span></li>
+    <li>Law <span>❤❤❤</span><span>⚡⚡⚡</span><span>💪🏼</span></li>
+    <li>Jinbei <span>❤❤</span><span>⚡⚡</span><span>💪🏼💪🏼💪🏼</span></li></ul>
+    </div>
+      </div>
       <!-- FIGHT DISPLAY -->
       <section id="game">
         <div class="game_stats">
@@ -231,14 +352,14 @@
           <p id="stats_lightning-1"></p>
         </div>
         <div id="game_screen">
-          <button id="controls_start" class="button">Commencer</button>
+          <button id="controls_start" class="button">Commencer !</button>
           <button id="controls_restart" class="button">Recommencer</button>
           <h2 id="controls_winner">Vainqueur :</h2>
           <canvas id="screen_canvas" height="500" width="1000"></canvas>
           <div id="screen_canvas-virtual">
-            <img src="" id="canvas-virtual_gif-1"></img>
+            <img src="" id="canvas-virtual_gif-1">
             <div id="canvas-virtual_gif-separator"></div>
-            <img src="" id="canvas-virtual_gif-2"></img>
+            <img src="" id="canvas-virtual_gif-2">
           </div>
         </div>
         <div class="game_stats">
@@ -252,11 +373,6 @@
           <p id="stats_lightning-2"></p>
         </div>
       </section>
-      <!-- <section id="controls">
-        <button id="controls_start" class="button">Commencer</button>
-        <button id="controls_restart" class="button">Recommencer</button>
-        <h2 id="controls_winner">Vainqueur :</h2>
-      </section> -->
       <section id="settings">
         <form id="settings_player-1">
           <h4 class="settings_title">Joueur 1</h4>
@@ -326,34 +442,18 @@
             <img src="images/icons/jinbe.png" alt="jinbe"/>
           </label>
         </form>
-        <form id="settings_wallpaper">
+        <div id="settings_wallpaper">
           <h4 class="settings_title">Choisir un terrain</h4>
-          <label for="loguetown">
-            <input
-              type="radio"
-              name="settings_wallpaper"
-              id="loguetown"
-              value="loguetown"
-              checked
-            />Loguetown</label
-          >
-          <label for="sabaody">
-            <input
-              type="radio"
-              name="settings_wallpaper"
-              id="sabaody"
-              value="sabaody"
-            />Archipel des Saboady</label
-          >
-          <label for="marineford">
-            <input
-              type="radio"
-              name="settings_wallpaper"
-              id="marineford"
-              value="marineford"
-            />QG de la Marine</label
-          >
-        </form>
+    <select name="select_wallpaper" id="select_wallpaper"> 
+        <option value="loguetown">Loguetown</option>
+        <option value="enies_lobby">Enies Lobby</option>
+        <option value="thriller_bark">Thriler Bark</option>
+        <option value="sabaody">Archipel des Saboady</option>
+        <option value="impel_down">Impel Down</option>
+        <option value="marineford">QG de la Marine</option>
+    </select>
+          <button id="settings_ai" class="button">Mode 2 joueurs</button>
+        </div>
         <form id="settings_player-2">
           <h4 class="settings_title">Joueur 2</h4>
           <label for="luffy-2">
@@ -420,7 +520,7 @@
               id="jinbe-2"
               value="jinbe-2" />
             <img src="images/icons/jinbe.png" alt="jinbe"
-          /></label>
+          /></label> 
         </form>
       </section>
     </main>
@@ -512,6 +612,21 @@
       <audio id="overtakenMp3" preload="auto">
         <source src="audio/ost/overtaken.mp3" type="audio/mpeg" />
       <audio>
+        <audio id="thrillerBarkMp3" preload="auto">
+          <source src="audio/ost/thriller_bark.mp3" type="audio/mpeg" />
+        <audio>
+          <audio id="eniesLobbyMp3" preload="auto">
+            <source src="audio/ost/enies_lobby.mp3" type="audio/mpeg" />
+          <audio>
+            <audio id="eniesLobbyMarchMp3" preload="auto">
+              <source src="audio/ost/enies_lobby_march.mp3" type="audio/mpeg" />
+            <audio>
+              <audio id="difficultMp3" preload="auto">
+                <source src="audio/ost/difficult.mp3" type="audio/mpeg" />
+              <audio>
+                <audio id="katakuriMp3" preload="auto">
+                  <source src="audio/ost/katakuri-theme.mp3" type="audio/mpeg" />
+                <audio>
     </section>
     <!-- TS OOP SCRIPT -->
     <script src="app.js"></script>
