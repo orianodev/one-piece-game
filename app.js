@@ -205,6 +205,9 @@ help.style.display = "none";
 const infos = document.querySelector("#main_infos");
 const ai_btn = document.querySelector("#settings_ai");
 const radioInputs = document.querySelectorAll('input[type="radio"]');
+infos_btn.onclick = () => {
+    alert("Salut Nelson, je n'ai pas encore ajouté la fonction pour envoyer des messages. Reviens à 19H, je l'aurai ajoutée. 😁");
+};
 help_btn.onclick = () => {
     help.style.display = help.style.display === "none" ? "flex" : "none";
 };
