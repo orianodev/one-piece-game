@@ -224,7 +224,7 @@ const fetchMessages = () => {
     }) // Call displayMessages function with data from GET messages API
     .catch((error) => console.error(error));
 };
-const formatDate = (date) => {
+const formatDate = (dateOriginale) => {
   // Date d'origine au format ISO 8601 : "2023-09-01T20:11:36.879Z";
 
   // Créez un objet Date à partir de la date d'origine
@@ -246,7 +246,7 @@ const displayMessages = (messages) => {
   messages.forEach((message) => {
     const listItem = document.createElement("li");
     listItem.textContent = message.date
-      ? `${message.name} (${message.date}) : ${message.content}`
+      ? `${message.name} (${formatDate(message.date)}) : ${message.content}`
       : `${message.name} : ${message.content}`;
     messageListElement.appendChild(listItem);
   });
@@ -258,7 +258,7 @@ const sendFormData = () => {
   const newMessage = {
     name: nameInput.value,
     content: messageInput.value,
-    date: formatDate(message.date),
+    date: new Date(),
   };
   console.log("Message to send :", newMessage);
   fetch("https://message-6o0q.onrender.com/api/messages", {
