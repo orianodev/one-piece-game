@@ -73,6 +73,23 @@
         box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
         display: none;
       }
+      #disqus_thread {
+        position: absolute;
+        z-index: 1;
+        top: 11vh;
+        left: calc(50vw - 35vw);
+        width: 70vw;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 5vh 5vw 8vh 5vw;
+        column-gap: 50px;
+        row-gap: 15px;
+        font-size: large;
+        background-color: rgb(77, 77, 77);
+        border-radius: 10px;
+        box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+        display: none;
+      }
       span, header>button {
         text-shadow: 0 0 0 black;
       }
@@ -339,6 +356,14 @@
     <li>Jinbei <span>❤❤</span><span>⚡⚡</span><span>💪🏼💪🏼💪🏼</span></li></ul>
     </div>
       </div>
+      <div id="disqus_thread">
+        <h1>Add messages</h1>
+        <form id="message-form">
+          <input type="text" name="message" />
+          <input type="button" name="button" value="Envoyer" />
+        </form>
+        <ul id="messages-list"></ul>
+      </div>
       <!-- FIGHT DISPLAY -->
       <section id="game">
         <div class="game_stats">
@@ -523,6 +548,8 @@
           /></label> 
         </form>
       </section>
+
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     </main>
     <!-- AUDIO SOURCE -->
     <section id="sounds">

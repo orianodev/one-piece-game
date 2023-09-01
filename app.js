@@ -199,16 +199,64 @@ const start = document.querySelector("#controls_start");
 const restart = document.querySelector("#controls_restart");
 const winner = document.querySelector("#controls_winner");
 const help_btn = document.querySelector("#help_btn");
-const infos_btn = document.querySelector("#infos_btn");
 const help = document.querySelector("#main_help");
 help.style.display = "none";
-const infos = document.querySelector("#main_infos");
 const ai_btn = document.querySelector("#settings_ai");
 const radioInputs = document.querySelectorAll('input[type="radio"]');
+
+const infos = document.querySelector("#disqus_thread");
+const infos_btn = document.querySelector("#infos_btn");
+const messageInput = document.querySelector("form input[name='message']");
+const buttonInput = document.querySelector("form input[name='button']");
+const messageListElement = document.querySelector("#messages-list");
+infos.style.display = "none";
 infos_btn.onclick = () => {
-  alert(
-    "Salut Nelson! Si tu lis ceci, c'est que je n'ai pas encore ajouté la fonction pour envoyer un message. Reviens demain, je l'aurai sûrement ajoutée d'ici là. 😁"
-  );
+  infos.style.display = infos.style.display === "none" ? "flex" : "none";
+};
+// Fetch messages from Node/MongoDB backend server
+const fetchMessages = () => {
+  fetch("https://message-6o0q.onrender.com/api/messages")
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Fetched messages :", data);
+      displayMessages(data);
+    }) // Call displayMessages function with data from GET messages API
+    .catch((error) => console.error(error));
+};
+// Display the fetched messages from GET API
+const displayMessages = (messages) => {
+  messages.forEach((message) => {
+    const listItem = document.createElement("li");
+    listItem.textContent = `${message.content}`;
+    messageListElement.appendChild(listItem);
+  });
+};
+fetchMessages();
+
+// Send form data (message infos) to Node/MongoDB backend server
+const sendFormData = () => {
+  const newMessage = {
+    content: messageInput.value,
+  };
+  console.log("Message to send :", newMessage);
+  fetch("https://message-6o0q.onrender.com/api/messages", {
+    method: "POST",
+    // headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+    body: JSON.stringify(newMessage),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Sent message :", data);
+      alert("Ton message a bien été envoyé !");
+      location.reload();
+    })
+    .catch((error) => console.error(error));
+};
+
+// Trigger POST request to send form data
+buttonInput.onclick = () => {
+  if (messageInput.value !== "") sendFormData();
+  else alert("Make sure to fill all the input fields.");
 };
 help_btn.onclick = () => {
   help.style.display = help.style.display === "none" ? "flex" : "none";
