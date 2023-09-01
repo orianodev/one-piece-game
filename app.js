@@ -243,6 +243,8 @@ const formatDate = (dateOriginale) => {
 };
 // Display the fetched messages from GET API
 const displayMessages = (messages) => {
+  // Reverse the messages array to display them in the opposite order
+  messages.reverse();
   messages.forEach((message) => {
     const listItem = document.createElement("li");
     listItem.textContent = message.date
