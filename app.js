@@ -227,7 +227,7 @@ const fetchMessages = () => {
 const displayMessages = (messages) => {
   messages.forEach((message) => {
     const listItem = document.createElement("li");
-    listItem.textContent = `${message.content}`;
+    listItem.textContent = `${message.name} (${message.date}) : ${message.content}`;
     messageListElement.appendChild(listItem);
   });
 };
@@ -236,7 +236,9 @@ fetchMessages();
 // Send form data (message infos) to Node/MongoDB backend server
 const sendFormData = () => {
   const newMessage = {
+    name: nameInput.value,
     content: messageInput.value,
+    date: new Date(),
   };
   console.log("Message to send :", newMessage);
   fetch("https://message-6o0q.onrender.com/api/messages", {
