@@ -224,12 +224,29 @@ const fetchMessages = () => {
     }) // Call displayMessages function with data from GET messages API
     .catch((error) => console.error(error));
 };
+const formatDate = (date) => {
+  // Date d'origine au format ISO 8601 : "2023-09-01T20:11:36.879Z";
+
+  // Créez un objet Date à partir de la date d'origine
+  const date = new Date(dateOriginale);
+
+  // Obtenez le jour, le mois, l'heure et les minutes au format souhaité
+  const jour = date.getDate().toString().padStart(2, "0"); // padStart pour ajouter un zéro en cas de chiffre unique
+  const mois = (date.getMonth() + 1).toString().padStart(2, "0"); // Notez que les mois sont indexés à partir de zéro, donc +1
+  const heure = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+
+  // Créez la chaîne de date au format souhaité
+  const dateFormatee = jour + "/" + mois + " à " + heure + ":" + minutes;
+
+  return dateFormatee; // Affiche "01/09 à 20:11"
+};
 // Display the fetched messages from GET API
 const displayMessages = (messages) => {
   messages.forEach((message) => {
     const listItem = document.createElement("li");
     listItem.textContent = message.date
-      ? `${message.name} (${message.date}) : ${message.content}`
+      ? `${message.name} (${formatDate(message.date)}) : ${message.content}`
       : `${message.name} : ${message.content}`;
     messageListElement.appendChild(listItem);
   });
@@ -253,6 +270,7 @@ const sendFormData = () => {
     .then((data) => {
       console.log("Sent message :", data);
       alert("Ton message a bien été envoyé !");
+      messageInput.value = "";
       location.reload();
     })
     .catch((error) => console.error(error));
