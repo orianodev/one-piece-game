@@ -237,7 +237,7 @@ const formatDate = (dateOriginale) => {
   const minutes = date.getMinutes().toString().padStart(2, "0");
 
   // Créez la chaîne de date au format souhaité
-  const dateFormatee = jour + "/" + mois + " à " + heure + ":" + minutes;
+  const dateFormatee = jour + "/" + mois; // + " à " + heure + ":" + minutes;
 
   return dateFormatee; // Affiche "01/09 à 20:11"
 };
