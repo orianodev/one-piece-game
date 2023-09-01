@@ -228,7 +228,9 @@ const fetchMessages = () => {
 const displayMessages = (messages) => {
   messages.forEach((message) => {
     const listItem = document.createElement("li");
-    listItem.textContent = `${message.name} (${message.date}) : ${message.content}`;
+    listItem.textContent = message.date
+      ? `${message.name} (${message.date}) : ${message.content}`
+      : `${message.name} : ${message.content}`;
     messageListElement.appendChild(listItem);
   });
 };
