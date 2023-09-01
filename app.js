@@ -207,6 +207,7 @@ const radioInputs = document.querySelectorAll('input[type="radio"]');
 const infos = document.querySelector("#disqus_thread");
 const infos_btn = document.querySelector("#infos_btn");
 const messageInput = document.querySelector("form input[name='message']");
+const nameInput = document.querySelector("form input[name='name']");
 const buttonInput = document.querySelector("form input[name='button']");
 const messageListElement = document.querySelector("#messages-list");
 infos.style.display = "none";
