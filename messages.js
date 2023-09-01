@@ -7,7 +7,9 @@ const buttonInput = document.querySelector("form input[name='button']");
 const messageListElement = document.querySelector("#messages-list");
 // Fetch messages from Node/MongoDB backend server
 const fetchMessages = () => {
-  fetch("http://localhost:3000/api/messages")
+  fetch(
+    "https://vercel.com/oriano-dev/message-server/JCmjVxNbxaDNoAgD4HLNosXy3C7N/api/messages"
+  )
     .then((response) => response.json())
     .then((data) => {
       displayMessages(data);
@@ -30,11 +32,14 @@ const sendFormData = () => {
     content: messageInput.value,
   };
   console.log(newMessage);
-  fetch("http://localhost:3000/api/messages", {
-    method: "POST",
-    // headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
-    body: JSON.stringify(newMessage),
-  })
+  fetch(
+    "https://vercel.com/oriano-dev/message-server/JCmjVxNbxaDNoAgD4HLNosXy3C7N/api/messages",
+    {
+      method: "POST",
+      // headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
+      body: JSON.stringify(newMessage),
+    }
+  )
     .then((response) => response.json())
     .then((data) => {
       console.log(data);
