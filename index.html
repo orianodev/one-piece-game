@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="images/icons/luffy.png" type="image/apng" />
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
     <title>One Piece Fight !</title>
     <meta name="description" content="Jeu de combat One Piece gratuit et débloqué (unblocked) pour jouer en solo contre une IA ou en duo avec le MEME clavier. Jeu flash One Piece 2023-2024.">
     <style>
@@ -324,7 +325,7 @@
       <div id="main_wallpaper"></div>
       <div id="main_help">
         <ul class="help_commands">
-      <h4>Joueur 1</h4>
+      <h4 class="text-6xl">Joueur 1</h4>
         <li>Z : Aller vers le haut</li>
         <li>S : Aller vers le bas</li>
         <li>Q : Se soigner</li>
@@ -549,110 +550,108 @@
           /></label> 
         </form>
       </section>
-
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
     </main>
     <!-- AUDIO SOURCE -->
     <section id="sounds">
       <!-- ATTACK -->
-      <audio id="fireballMp3" preload="auto">
+      <audio id="fireballMp3">
         <source src="audio/attack/fireball.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="swooshMp3" preload="auto">
+      <audio id="swooshMp3">
         <source src="audio/attack/swoosh.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="slashMp3" preload="auto">
+      <audio id="slashMp3">
         <source src="audio/attack/slash.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="cannonballMp3" preload="auto">
+      <audio id="cannonballMp3">
         <source src="audio/attack/cannonball.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="waveMp3" preload="auto">
+      <audio id="waveMp3">
         <source src="audio/attack/waves.mp3" type="audio/mpeg" />
       <audio>
       <!-- SPECIAL ATTACk -->
-      <audio id="luffySpeMp3" preload="auto">
+      <audio id="luffySpeMp3">
         <source
           src="audio/special/gomu-gomu-no-pistol.mp3"
           type="audio/mpeg"
         />
       <audio>
-      <audio id="aceSpeMp3" preload="auto">
+      <audio id="aceSpeMp3">
         <source src="audio/special/kyokaen.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="zoroSpeMp3" preload="auto">
+      <audio id="zoroSpeMp3">
         <source src="audio/special/santoryu.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="frankySpeMp3" preload="auto">
+      <audio id="frankySpeMp3">
         <source src="audio/special/super.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="sanjiSpeMp3" preload="auto">
+      <audio id="sanjiSpeMp3">
         <source src="audio/special/diable-jambe.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="brookSpeMp3" preload="auto">
+      <audio id="brookSpeMp3">
         <source src="audio/special/yohoho.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="lawSpeMp3" preload="auto">
+      <audio id="lawSpeMp3">
         <source src="audio/special/room.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="jinbeSpeMp3" preload="auto">
+      <audio id="jinbeSpeMp3">
         <source src="audio/special/jinbe.mp3" type="audio/mpeg" />
       <audio>
       <!-- VICTORY SOUNDS -->
-      <audio id="luffyWinMp3" preload="auto">
+      <audio id="luffyWinMp3">
         <source src="audio/win/luffy.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="aceWinMp3" preload="auto">
+      <audio id="aceWinMp3">
         <source src="audio/win/ace.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="zoroWinMp3" preload="auto">
+      <audio id="zoroWinMp3">
         <source src="audio/win/zoro.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="frankyWinMp3" preload="auto">
+      <audio id="frankyWinMp3">
         <source src="audio/win/franky.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="sanjiWinMp3" preload="auto">
+      <audio id="sanjiWinMp3">
         <source src="audio/win/sanji.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="brookWinMp3" preload="auto">
+      <audio id="brookWinMp3">
         <source src="audio/win/brook.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="lawWinMp3" preload="auto">
+      <audio id="lawWinMp3">
         <source src="audio/win/law.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="jinbeWinMp3" preload="auto">
+      <audio id="jinbeWinMp3">
         <source src="audio/win/jinbe.mp3" type="audio/mpeg" />
       <audio>
       <!-- SFX -->
-      <audio id="yeahMp3" preload="auto">
+      <audio id="yeahMp3">
         <source src="audio/sfx/yeah.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="healMp3" preload="auto">
+      <audio id="healMp3">
         <source src="audio/sfx/heal.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="hitMp3" preload="auto">
+      <audio id="hitMp3">
         <source src="audio/sfx/hit.mp3" type="audio/mpeg" />
       <audio>
-      <audio id="gearSecondMp3" preload="auto">
+      <audio id="gearSecondMp3">
         <source src="audio/sfx/gear-second.mp3" type="audio/mpeg" />
       <audio>
       <!-- OST MUSICS -->
-      <audio id="overtakenMp3" preload="auto">
+      <audio id="overtakenMp3">
         <source src="audio/ost/overtaken.mp3" type="audio/mpeg" />
       <audio>
-        <audio id="thrillerBarkMp3" preload="auto">
+        <audio id="thrillerBarkMp3">
           <source src="audio/ost/thriller_bark.mp3" type="audio/mpeg" />
         <audio>
-          <audio id="eniesLobbyMp3" preload="auto">
+          <audio id="eniesLobbyMp3">
             <source src="audio/ost/enies_lobby.mp3" type="audio/mpeg" />
           <audio>
-            <audio id="eniesLobbyMarchMp3" preload="auto">
+            <audio id="eniesLobbyMarchMp3">
               <source src="audio/ost/enies_lobby_march.mp3" type="audio/mpeg" />
             <audio>
-              <audio id="difficultMp3" preload="auto">
+              <audio id="difficultMp3">
                 <source src="audio/ost/difficult.mp3" type="audio/mpeg" />
               <audio>
-                <audio id="katakuriMp3" preload="auto">
+                <audio id="katakuriMp3">
                   <source src="audio/ost/katakuri-theme.mp3" type="audio/mpeg" />
                 <audio>
     </section>

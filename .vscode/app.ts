@@ -1,11 +1,44 @@
-"use strict";
-// Canvas API
-const canvas = document.querySelector("#screen_canvas");
-const ctx = canvas.getContext("2d");
+/*// Canvas API
+const canvas = document.querySelector("#screen_canvas") as HTMLCanvasElement;
+const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
 ctx.shadowBlur = 30;
 ctx.shadowOffsetX = 1;
 ctx.shadowOffsetY = 1;
-const players = {
+
+// Import data
+interface PlayerStats {
+  name: string;
+  spriteImage: string;
+  shadowColor: string;
+  step: number;
+  hp: number;
+  healingSpeed: number;
+  mana: number;
+  manaCost: number;
+  manaSpeed: number;
+  attackStrength: number;
+  attackSpeed: number;
+  attackSound: string;
+  attackSprite: string;
+  specialAttackStrength: number;
+  specialAttackSpeed: number;
+  specialAttackSound: string;
+  specialAttackSprite: string;
+  victorySound: string;
+}
+
+interface PlayerStatsCollection {
+  ace: PlayerStats;
+  luffy: PlayerStats;
+  zoro: PlayerStats;
+  franky: PlayerStats;
+  sanji: PlayerStats;
+  brook: PlayerStats;
+  law: PlayerStats;
+  jinbe: PlayerStats;
+}
+
+const players: PlayerStatsCollection = {
   luffy: {
     name: "Monkey D. Luffy",
     spriteImage: "images/players/luffy.png",
@@ -167,7 +200,28 @@ const players = {
     victorySound: "#jinbeWinMp3",
   },
 };
-const settings = {
+
+interface Settings {
+  playerHeight: number;
+  playerWidth: number;
+  collisionMargin: number;
+  playerSizeVariation: number;
+  attackSpriteHeight: number;
+  attackSpriteWidth: number;
+  maxHp: number;
+  maxMana: number;
+  healingTime: number;
+  simpleAttackDelay: number;
+  specialAttackDelay: number;
+  specialAttackAudioDelay: number;
+  player1DefaultPosition: { x: number; y: number };
+  player2DefaultPosition: { x: number; y: number };
+  refreshRate: number;
+  aiPlayRate: number;
+  step: number;
+}
+
+const settings: Settings = {
   playerHeight: canvas.height / 2.5,
   playerWidth: canvas.width / 9,
   collisionMargin: 15,
@@ -186,7 +240,15 @@ const settings = {
   aiPlayRate: 100,
   step: canvas.height / 10,
 };
-const background_url = {
+
+const background_url: {
+  loguetown: string;
+  enies_lobby: string;
+  thriller_bark: string;
+  sabaody: string;
+  impel_down: string;
+  marineford: string;
+} = {
   loguetown: "images/wallpapers/loguetown.webp",
   enies_lobby: "images/wallpapers/enies_lobby.webp",
   thriller_bark: "images/wallpapers/thriller_bark.webp",
@@ -194,98 +256,27 @@ const background_url = {
   impel_down: "images/wallpapers/impel_down.webp",
   marineford: "images/wallpapers/marineford.webp",
 };
+
 // Control game
-const start = document.querySelector("#controls_start");
-const restart = document.querySelector("#controls_restart");
-const winner = document.querySelector("#controls_winner");
-const help_btn = document.querySelector("#help_btn");
-const help = document.querySelector("#main_help");
+const start = document.querySelector("#controls_start") as HTMLButtonElement;
+const restart = document.querySelector(
+  "#controls_restart"
+) as HTMLButtonElement;
+const winner = document.querySelector("#controls_winner") as HTMLTitleElement;
+const help_btn = document.querySelector("#help_btn") as HTMLButtonElement;
+const infos_btn = document.querySelector("#infos_btn") as HTMLButtonElement;
+const help = document.querySelector("#main_help") as HTMLDivElement;
 help.style.display = "none";
-const ai_btn = document.querySelector("#settings_ai");
-const radioInputs = document.querySelectorAll('input[type="radio"]');
+const infos = document.querySelector("#main_infos") as HTMLDivElement;
+const ai_btn = document.querySelector("#settings_ai") as HTMLButtonElement;
+const radioInputs: NodeListOf<HTMLInputElement> = document.querySelectorAll(
+  'input[type="radio"]'
+);
 
-const infos = document.querySelector("#disqus_thread");
-const infos_btn = document.querySelector("#infos_btn");
-const messageInput = document.querySelector("form input[name='message']");
-const nameInput = document.querySelector("form input[name='name']");
-const buttonInput = document.querySelector("form input[name='button']");
-const messageListElement = document.querySelector("#messages-list");
-infos.style.display = "none";
-infos_btn.onclick = () => {
-  infos.style.display = infos.style.display === "none" ? "flex" : "none";
-};
-// Fetch messages from Node/MongoDB backend server
-const fetchMessages = () => {
-  fetch("https://message-6o0q.onrender.com/api/messages")
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Fetched messages :", data);
-      displayMessages(data);
-    }) // Call displayMessages function with data from GET messages API
-    .catch((error) => console.error(error));
-};
-const formatDate = (dateOriginale) => {
-  // Date d'origine au format ISO 8601 : "2023-09-01T20:11:36.879Z";
-
-  // Créez un objet Date à partir de la date d'origine
-  const date = new Date(dateOriginale);
-
-  // Obtenez le jour, le mois, l'heure et les minutes au format souhaité
-  const jour = date.getDate().toString().padStart(2, "0"); // padStart pour ajouter un zéro en cas de chiffre unique
-  const mois = (date.getMonth() + 1).toString().padStart(2, "0"); // Notez que les mois sont indexés à partir de zéro, donc +1
-  const heure = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-
-  // Créez la chaîne de date au format souhaité
-  const dateFormatee = jour + "/" + mois; // + " à " + heure + ":" + minutes;
-
-  return dateFormatee; // Affiche "01/09 à 20:11"
-};
-// Display the fetched messages from GET API
-const displayMessages = (messages) => {
-  // Reverse the messages array to display them in the opposite order
-  messages.reverse();
-  messages.forEach((message) => {
-    const listItem = document.createElement("li");
-    listItem.textContent = message.date
-      ? `${message.name} (${formatDate(message.date)}) : ${message.content}`
-      : `${message.name} : ${message.content}`;
-    messageListElement.appendChild(listItem);
-  });
-};
-fetchMessages();
-
-// Send form data (message infos) to Node/MongoDB backend server
-const sendFormData = () => {
-  const newMessage = {
-    name: nameInput.value,
-    content: messageInput.value,
-    date: new Date(),
-  };
-  console.log("Message to send :", newMessage);
-  fetch("https://message-6o0q.onrender.com/api/messages", {
-    method: "POST",
-    // headers: {'Accept': 'application/json', 'Content-Type': 'application/json'},
-    body: JSON.stringify(newMessage),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Sent message :", data);
-      alert("Ton message a bien été envoyé !");
-      messageInput.value = "";
-      location.reload();
-    })
-    .catch((error) => console.error(error));
-};
-
-// Trigger POST request to send form data
-buttonInput.onclick = () => {
-  if (messageInput.value !== "") sendFormData();
-  else alert("Make sure to fill all the input fields.");
-};
 help_btn.onclick = () => {
   help.style.display = help.style.display === "none" ? "flex" : "none";
 };
+
 let isAiActivated = false;
 ai_btn.onclick = () => {
   isAiActivated = !isAiActivated;
@@ -293,9 +284,10 @@ ai_btn.onclick = () => {
   ai_btn.innerHTML = isAiActivated ? "Contre l'ordi" : "Mode 2 joueurs";
   settings.simpleAttackDelay *= isAiActivated ? 2 : 0.5;
 };
+
 // Change players
-document.body.addEventListener("change", (e) => {
-  let target = e.target;
+document.body.addEventListener("change", (e: Event) => {
+  let target = e.target as HTMLElement;
   switch (target.id) {
     case "luffy-1":
       player1 = players.luffy;
@@ -347,38 +339,60 @@ document.body.addEventListener("change", (e) => {
       break;
   }
 });
+
 // Sounds
-const fireballMp3 = document.querySelector("#fireballMp3");
-const swooshMp3 = document.querySelector("#swooshMp3");
-const slashMp3 = document.querySelector("#slashMp3");
-const cannonballMp3 = document.querySelector("#cannonballMp3");
-const waveMp3 = document.querySelector("#waveMp3");
-const aceSpeMp3 = document.querySelector("#aceSpeMp3");
-const luffySpeMp3 = document.querySelector("#luffySpeMp3");
-const zoroSpeMp3 = document.querySelector("#zoroSpeMp3");
-const frankySpeMp3 = document.querySelector("#frankySpeMp3");
-const sanjiSpeMp3 = document.querySelector("#sanjiSpeMp3");
-const brookSpeMp3 = document.querySelector("#brookSpeMp3");
-const lawSpeMp3 = document.querySelector("#lawSpeMp3");
-const jinbeSpeMp3 = document.querySelector("#jinbeSpeMp3");
-const aceWinMp3 = document.querySelector("#aceWinMp3");
-const luffyWinMp3 = document.querySelector("#luffyWinMp3");
-const zoroWinMp3 = document.querySelector("#zoroWinMp3");
-const frankyWinMp3 = document.querySelector("#frankyWinMp3");
-const sanjiWinMp3 = document.querySelector("#sanjiWinMp3");
-const brookWinMp3 = document.querySelector("#brookWinMp3");
-const lawWinMp3 = document.querySelector("#lawWinMp3");
-const jinbekWinMp3 = document.querySelector("#jinbeWinMp3");
-const healMp3 = document.querySelector("#healMp3");
-const hitMp3 = document.querySelector("#hitMp3");
-const yeahMp3 = document.querySelector("#yeahMp3");
-const gearSecondMp3 = document.querySelector("#gearSecondMp3");
-const overtakenMp3 = document.querySelector("#overtakenMp3");
-const thrillerBarkMp3 = document.querySelector("#thrillerBarkMp3");
-const eniesLobbyMp3 = document.querySelector("#eniesLobbyMp3");
-const eniesLobbyMarchMp3 = document.querySelector("#eniesLobbyMarchMp3");
-const difficultMp3 = document.querySelector("#difficultMp3");
-const katakuriMp3 = document.querySelector("#katakuriMp3");
+const fireballMp3 = document.querySelector("#fireballMp3") as HTMLAudioElement;
+const swooshMp3 = document.querySelector("#swooshMp3") as HTMLAudioElement;
+const slashMp3 = document.querySelector("#slashMp3") as HTMLAudioElement;
+const cannonballMp3 = document.querySelector(
+  "#cannonballMp3"
+) as HTMLAudioElement;
+const waveMp3 = document.querySelector("#waveMp3") as HTMLAudioElement;
+
+const aceSpeMp3 = document.querySelector("#aceSpeMp3") as HTMLAudioElement;
+const luffySpeMp3 = document.querySelector("#luffySpeMp3") as HTMLAudioElement;
+const zoroSpeMp3 = document.querySelector("#zoroSpeMp3") as HTMLAudioElement;
+const frankySpeMp3 = document.querySelector(
+  "#frankySpeMp3"
+) as HTMLAudioElement;
+const sanjiSpeMp3 = document.querySelector("#sanjiSpeMp3") as HTMLAudioElement;
+const brookSpeMp3 = document.querySelector("#brookSpeMp3") as HTMLAudioElement;
+const lawSpeMp3 = document.querySelector("#lawSpeMp3") as HTMLAudioElement;
+const jinbeSpeMp3 = document.querySelector("#jinbeSpeMp3") as HTMLAudioElement;
+
+const aceWinMp3 = document.querySelector("#aceWinMp3") as HTMLAudioElement;
+const luffyWinMp3 = document.querySelector("#luffyWinMp3") as HTMLAudioElement;
+const zoroWinMp3 = document.querySelector("#zoroWinMp3") as HTMLAudioElement;
+const frankyWinMp3 = document.querySelector(
+  "#frankyWinMp3"
+) as HTMLAudioElement;
+const sanjiWinMp3 = document.querySelector("#sanjiWinMp3") as HTMLAudioElement;
+const brookWinMp3 = document.querySelector("#brookWinMp3") as HTMLAudioElement;
+const lawWinMp3 = document.querySelector("#lawWinMp3") as HTMLAudioElement;
+const jinbekWinMp3 = document.querySelector("#jinbeWinMp3") as HTMLAudioElement;
+
+const healMp3 = document.querySelector("#healMp3") as HTMLAudioElement;
+const hitMp3 = document.querySelector("#hitMp3") as HTMLAudioElement;
+const yeahMp3 = document.querySelector("#yeahMp3") as HTMLAudioElement;
+const gearSecondMp3 = document.querySelector(
+  "#gearSecondMp3"
+) as HTMLAudioElement;
+const overtakenMp3 = document.querySelector(
+  "#overtakenMp3"
+) as HTMLAudioElement;
+const thrillerBarkMp3 = document.querySelector(
+  "#thrillerBarkMp3"
+) as HTMLAudioElement;
+const eniesLobbyMp3 = document.querySelector(
+  "#eniesLobbyMp3"
+) as HTMLAudioElement;
+const eniesLobbyMarchMp3 = document.querySelector(
+  "#eniesLobbyMarchMp3"
+) as HTMLAudioElement;
+const difficultMp3 = document.querySelector(
+  "#difficultMp3"
+) as HTMLAudioElement;
+const katakuriMp3 = document.querySelector("#katakuriMp3") as HTMLAudioElement;
 healMp3.volume = 0.4;
 hitMp3.volume = 0.4;
 yeahMp3.volume = 0.5;
@@ -389,10 +403,13 @@ eniesLobbyMp3.volume = 0.3;
 eniesLobbyMarchMp3.volume = 0.3;
 difficultMp3.volume = 0.3;
 katakuriMp3.volume = 0.3;
+
 // Change background wallpaper
-const wallpaper = document.querySelector("#main_wallpaper");
-let currentOst = overtakenMp3;
-const wallpaper_select = document.querySelector("#select_wallpaper");
+const wallpaper = document.querySelector("#main_wallpaper") as HTMLDivElement;
+let currentOst: HTMLAudioElement = overtakenMp3;
+const wallpaper_select = document.querySelector(
+  "#select_wallpaper"
+) as HTMLSelectElement;
 // const jinbe1 = document.querySelector("#jinbe-1") as HTMLInputElement;
 // const jinbe2 = document.querySelector("#jinbe-2") as HTMLInputElement;
 // jinbe1.disabled = true;
@@ -402,7 +419,7 @@ wallpaper_select.options[3].disabled = true;
 wallpaper_select.options[4].disabled = true;
 wallpaper_select.options[5].disabled = true;
 wallpaper.style.backgroundImage = `url(${background_url.loguetown})`;
-wallpaper_select.addEventListener("change", (e) => {
+wallpaper_select.addEventListener("change", (e: Event) => {
   switch (wallpaper_select.value) {
     case "loguetown":
       wallpaper.style.backgroundImage = `url(${background_url.loguetown})`;
@@ -430,52 +447,103 @@ wallpaper_select.addEventListener("change", (e) => {
       break;
   }
 });
+
 // Display infos
-const p1_name = document.querySelector("#stats_name-1");
-const p1_score = document.querySelector("#stats_score-1");
-const p1_hp = document.querySelector("#stats_hp-1");
-const p1_hp_display = document.querySelector("#stats_hearts-1");
-const p1_mana = document.querySelector("#stats_mana-1");
-const p1_mana_display = document.querySelector("#stats_lightning-1");
-const p2_name = document.querySelector("#stats_name-2");
-const p2_score = document.querySelector("#stats_score-2");
-const p2_hp = document.querySelector("#stats_hp-2");
-const p2_hp_display = document.querySelector("#stats_hearts-2");
-const p2_mana = document.querySelector("#stats_mana-2");
-const p2_mana_display = document.querySelector("#stats_lightning-2");
+const p1_name = document.querySelector("#stats_name-1") as HTMLTitleElement;
+const p1_score = document.querySelector(
+  "#stats_score-1"
+) as HTMLParagraphElement;
+const p1_hp = document.querySelector("#stats_hp-1") as HTMLParagraphElement;
+const p1_hp_display = document.querySelector(
+  "#stats_hearts-1"
+) as HTMLParagraphElement;
+const p1_mana = document.querySelector("#stats_mana-1") as HTMLParagraphElement;
+const p1_mana_display = document.querySelector(
+  "#stats_lightning-1"
+) as HTMLParagraphElement;
+
+const p2_name = document.querySelector("#stats_name-2") as HTMLTitleElement;
+const p2_score = document.querySelector(
+  "#stats_score-2"
+) as HTMLParagraphElement;
+const p2_hp = document.querySelector("#stats_hp-2") as HTMLParagraphElement;
+const p2_hp_display = document.querySelector(
+  "#stats_hearts-2"
+) as HTMLParagraphElement;
+const p2_mana = document.querySelector("#stats_mana-2") as HTMLParagraphElement;
+const p2_mana_display = document.querySelector(
+  "#stats_lightning-2"
+) as HTMLParagraphElement;
+
 // Video player settings
-const gif1 = document.querySelector("#canvas-virtual_gif-1");
-const gif2 = document.querySelector("#canvas-virtual_gif-2");
-const gif_space = document.querySelector("#canvas-virtual_gif-separator");
+const gif1 = document.querySelector(
+  "#canvas-virtual_gif-1"
+) as HTMLImageElement;
+const gif2 = document.querySelector(
+  "#canvas-virtual_gif-2"
+) as HTMLImageElement;
+const gif_space = document.querySelector(
+  "#canvas-virtual_gif-separator"
+) as HTMLDivElement;
 gif_space.style.minWidth = `${canvas.width - settings.playerWidth * 8}px`;
 gif1.style.width = settings.playerWidth * 1.4 + "px";
 gif1.style.height = settings.playerHeight * 0.7 + "px";
 gif2.style.width = settings.playerWidth * 1.4 + "px";
 gif2.style.height = settings.playerHeight * 0.7 + "px";
+
 // OOP
 class Player {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  name: string;
+  currentSprite: HTMLImageElement;
+  spriteImage: HTMLImageElement;
+  shadowColor: string;
+  step: number;
+  hp: number;
+  healingSpeed: number;
+  mana: number;
+  manaCost: number;
+  manaSpeed: number;
+  attackStrength: number;
+  attackSpeed: number;
+  attackSound: HTMLAudioElement;
+  attackSprite: HTMLImageElement;
+  specialAttackStrength: number;
+  specialAttackSpeed: number;
+  specialAttackSound: HTMLAudioElement;
+  specialAttackSprite: string;
+  victorySound: HTMLAudioElement;
+  enemy: Player | null;
+  attacks: Array<Attack>;
+  isUsingAttack: boolean;
+  isUsingSpecialAttack: boolean;
+  score: number;
+
   constructor(
-    x,
-    y,
-    name,
-    spriteImage,
-    shadowColor,
-    step,
-    hp,
-    healingSpeed,
-    mana,
-    manaCost,
-    manaSpeed,
-    attackStrength,
-    attackSpeed,
-    attackSound,
-    attackSprite,
-    specialAttackStrength,
-    specialAttackSpeed,
-    specialAttackSound,
-    specialAttackSprite,
-    victorySound,
-    enemy
+    x: number,
+    y: number,
+    name: string,
+    spriteImage: string,
+    shadowColor: string,
+    step: number,
+    hp: number,
+    healingSpeed: number,
+    mana: number,
+    manaCost: number,
+    manaSpeed: number,
+    attackStrength: number,
+    attackSpeed: number,
+    attackSound: string,
+    attackSprite: string,
+    specialAttackStrength: number,
+    specialAttackSpeed: number,
+    specialAttackSound: string,
+    specialAttackSprite: string,
+    victorySound: string,
+    enemy: Player | null
   ) {
     this.x = x;
     this.y = y;
@@ -507,21 +575,25 @@ class Player {
     this.isUsingSpecialAttack = false;
     this.score = 0;
   }
-  createSprite(imageUrl) {
+
+  createSprite(imageUrl: string): HTMLImageElement {
     const newSprite = new Image();
     newSprite.src = imageUrl;
     return newSprite;
   }
-  createSound(soundId, volume) {
-    const newSound = document.querySelector(soundId);
+
+  createSound(soundId: string, volume: number): HTMLAudioElement {
+    const newSound = document.querySelector(soundId) as HTMLAudioElement;
     newSound.volume = volume;
     return newSound;
   }
-  drawPlayer() {
+
+  drawPlayer(): void {
     ctx.shadowColor = this.shadowColor;
     ctx.drawImage(this.currentSprite, this.x, this.y, this.width, this.height);
   }
-  moveUp() {
+
+  moveUp(): void {
     console.log(
       settings.step,
       this.y,
@@ -533,7 +605,8 @@ class Player {
       this.y -= settings.step;
     }
   }
-  moveDown() {
+
+  moveDown(): void {
     console.log(
       settings.step,
       this.y,
@@ -545,7 +618,8 @@ class Player {
       this.y += settings.step;
     }
   }
-  simpleAttack() {
+
+  simpleAttack(): void {
     if (!this.isUsingSpecialAttack && !this.isUsingAttack) {
       this.isUsingAttack = true;
       this.attackSound.currentTime = 0;
@@ -566,7 +640,8 @@ class Player {
       }, settings.simpleAttackDelay);
     }
   }
-  runSpecialVideo() {
+
+  runSpecialVideo(): void {
     const gif = this === fight.player1 ? gif1 : gif2;
     gif.style.display = "block";
     gif.style.transform =
@@ -579,7 +654,8 @@ class Player {
       gif.src = "";
     }, settings.specialAttackDelay);
   }
-  specialAttack() {
+
+  specialAttack(): void {
     if (
       !this.isUsingSpecialAttack &&
       !this.isUsingAttack &&
@@ -589,6 +665,7 @@ class Player {
       this.specialAttackSound.currentTime = 0;
       this.specialAttackSound.play();
       this.isUsingSpecialAttack = true;
+
       setTimeout(() => {
         this.currentSprite = this.createSprite("images/players/empty.png");
         this.runSpecialVideo();
@@ -608,12 +685,14 @@ class Player {
       }, settings.specialAttackAudioDelay);
     }
   }
-  reloadMana() {
+
+  reloadMana(): void {
     if (this.mana < settings.maxMana && !this.isUsingSpecialAttack) {
       this.mana += this.manaSpeed / 10;
     }
   }
-  heal() {
+
+  heal(): void {
     if (
       this.hp < settings.maxHp &&
       !this.isUsingAttack &&
@@ -630,7 +709,8 @@ class Player {
       }, settings.healingTime);
     }
   }
-  win() {
+
+  win(): void {
     currentOst.pause();
     fight.blockRadioInput(false);
     fight.isPlaying = false;
@@ -649,8 +729,24 @@ class Player {
     restart.style.display = "block";
   }
 }
+
 class Attack {
-  constructor(owner, type, width, height, sprite) {
+  owner: Player;
+  type: string;
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+  strength: number;
+  speed: number;
+  sprite: HTMLImageElement;
+  constructor(
+    owner: Player,
+    type: string,
+    width: number,
+    height: number,
+    sprite: HTMLImageElement
+  ) {
     this.owner = owner;
     this.type = type;
     this.width = width;
@@ -670,12 +766,14 @@ class Attack {
         : this.owner.specialAttackSpeed;
     this.sprite = sprite;
   }
-  moveTowardEnemy() {
+
+  moveTowardEnemy(): void {
     // Calculate the right direction on the X axis
     const direction = this.owner === fight.player1 ? this.speed : -this.speed;
     this.x += direction;
   }
-  inflictDamage() {
+
+  inflictDamage(): void {
     // Reduce HP of the other Player
     if (this.owner.enemy != null) {
       hitMp3.currentTime = 0;
@@ -684,11 +782,13 @@ class Attack {
         this.strength + (Math.random() * this.strength) / 10;
     }
   }
-  removeAttack() {
+
+  removeAttack(): void {
     // Delete the attack from the Player attack list
     this.owner.attacks.splice(this.owner.attacks.indexOf(this), 1);
   }
-  detectCollision() {
+
+  detectCollision(): void {
     // Removes enemy's HP if attack matches the XY enemy's position
     const detectionMargin = settings.collisionMargin;
     if (this.owner === fight.player1) {
@@ -715,7 +815,8 @@ class Attack {
       }
     }
   }
-  drawAttackSprite() {
+
+  drawAttackSprite(): void {
     // Update X axis, check for collision and display the attack sprite
     this.moveTowardEnemy();
     this.detectCollision();
@@ -723,22 +824,14 @@ class Attack {
     ctx.drawImage(this.sprite, this.x, this.y, this.width, this.height);
   }
 }
+
 class Game {
+  player1: Player;
+  player2: Player;
+  isPlaying: boolean;
+  isAiPlaying: boolean;
+  refreshInterval: number | null;
   constructor() {
-    this.playStartSound = () => {
-      gearSecondMp3.currentTime = 0;
-      gearSecondMp3.play();
-      currentOst.pause();
-      currentOst.currentTime = 0;
-      currentOst.play();
-    };
-    this.blockRadioInput = (blockStatus) => {
-      radioInputs.forEach((input) => {
-        input.disabled = blockStatus;
-      });
-      wallpaper_select.disabled = blockStatus;
-      ai_btn.disabled = blockStatus;
-    };
     this.player1 = new Player(
       settings.player1DefaultPosition.x,
       settings.player1DefaultPosition.y,
@@ -789,7 +882,8 @@ class Game {
     this.isAiPlaying = false;
     this.refreshInterval = null;
   }
-  defaultDisplay() {
+
+  defaultDisplay(): void {
     // Display the default positions
     this.resetGame();
     p1_name.innerText = this.player1.name;
@@ -797,7 +891,8 @@ class Game {
     p2_name.innerText = this.player2.name;
     this.player2.drawPlayer();
   }
-  displayPlayer1() {
+
+  displayPlayer1(): void {
     this.player1.reloadMana();
     this.player1.drawPlayer();
     p1_hp.innerText = `HP : ${Math.round(this.player1.hp)}/${settings.maxHp}`;
@@ -807,11 +902,12 @@ class Game {
     }`;
     p1_mana_display.innerText = "⚡".repeat(Math.round(this.player1.mana / 25));
     p1_score.innerText = `Score : ${this.player1.score}`;
-    this.player1.attacks.forEach((attack) => {
+    this.player1.attacks.forEach((attack: Attack) => {
       attack.drawAttackSprite();
     });
   }
-  displayPlayer2() {
+
+  displayPlayer2(): void {
     this.player2.reloadMana();
     this.player2.drawPlayer();
     p2_hp.innerText = `HP : ${Math.round(this.player2.hp)}/${settings.maxHp}`;
@@ -821,34 +917,37 @@ class Game {
     }`;
     p2_mana_display.innerText = "⚡".repeat(Math.round(this.player1.mana / 25));
     p2_score.innerText = `Score : ${this.player2.score}`;
-    this.player2.attacks.forEach((attack) => {
+    this.player2.attacks.forEach((attack: Attack) => {
       attack.drawAttackSprite();
     });
   }
-  setEnemies() {
+
+  setEnemies(): void {
     this.player1.enemy = this.player2;
     this.player2.enemy = this.player1;
   }
-  exitGame() {
+
+  exitGame(): void {
     currentOst.pause();
     fight.isPlaying = false;
-    clearInterval(fight.refreshInterval);
+    clearInterval(fight.refreshInterval!);
     fight.resetGame();
     start.style.display = "block";
     fight.blockRadioInput(false);
   }
-  runGame() {
+
+  runGame(): void {
     if (!this.isPlaying) {
       return;
     }
     this.defaultDisplay();
     this.refreshInterval = setInterval(() => {
       if (this.player1.hp <= 1) {
-        clearInterval(this.refreshInterval);
+        clearInterval(this.refreshInterval!);
         this.player2.win();
       }
       if (this.player2.hp <= 1) {
-        clearInterval(this.refreshInterval);
+        clearInterval(this.refreshInterval!);
         this.player1.win();
       }
       if (isAiActivated && !this.isAiPlaying)
@@ -858,7 +957,8 @@ class Game {
       this.displayPlayer2();
     }, settings.refreshRate);
   }
-  runAi(action) {
+
+  runAi(action: number): void {
     switch (action) {
       case 0:
         fight.player2.simpleAttack();
@@ -882,7 +982,24 @@ class Game {
       this.isAiPlaying = false;
     }, settings.aiPlayRate);
   }
-  checkKeyPress(event) {
+
+  playStartSound = (): void => {
+    gearSecondMp3.currentTime = 0;
+    gearSecondMp3.play();
+    currentOst.pause();
+    currentOst.currentTime = 0;
+    currentOst.play();
+  };
+
+  blockRadioInput = (blockStatus: boolean): void => {
+    radioInputs.forEach((input: HTMLInputElement) => {
+      input.disabled = blockStatus;
+    });
+    wallpaper_select.disabled = blockStatus;
+    ai_btn.disabled = blockStatus;
+  };
+
+  checkKeyPress(event: KeyboardEvent) {
     // Keywboard controls
     switch (event.key) {
       case "z":
@@ -920,7 +1037,8 @@ class Game {
         break;
     }
   }
-  resetGame() {
+
+  resetGame(): void {
     this.player1.x = 0;
     this.player1.y = 0;
     this.player1.attacks = [];
@@ -933,9 +1051,11 @@ class Game {
     this.player2.mana = player2.mana;
   }
 }
+
 let player1 = players.luffy;
 let player2 = players.ace;
 const fight = new Game();
+
 start.onclick = () => {
   fight.playStartSound();
   setTimeout(() => {
@@ -967,6 +1087,7 @@ start.onclick = () => {
       player1.victorySound,
       0.9
     );
+
     // Update player 2
     fight.player2.name = player2.name;
     fight.player2.spriteImage = fight.player2.createSprite(player2.spriteImage);
@@ -995,13 +1116,16 @@ start.onclick = () => {
       player2.victorySound,
       0.9
     );
+
     fight.blockRadioInput(true);
     fight.isPlaying = true;
     start.style.display = "none";
+
     fight.setEnemies();
     fight.defaultDisplay();
     fight.runGame();
   }, 1000);
+
   restart.onclick = () => {
     fight.playStartSound();
     setTimeout(() => {
@@ -1038,6 +1162,7 @@ start.onclick = () => {
         player1.victorySound,
         1
       );
+
       // Update player 2
       fight.player2.name = player2.name;
       fight.player2.spriteImage = fight.player2.createSprite(
@@ -1071,17 +1196,22 @@ start.onclick = () => {
         player2.victorySound,
         1
       );
+
       fight.blockRadioInput(true);
       fight.isPlaying = true;
+
       winner.style.display = "none";
       restart.style.display = "none";
+
       fight.resetGame();
-      clearInterval(fight.refreshInterval);
+      clearInterval(fight.refreshInterval!);
       fight.defaultDisplay();
       fight.runGame();
     }, 1000);
   };
 };
-document.addEventListener("keydown", (event) => {
+
+document.addEventListener("keydown", (event: KeyboardEvent) => {
   fight.checkKeyPress(event);
 });
+*/
