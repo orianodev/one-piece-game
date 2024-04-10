@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@types/node": "^20.12.7",
+    "typescript": "^5.4.4"
+  },
+  "scripts": {
+    "server": "node --watch controllers/dist/server/server.js"
+  }
+}
