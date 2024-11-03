@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Socket.IO chat</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.socket.io/4.8.0/socket.io.min.js"></script>
+  </head>
+  <body>
+    <ul id="messages">
+      <h2>You are <span id="showPlayer"></span></h2>
+      <div>
+        <span>A</span>
+        <span id="A">0</span>
+      </div>
+      <div>
+        <span>B</span>
+        <span id="B">0</span>
+      </div>
+    </ul>
+    <div id="form">
+      <button id="join">JOIN</button>
+      <button id="inc">+</button>
+      <button id="pickA">A</button>
+      <button id="pickB">B</button>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
