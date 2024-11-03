@@ -10,6 +10,8 @@ const io = new Server(server);
 app.get('/', (req, res) => res.sendFile(join(__dirname, 'index.html')));
 app.get('/style.css', (req, res) => res.sendFile(join(__dirname, 'style.css')));
 app.get('/script.js', (req, res) => res.sendFile(join(__dirname, 'script.js')));
+app.get('/images/luffy.png', (req, res) => res.sendFile(join(__dirname, '/images/luffy.png')));
+app.get('/images/zoro.png', (req, res) => res.sendFile(join(__dirname, '/images/zoro.png')));
 
 io.on('connection', (socket) => {
     console.log('a user connected');
