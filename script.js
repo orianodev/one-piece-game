@@ -1,41 +1,86 @@
 "use strict";
 // @ts-ignore
 const socket = io();
+class Player {
+    constructor(name, hp, x, y) {
+        this.name = name;
+        this.hp = hp;
+        this.x = x;
+        this.y = y;
+    }
+    moveUp() {
+        this.y++;
+        emitAfterMove();
+    }
+    moveDown() {
+        this.y--;
+        emitAfterMove();
+    }
+    moveRight() {
+        this.x++;
+        emitAfterMove();
+    }
+    moveLeft() {
+        this.x--;
+        emitAfterMove();
+    }
+}
 let player;
-let aVal = 0;
-let bVal = 0;
-const aValText = document.querySelector("#A");
-const showPlayer = document.querySelector("#showPlayer");
-const bValText = document.querySelector("#B");
+let playerA;
+let playerB;
 const joinBtn = document.querySelector("#join");
-const incBtn = document.querySelector("#inc");
 const pickA = document.querySelector("#pickA");
 const pickB = document.querySelector("#pickB");
+const showPlayer = document.querySelector("#showPlayer");
+const aX = document.querySelector("#aX");
+const aY = document.querySelector("#aY");
+const bX = document.querySelector("#bX");
+const bY = document.querySelector("#bY");
 joinBtn.addEventListener("click", (e) => {
     socket.emit("joinRoom", "room1");
 });
-incBtn.addEventListener("click", (e) => {
-    console.log(player, aVal, bVal);
-    if (player == "A") {
-        console.log("Emit inc for :", player);
-        socket.emit("inc", { A: aVal + 1, B: bVal });
-    }
-    else if (player == "B") {
-        console.log("Emit inc for :", player);
-        socket.emit("inc", { A: aVal, B: bVal + 1 });
-    }
-});
 pickA.addEventListener("click", (e) => {
-    player = "A";
-    showPlayer.innerText = player;
+    player = new Player("A", 100, 0, 0);
+    showPlayer.innerText = player.name;
 });
 pickB.addEventListener("click", (e) => {
-    player = "B";
-    showPlayer.innerText = player;
+    player = new Player("B", 100, 0, 0);
+    ;
+    showPlayer.innerText = player.name;
 });
-socket.on("inc", (msg) => {
-    aVal = msg.A;
-    aValText.innerText = aVal.toString();
-    bVal = msg.B;
-    bValText.innerText = bVal.toString();
+function emitAfterMove() {
+    console.log(player, playerA, playerB);
+    if (player.name == "A") {
+        console.log("Emit inc for :", player);
+        socket.emit("move", { A: player, B: playerB });
+    }
+    else if (player.name == "B") {
+        console.log("Emit inc for :", player);
+        socket.emit("move", { A: playerA, B: player });
+    }
+}
+;
+socket.on("move", (msg) => {
+    playerA = msg.A;
+    aX.innerText = playerA.x.toString();
+    aY.innerText = playerA.y.toString();
+    playerB = msg.B;
+    bX.innerText = playerB.x.toString();
+    bY.innerText = playerB.y.toString();
+});
+document.addEventListener("keydown", (event) => {
+    switch (event.key) {
+        case "ArrowUp":
+            player.moveUp();
+            break;
+        case "ArrowDown":
+            player.moveDown();
+            break;
+        case "ArrowRight":
+            player.moveRight();
+            break;
+        case "ArrowLeft":
+            player.moveLeft();
+            break;
+    }
 });

@@ -19,10 +19,9 @@ io.on('connection', (socket) => {
 });
 
 io.on('connection', (socket) => {
-    socket.on('inc', (msg) => {
+    socket.on('move', (msg) => {
         console.log("inc emitted for :", msg);
-
-        io.to("room1").emit('inc', msg);
+        io.to("room1").emit('move', msg);
     });
 });
 
