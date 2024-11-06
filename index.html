@@ -1,31 +1,54 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <title>Socket.IO chat</title>
-    <link rel="stylesheet" href="style.css" />
-    <script src="https://cdn.socket.io/4.8.0/socket.io.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Selection</title>
+    <link rel="stylesheet" href="/styles/style.css" />
   </head>
   <body>
-    <canvas id="canvas" height="360" width="640"></canvas>
-    <ul id="messages">
-      <h2>You are <span id="showPlayer"></span></h2>
-      <div>
-        <span>A</span>
-        <span>X: <span id="aX">0</span></span>
-        <span>Y: <span id="aY">0</span></span>
-      </div>
-      <div>
-        <span>B</span>
-        <span>X: <span id="bX">0</span></span>
-        <span>Y: <span id="bY">0</span></span>
-      </div>
-    </ul>
-    <div id="form">
-      <button id="join">JOIN</button>
-      <button id="pickA">A</button>
-      <button id="pickB">B</button>
-    </div>
-    <script src="script.js"></script>
+    <h2>TYPE IN YOUR ROOM ID</h2>
+    <form id="text-id">
+      <span>ID</span>
+      <input type="text" name="room-id" id="room-id" />
+      <input type="button" value="🎲" id="random-id" />
+    </form>
+
+    <h2>SELECT A CHARACTER</h2>
+    <form id="radio-character">
+      <label for="luffy">
+        <input type="radio" name="select-character" id="luffy" value="luffy" />
+        <img src="images/flags/luffy.png" alt="luffy" />
+      </label>
+      <label for="zoro">
+        <input type="radio" name="select-character" id="zoro" value="zoro" />
+        <img src="images/flags/zoro.png" alt="zoro" />
+      </label>
+      <label for="sanji">
+        <input type="radio" name="select-character" id="sanji" value="sanji" />
+        <img src="images/flags/sanji.png" alt="sanji" />
+      </label>
+      <label for="ace">
+        <input type="radio" name="select-character" id="ace" value="ace" />
+        <img src="images/flags/ace.png" alt="ace" />
+      </label>
+    </form>
+    <button id="join-room" disabled>Join Room !</button>
+
+    <script>
+      const randomId = document.getElementById("random-id");
+      const joinRoom = document.getElementById("join-room");
+      const textId = document.getElementById("text-id");
+      const radioCharacter = document.getElementById("radio-character");
+
+      randomId.addEventListener("click", () => {
+        const roomId = Math.floor(Math.random() * 1_000);
+        document.getElementById("room-id").value = roomId;
+        joinRoom.disabled = false;
+      });
+
+      joinRoom.addEventListener("click", () => {});
+    </script>
   </body>
 </html>
+:

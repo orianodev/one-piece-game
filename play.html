@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Play</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.socket.io/4.8.0/socket.io.min.js"></script>
+  </head>
+  <body>
+    <canvas id="canvas" height="360" width="640"></canvas>
+    <ul id="messages">
+      <h2>You are <span id="showPlayer"></span></h2>
+      <div>
+        <span>A</span>
+        <span>X: <span id="aX">0</span></span>
+        <span>Y: <span id="aY">0</span></span>
+      </div>
+      <div>
+        <span>B</span>
+        <span>X: <span id="bX">0</span></span>
+        <span>Y: <span id="bY">0</span></span>
+      </div>
+    </ul>
+    <div id="form">
+      <button id="join">JOIN</button>
+      <button id="pickA">A</button>
+      <button id="pickB">B</button>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
