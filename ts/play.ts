@@ -27,12 +27,13 @@ interface SettingsInt {
 }
 interface CharacterStats {
     name: string;
-    spriteUrl: string;
+    sprite: string;
     color: string;
     speed: number;
     hp: number;
     maxHp: number;
     healingPower: number;
+    attackSprite: string;
     attackSpeed: number;
     attackStrength: number;
 }
@@ -40,8 +41,8 @@ interface CharacterStats {
 const settings: SettingsInt = {
     playH: 50,
     playW: 50,
-    projH: 10,
-    projW: 10,
+    projH: 20,
+    projW: 20,
     cursorSize: 10,
 }
 const defaultPosition: { A: Position, B: Position } = { A: { x: 0, y: $canvas.height / 2 - settings.playH }, B: { x: $canvas.width - settings.playW, y: $canvas.height / 2 - settings.playH } }
@@ -49,45 +50,49 @@ const defaultPosition: { A: Position, B: Position } = { A: { x: 0, y: $canvas.he
 const characterStats: { luffy: CharacterStats, zoro: CharacterStats, sanji: CharacterStats, ace: CharacterStats } = {
     luffy: {
         name: "Monkey D Luffy",
-        spriteUrl: "/images/characters/luffy.png",
+        sprite: "/images/characters/luffy.png",
         color: "red",
         speed: 20,
         hp: 200,
         maxHp: 200,
         healingPower: 5,
+        attackSprite: "/images/attacks/punch.png",
         attackSpeed: 20,
         attackStrength: 10,
     },
     zoro: {
         name: "Roronoa Zoro",
-        spriteUrl: "/images/characters/zoro.png",
+        sprite: "/images/characters/zoro.png",
         color: "green",
         speed: 13,
         hp: 180,
         maxHp: 190,
         healingPower: 4,
+        attackSprite: "/images/attacks/tornado.png",
         attackSpeed: 25,
         attackStrength: 9,
     },
     sanji: {
         name: "Vinsmoke Sanji",
-        spriteUrl: "/images/characters/sanji.png",
+        sprite: "/images/characters/sanji.png",
         color: "yellow",
         speed: 15,
         hp: 170,
         maxHp: 170,
         healingPower: 3,
+        attackSprite: "/images/attacks/kick.png",
         attackSpeed: 19,
         attackStrength: 10,
     },
     ace: {
         name: "Portgas D Ace",
-        spriteUrl: "/images/characters/ace.png",
+        sprite: "/images/characters/ace.png",
         color: "orange",
         speed: 18,
         hp: 200,
         maxHp: 250,
         healingPower: 3,
+        attackSprite: "/images/attacks/flame.png",
         attackSpeed: 17,
         attackStrength: 15,
     }
@@ -99,7 +104,7 @@ class Player {
     public characterId: string;
     public characterName: string;
     public color: string;
-    public spriteUrl: string;
+    public sprite: string;
     public score: number;
     public x: number;
     public y: number;
@@ -108,17 +113,18 @@ class Player {
     public hp: number;
     public maxHp: number;
     public healingPower: number;
+    public attackSprite: string;
     public attackSpeed: number;
     public attackStrength: number;
     public thrownProjectiles: Projectile[];
     public opponentPosition: Position;
 
-    constructor(id: PlayerId, characterId: string, characterName: string, color: string, spriteUrl: string, score: number, x: number, y: number, direction: MoveDirections, speed: number, hp: number, maxHp: number, healingPower: number, attackSpeed: number, attackStrength: number, thrownProjectile: Projectile[] | [], opponentPosition: Position) {
+    constructor(id: PlayerId, characterId: string, characterName: string, color: string, sprite: string, score: number, x: number, y: number, direction: MoveDirections, speed: number, hp: number, maxHp: number, healingPower: number, attackSprite: string, attackSpeed: number, attackStrength: number, thrownProjectile: Projectile[] | [], opponentPosition: Position) {
         this.id = id
         this.characterId = characterId
         this.characterName = characterName
         this.color = color
-        this.spriteUrl = spriteUrl
+        this.sprite = sprite
         this.score = score
         this.x = x
         this.y = y
@@ -127,6 +133,7 @@ class Player {
         this.hp = hp
         this.maxHp = maxHp
         this.healingPower = healingPower
+        this.attackSprite = attackSprite
         this.attackSpeed = attackSpeed
         this.attackStrength = attackStrength
         this.thrownProjectiles = thrownProjectile
@@ -134,20 +141,30 @@ class Player {
     }
     draw() {
         $ctx.globalAlpha = 1;
+        $ctx.shadowBlur = 10;
+        $ctx.shadowOffsetX = 1;
+        $ctx.shadowOffsetY = 1;
+        $ctx.shadowColor = this.color;
+
         const newSprite = new Image(settings.playW, settings.playH);
-        newSprite.src = this.spriteUrl;
+        newSprite.src = this.sprite;
         $ctx.drawImage(newSprite, this.x, this.y, settings.playW, settings.playH);
 
         $ctx.globalAlpha = 0.5;
-        $ctx.fillStyle = this.color
+        $ctx.fillStyle = "black";
         if (this.direction === "up") $ctx.fillRect(this.x + (settings.playW / 2 - 5), this.y - settings.cursorSize - 5, settings.cursorSize, settings.cursorSize);
         if (this.direction === "down") $ctx.fillRect(this.x + (settings.playW / 2 - 5), this.y + settings.playH + 5, settings.cursorSize, settings.cursorSize);
         if (this.direction === "left") $ctx.fillRect(this.x - settings.cursorSize - 5, this.y + settings.playH / 2 - 5, settings.cursorSize, settings.cursorSize);
         if (this.direction === "right") $ctx.fillRect(this.x + settings.playW + 5, this.y + settings.playH / 2 - 5, settings.cursorSize, settings.cursorSize);
+
         $ctx.globalAlpha = 1;
+        $ctx.shadowBlur = 0;
+        $ctx.shadowOffsetX = 0;
+        $ctx.shadowOffsetY = 0;
+        $ctx.shadowColor = "black";
     }
     attack() {
-        const projectile = new Projectile(this.id, this.x + settings.playW / 2, this.y + settings.playH / 2, this.direction, "images/fireball.png");
+        const projectile = new Projectile(this.id, this.color, this.attackSprite, this.x + settings.playW / 2, this.y + settings.playH / 2, this.direction);
         this.thrownProjectiles.push(projectile)
         projectile.draw()
         this.updateServer()
@@ -192,24 +209,35 @@ class Player {
 
 class Projectile {
     public throwerId: PlayerId;
+    public color: string;
+    public sprite: string;
     public x: number;
     public y: number;
     public direction: MoveDirections;
-    public color: string;
 
-    constructor(thrower: PlayerId, x: number, y: number, direction: MoveDirections, color: string) {
+    constructor(thrower: PlayerId, color: string, sprite: string, x: number, y: number, direction: MoveDirections) {
         this.throwerId = thrower
+        this.color = color
+        this.sprite = sprite
         this.x = x
         this.y = y
         this.direction = direction
-        this.color = color
     }
     draw() {
-        $ctx.fillStyle = "black";
-        $ctx.fillRect(this.x, this.y, settings.projW, settings.projH);
-        // const newSprite = new Image();
-        // newSprite.src = this.spriteUrl;
-        // $ctx.drawImage(newSprite, this.x, this.y, settings.projW, settings.projH);
+        $ctx.shadowBlur = 10;
+        $ctx.shadowOffsetX = 1;
+        $ctx.shadowOffsetY = 1;
+        $ctx.shadowColor = this.color;
+
+        const newSprite = new Image(settings.playW, settings.playH);
+        const spriteImg = this.sprite.replace(".png", "-" + this.direction[0] + ".png");
+        newSprite.src = spriteImg
+        $ctx.drawImage(newSprite, this.x, this.y, settings.projW, settings.projH);
+
+        $ctx.shadowBlur = 0;
+        $ctx.shadowOffsetX = 0;
+        $ctx.shadowOffsetY = 0;
+        $ctx.shadowColor = "black";
     }
     move() {
         const thrower = _F.thisPlayer.id === this.throwerId ? _F.thisPlayer : _F.opponentPlayer
@@ -244,8 +272,8 @@ class Projectile {
 }
 
 class Fight {
-    public thisPlayer: Player = new Player("A", "default", "name", "black", "images/characters/luffy.png", 0, defaultPosition.A.x, defaultPosition.A.y, "right", 10, 100, 100, 10, 10, 10, [], defaultPosition.B);
-    public opponentPlayer: Player = new Player("B", "default", "name", "black", "images/characters/zoro.png", 0, defaultPosition.B.x, defaultPosition.B.y, "right", 10, 100, 100, 10, 10, 10, [], defaultPosition.A);
+    public thisPlayer: Player = new Player("A", "default", "name", "black", "images/characters/luffy.png", 0, defaultPosition.A.x, defaultPosition.A.y, "right", 10, 100, 100, 10, "", 10, 10, [], defaultPosition.B);
+    public opponentPlayer: Player = new Player("B", "default", "name", "black", "images/characters/zoro.png", 0, defaultPosition.B.x, defaultPosition.B.y, "right", 10, 100, 100, 10, "", 10, 10, [], defaultPosition.A);
     public roomId: number;
     constructor(roomId: number) {
         this.roomId = roomId
@@ -253,11 +281,11 @@ class Fight {
 
     rebuildPlayers(msg: { A: Player, B: Player }) {
         if (myPlayerId === "A") {
-            _F.thisPlayer = new Player("A", msg.A.characterId, msg.A.characterName, msg.A.color, msg.A.spriteUrl, msg.A.score, msg.A.x, msg.A.y, msg.A.direction, msg.A.speed, msg.A.hp, msg.A.maxHp, msg.A.healingPower, msg.A.attackSpeed, msg.A.attackStrength, _F.rebuildProjectileArray(msg.A.thrownProjectiles), { x: msg.B.x, y: msg.B.y });
-            _F.opponentPlayer = new Player("B", msg.B.characterId, msg.B.characterName, msg.B.color, msg.B.spriteUrl, msg.B.score, msg.B.x, msg.B.y, msg.B.direction, msg.B.speed, msg.B.hp, msg.A.maxHp, msg.B.healingPower, msg.B.attackSpeed, msg.B.attackStrength, _F.rebuildProjectileArray(msg.B.thrownProjectiles), { x: msg.A.x, y: msg.A.y });
+            _F.thisPlayer = new Player("A", msg.A.characterId, msg.A.characterName, msg.A.color, msg.A.sprite, msg.A.score, msg.A.x, msg.A.y, msg.A.direction, msg.A.speed, msg.A.hp, msg.A.maxHp, msg.A.healingPower, msg.A.attackSprite, msg.A.attackSpeed, msg.A.attackStrength, _F.rebuildProjectileArray(msg.A.thrownProjectiles), { x: msg.B.x, y: msg.B.y });
+            _F.opponentPlayer = new Player("B", msg.B.characterId, msg.B.characterName, msg.B.color, msg.B.sprite, msg.B.score, msg.B.x, msg.B.y, msg.B.direction, msg.B.speed, msg.B.hp, msg.A.maxHp, msg.B.healingPower, msg.B.attackSprite, msg.B.attackSpeed, msg.B.attackStrength, _F.rebuildProjectileArray(msg.B.thrownProjectiles), { x: msg.A.x, y: msg.A.y });
         } else if (myPlayerId === "B") {
-            _F.thisPlayer = new Player("B", msg.B.characterId, msg.B.characterName, msg.B.color, msg.B.spriteUrl, msg.B.score, msg.B.x, msg.B.y, msg.B.direction, msg.B.speed, msg.B.hp, msg.A.maxHp, msg.B.healingPower, msg.B.attackSpeed, msg.B.attackStrength, _F.rebuildProjectileArray(msg.B.thrownProjectiles), { x: msg.A.x, y: msg.A.y });
-            _F.opponentPlayer = new Player("A", msg.A.characterId, msg.A.characterName, msg.A.color, msg.A.spriteUrl, msg.A.score, msg.A.x, msg.A.y, msg.A.direction, msg.A.speed, msg.A.hp, msg.A.maxHp, msg.A.healingPower, msg.A.attackSpeed, msg.A.attackStrength, _F.rebuildProjectileArray(msg.A.thrownProjectiles), { x: msg.B.x, y: msg.B.y });
+            _F.thisPlayer = new Player("B", msg.B.characterId, msg.B.characterName, msg.B.color, msg.B.sprite, msg.B.score, msg.B.x, msg.B.y, msg.B.direction, msg.B.speed, msg.B.hp, msg.A.maxHp, msg.B.healingPower, msg.B.attackSprite, msg.B.attackSpeed, msg.B.attackStrength, _F.rebuildProjectileArray(msg.B.thrownProjectiles), { x: msg.A.x, y: msg.A.y });
+            _F.opponentPlayer = new Player("A", msg.A.characterId, msg.A.characterName, msg.A.color, msg.A.sprite, msg.A.score, msg.A.x, msg.A.y, msg.A.direction, msg.A.speed, msg.A.hp, msg.A.maxHp, msg.A.healingPower, msg.A.attackSprite, msg.A.attackSpeed, msg.A.attackStrength, _F.rebuildProjectileArray(msg.A.thrownProjectiles), { x: msg.B.x, y: msg.B.y });
         }
     }
 
@@ -280,7 +308,7 @@ class Fight {
         $score2.innerText = playerB.score.toString();
     }
     rebuildProjectileArray(flattedProjectileArray: Projectile[]): Projectile[] {
-        return flattedProjectileArray.map((projectile) => new Projectile(projectile.throwerId, projectile.x, projectile.y, projectile.direction, projectile.color))
+        return flattedProjectileArray.map((projectile) => new Projectile(projectile.throwerId, projectile.color, projectile.sprite, projectile.x, projectile.y, projectile.direction))
     }
     drawGrid(gridSize: number = 10) {
         $ctx.strokeStyle = "#444";
@@ -326,7 +354,7 @@ socket.on("whereIsMyPlayerId", (playerId: PlayerId) => {
             pickedCharacter = characterStats.luffy;
             break;
     }
-    const myPlayer = new Player(playerId, myCharacterId, pickedCharacter.name, pickedCharacter.color, pickedCharacter.spriteUrl, myScore, defaultPosition[playerId].x, defaultPosition[playerId].y, "right", pickedCharacter.speed, pickedCharacter.hp, pickedCharacter.maxHp, pickedCharacter.healingPower, pickedCharacter.attackSpeed, pickedCharacter.attackStrength, [], defaultPosition[playerId === "A" ? "B" : "A"]);
+    const myPlayer = new Player(playerId, myCharacterId, pickedCharacter.name, pickedCharacter.color, pickedCharacter.sprite, myScore, defaultPosition[playerId].x, defaultPosition[playerId].y, "right", pickedCharacter.speed, pickedCharacter.hp, pickedCharacter.maxHp, pickedCharacter.healingPower, pickedCharacter.attackSprite, pickedCharacter.attackSpeed, pickedCharacter.attackStrength, [], defaultPosition[playerId === "A" ? "B" : "A"]);
     socket.emit("myPlayerStats", { myPlayer, roomId: _F.roomId, playerId });
 })
 
