@@ -68,3 +68,17 @@ input[type="radio"]:checked + img {
   border: 2px solid green;
   box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
 }
+
+div#infos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 20px;
+  font-size: x-large;
+  margin-top: 20px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}

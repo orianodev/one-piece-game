@@ -13,7 +13,6 @@
       <input type="text" name="room-id" id="room-id" />
       <input type="button" value="🎲" id="random-id" />
     </form>
-
     <h2>SELECT A CHARACTER</h2>
     <form id="radio-character">
       <label for="luffy">
@@ -33,22 +32,8 @@
         <img src="images/flags/ace.png" alt="ace" />
       </label>
     </form>
-    <button id="join-room" disabled>Join Room !</button>
-
-    <script>
-      const randomId = document.getElementById("random-id");
-      const joinRoom = document.getElementById("join-room");
-      const textId = document.getElementById("text-id");
-      const radioCharacter = document.getElementById("radio-character");
-
-      randomId.addEventListener("click", () => {
-        const roomId = Math.floor(Math.random() * 1_000);
-        document.getElementById("room-id").value = roomId;
-        joinRoom.disabled = false;
-      });
-
-      joinRoom.addEventListener("click", () => {});
-    </script>
+    <button id="submit">Join Room !</button>
+    <script src="./scripts/selection.js"></script>
   </body>
 </html>
 :

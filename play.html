@@ -3,29 +3,29 @@
   <head>
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <title>Play</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="styles/style.css" />
     <script src="https://cdn.socket.io/4.8.0/socket.io.min.js"></script>
   </head>
   <body>
     <canvas id="canvas" height="360" width="640"></canvas>
-    <ul id="messages">
-      <h2>You are <span id="showPlayer"></span></h2>
-      <div>
-        <span>A</span>
-        <span>X: <span id="aX">0</span></span>
-        <span>Y: <span id="aY">0</span></span>
+    <div id="infos">
+      <div id="player-1">
+        <h2>Player 1</h2>
+        <ul>
+          <li>😎<span id="character-1"></span></li>
+          <li>🧡<span id="hp-1"></span></li>
+          <li>🏆<span id="score-1"></span></li>
+        </ul>
       </div>
-      <div>
-        <span>B</span>
-        <span>X: <span id="bX">0</span></span>
-        <span>Y: <span id="bY">0</span></span>
+      <div id="player-2">
+        <h2>Player 2</h2>
+        <ul>
+          <li>😎<span id="character-2"></span></li>
+          <li>🧡<span id="hp-2"></span></li>
+          <li>🏆<span id="score-2"></span></li>
+        </ul>
       </div>
-    </ul>
-    <div id="form">
-      <button id="join">JOIN</button>
-      <button id="pickA">A</button>
-      <button id="pickB">B</button>
     </div>
-    <script src="script.js"></script>
+    <script src="./scripts/play.js"></script>
   </body>
 </html>
