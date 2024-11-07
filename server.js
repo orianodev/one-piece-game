@@ -13,6 +13,15 @@ let isFirst = true;
 let players = { "A": {}, "B": {} };
 let countdown;
 
+function resetGame(roomId) {
+    players = { "A": {}, "B": {} };
+    isFirst = true;
+    if (countdown) {
+        clearInterval(countdown);
+        countdown = null;
+    }
+}
+
 io.on('connection', (socket) => {
     console.log('a user connected');
 
@@ -24,12 +33,7 @@ io.on('connection', (socket) => {
             io.to(room).emit('stop');
             console.log(`Fight interrupted in room ${room}.`);
         }
-        players = { "A": {}, "B": {} };
-        isFirst = true;
-        if (countdown) {
-            clearInterval(countdown);
-            countdown = null;
-        }
+        resetGame();
     });
 
     socket.on('whereIsMyPlayerId', (msg) => {
@@ -50,6 +54,11 @@ io.on('connection', (socket) => {
     });
 
     socket.on('update', (msg) => {
+        if (msg.A.hp <= 0 || msg.B.hp <= 0) {
+            console.log(`Game over between players ${players["A"].id} and ${players["B"].id}`);
+            io.to(msg.roomId).emit('gameOver', { id: msg.A.hp <= 0 ? "B" : "A", name: msg.A.hp <= 0 ? msg.B.characterName : msg.A.characterName });
+            resetGame(msg.roomId);
+        }
         console.log(`Update from ${socket.id} :`, msg.A, msg.B);
         const msgSize = Buffer.byteLength(JSON.stringify(msg), 'utf8');
         console.log(`Packet size: ${msgSize} bytes`);

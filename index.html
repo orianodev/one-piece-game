@@ -1,39 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Selection</title>
+    <title>Sélection</title>
+    <script
+      src="https://kit.fontawesome.com/61fd51154e.js"
+      crossorigin="anonymous"
+    ></script>
     <link rel="stylesheet" href="/styles/style.css" />
   </head>
   <body>
-    <h2>TYPE IN YOUR ROOM ID</h2>
-    <form id="text-id">
-      <span>ID</span>
-      <input type="text" name="room-id" id="room-id" />
-      <input type="button" value="🎲" id="random-id" />
-    </form>
-    <h2>SELECT A CHARACTER</h2>
-    <form id="radio-character">
-      <label for="luffy">
-        <input type="radio" name="select-character" id="luffy" value="luffy" />
-        <img src="images/flags/luffy.png" alt="luffy" />
-      </label>
-      <label for="zoro">
-        <input type="radio" name="select-character" id="zoro" value="zoro" />
-        <img src="images/flags/zoro.png" alt="zoro" />
-      </label>
-      <label for="sanji">
-        <input type="radio" name="select-character" id="sanji" value="sanji" />
-        <img src="images/flags/sanji.png" alt="sanji" />
-      </label>
-      <label for="ace">
-        <input type="radio" name="select-character" id="ace" value="ace" />
-        <img src="images/flags/ace.png" alt="ace" />
-      </label>
-    </form>
-    <button id="submit">Join Room !</button>
+    <section class="mode">
+      <h2>MODE DE JEU</h2>
+      <div id="mode-toggle">
+        <button class="dual"><i class="fa-solid fa-user-group"></i></button>
+        <button class="solo"><i class="fa-solid fa-user"></i></button>
+      </div>
+
+      <div class="mode-selction dual">
+        <h3>MODE 2 JOUEURS</h3>
+        <h2>IDENTIFIANT DE JEU</h2>
+        <div>
+          <input type="text" name="room-id" id="room-id" />
+          <button id="random-id">
+            <i class="fa-solid fa-dice-three"></i>
+          </button>
+          <button id="copy-id">
+            <i class="fa-solid fa-share"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="mode-selction solo" style="display: none">
+        <h3>MODE 1 JOUEUR</h3>
+        <h2>NIVEAU DE L'ORDI</h2>
+        <select name="ai-level" id="ai-level">
+          <option value="easy">Facile</option>
+          <option value="medium">Intermédiaire</option>
+          <option value="hard">Difficile</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="characters">
+      <h2>CHOISIS UN PERSONNAGE</h2>
+      <form>
+        <label for="luffy">
+          <input type="radio" name="character" id="luffy" value="luffy" />
+          <img src="images/flags/luffy.png" alt="luffy" />
+        </label>
+        <label for="zoro">
+          <input type="radio" name="character" id="zoro" value="zoro" />
+          <img src="images/flags/zoro.png" alt="zoro" />
+        </label>
+        <label for="sanji">
+          <input type="radio" name="character" id="sanji" value="sanji" />
+          <img src="images/flags/sanji.png" alt="sanji" />
+        </label>
+        <label for="ace">
+          <input type="radio" name="character" id="ace" value="ace" />
+          <img src="images/flags/ace.png" alt="ace" />
+        </label>
+        <label for="jinbei">
+          <input type="radio" name="character" id="jinbei" value="jinbei" />
+          <img src="images/flags/luffy.png" alt="jinbei" />
+        </label>
+        <label for="law">
+          <input type="radio" name="character" id="law" value="law" />
+          <img src="images/flags/zoro.png" alt="law" />
+        </label>
+        <label for="franky">
+          <input type="radio" name="character" id="franky" value="franky" />
+          <img src="images/flags/sanji.png" alt="franky" />
+        </label>
+        <label for="brook">
+          <input type="radio" name="character" id="brook" value="brook" />
+          <img src="images/flags/ace.png" alt="brook" />
+        </label>
+      </form>
+    </section>
+
+    <section class="stadium">
+      <h2>CHOISIS UN TERRAIN</h2>
+      <p>
+        Le terrain sera déterminé aléatoirement entre ton choix et celui de ton
+        adversaire.
+      </p>
+      <select name="stadium" id="stadium">
+        <option value="log">Loguetown</option>
+        <option value="eni">Enies Lobby</option>
+        <option value="thr">Thriler Bark</option>
+        <option value="sab">Archipel Saboady</option>
+        <option value="imp">Impel Down</option>
+        <option value="mar">Marineford</option>
+      </select>
+    </section>
+
+    <section class="validate">
+      <button id="submit">START FIGHT !</button>
+    </section>
     <script src="./scripts/selection.js"></script>
   </body>
 </html>
-:
