@@ -11,6 +11,12 @@
     <link rel="stylesheet" href="/styles/style.css" />
   </head>
   <body>
+    <a href="/settings.html">
+      <button id="settings">
+        <i class="fa-solid fa-gear"></i>
+      </button>
+    </a>
+
     <section class="mode">
       <h2>MODE DE JEU</h2>
       <div id="mode-toggle">
@@ -22,7 +28,7 @@
         <h3>MODE 2 JOUEURS</h3>
         <h2>IDENTIFIANT DE JEU</h2>
         <div>
-          <input type="text" name="room-id" id="room-id" />
+          <input type="text" name="text-id" id="text-id" />
           <button id="random-id">
             <i class="fa-solid fa-dice-three"></i>
           </button>
@@ -48,45 +54,45 @@
       <form>
         <label for="luffy">
           <input type="radio" name="character" id="luffy" value="luffy" />
-          <img src="images/flags/luffy.png" alt="luffy" />
+          <img src="img/flag/luffy.png" alt="luffy" />
         </label>
         <label for="zoro">
           <input type="radio" name="character" id="zoro" value="zoro" />
-          <img src="images/flags/zoro.png" alt="zoro" />
+          <img src="img/flag/zoro.png" alt="zoro" />
         </label>
         <label for="sanji">
           <input type="radio" name="character" id="sanji" value="sanji" />
-          <img src="images/flags/sanji.png" alt="sanji" />
+          <img src="img/flag/sanji.png" alt="sanji" />
         </label>
         <label for="ace">
           <input type="radio" name="character" id="ace" value="ace" />
-          <img src="images/flags/ace.png" alt="ace" />
+          <img src="img/flag/ace.png" alt="ace" />
         </label>
         <label for="jinbei">
           <input type="radio" name="character" id="jinbei" value="jinbei" />
-          <img src="images/flags/luffy.png" alt="jinbei" />
+          <img src="img/flag/luffy.png" alt="jinbei" />
         </label>
         <label for="law">
           <input type="radio" name="character" id="law" value="law" />
-          <img src="images/flags/zoro.png" alt="law" />
+          <img src="img/flag/zoro.png" alt="law" />
         </label>
         <label for="franky">
           <input type="radio" name="character" id="franky" value="franky" />
-          <img src="images/flags/sanji.png" alt="franky" />
+          <img src="img/flag/sanji.png" alt="franky" />
         </label>
         <label for="brook">
           <input type="radio" name="character" id="brook" value="brook" />
-          <img src="images/flags/ace.png" alt="brook" />
+          <img src="img/flag/ace.png" alt="brook" />
         </label>
       </form>
     </section>
 
     <section class="stadium">
       <h2>CHOISIS UN TERRAIN</h2>
-      <p>
+      <!-- <p>
         Le terrain sera déterminé aléatoirement entre ton choix et celui de ton
         adversaire.
-      </p>
+      </p> -->
       <select name="stadium" id="stadium">
         <option value="log">Loguetown</option>
         <option value="eni">Enies Lobby</option>

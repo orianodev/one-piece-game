@@ -5,10 +5,37 @@
     <title>Play</title>
     <link rel="stylesheet" href="styles/style.css" />
     <script src="https://cdn.socket.io/4.8.0/socket.io.min.js"></script>
+    <script
+      src="https://kit.fontawesome.com/61fd51154e.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
-    <canvas id="canvas" height="380" width="650"></canvas>
+    <div id="play">
+      <div id="mobile-controls-left" style="display: none">
+        <button id="left">⬅</button>
+        <button id="up">⬆</button>
+        <button id="right">➡</button>
+        <button id="down">⬇</button>
+      </div>
+      <canvas id="canvas" height="380" width="650"></canvas>
+      <div id="mobile-controls-right" style="display: none">
+        <button id="regen">🔥</button>
+        <button id="atk">👊</button>
+        <button id="heal">❤</button>
+        <button id="super">🥊</button>
+      </div>
+    </div>
     <id id="wallpaper"></id>
+    <div id="popup" style="display: none">
+      <p id="message"></p>
+      <div id="btn">
+        <button id="home"><i class="fa-solid fa-home"></i>Sélection</button>
+        <button id="restart">
+          <i class="fa-solid fa-refresh"></i>Recommencer
+        </button>
+      </div>
+    </div>
     <div id="infos">
       <div id="player-1">
         <h4>Player 1</h4>

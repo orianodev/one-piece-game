@@ -1,3 +1,36 @@
+// server.ts
+interface PlayerAttributesDeltas {
+    img: string;
+    x: number;
+    y: number;
+    direction: MoveDirections;
+    speed: number;
+    hp: number;
+    healPow: number;
+    mana: number;
+    regenPow: number;
+    strength: number;
+    atkSpeed: number;
+    atks: Atk[];
+}
+
+interface PlayerAttributes extends PlayerAttributesDeltas {
+    id: PlayerId;
+    charId: CharacterID;
+    charName: string;
+    color: string;
+    score: number;
+    maxHp: number;
+    maxMana: number;
+    atkImg: string;
+    atkCost: number;
+    atks: Atk[];
+}
+
+type GameState = { A: PlayerAttributes | {}, B: PlayerAttributes | {} }
+type GameStateCollection = { [key: RoomID]: GameState }
+type RoomID = number;
+
 // index.html/selection.ts -> LocalStorage
 type Mode = "dual" | "solo";
 type StadiumChoice = "eni" | "imp" | "log" | "mar" | "sab" | "thr";
@@ -6,41 +39,44 @@ type CharacterID = "luffy" | "zoro" | "sanji" | "ace";
 
 type PlayerId = "A" | "B"
 type MoveDirections = "up" | "right" | "down" | "left";
-type AttackType = "simple" | "special"
+type AtkType = "simple" | "super"
 type Position = { x: number; y: number };
 
 // play.html/play.ts
 interface SettingsInt {
-    playW: number; // Player Width (default: 50)
-    playH: number; // Player Height (default: 50)
-    projW: number; // Projectile Width (default: 10)
-    projH: number; // Projectile Height (default: 10)
-    freezeDelay: number; // Delay before player can attack/heal/regen again (default: 150)
-    collisionDistance: number; // Distance for collision detection (default: 20)
-    specialManaMultiplier: number; // Multiplier for Special Attack (default: 10)
-    specialDamageMultiplier: number; // Multiplier for Special Attack (default: 4)
-    transformThreshold: number; // Threshold for low hp to transform (default: 0.1)
-    transformSpeedFactor: number; // Factor for multypling when transformed (default: 1.5)
-    transformStrengthFactor: number; // Factor for multypling when transformed (default: 1.2)
-    transformAttackSpeedFactor: number; // Factor for low hp to transform (default: 1.5)
-    transformRegenFactor: number; // Factor for low hp to transform (default: 1.5)
-    cursorSize: number; // Cursor Size (default: 10)
-    aiLevelInterval: { [key in AiLevel]: number }; // Interval for AI Level (default: 1000)
+    playW: number;
+    playH: number;
+    atkW: number;
+    atkH: number;
+    refreshRate: number;
+    freezeDelay: number;
+    superManaMult: number;
+    superDamageMult: number;
+    rageThreshold: number;
+    rageSpeedMult: number;
+    rageStrengthMult: number;
+    rageAtkSpeedMult: number;
+    rageRegenFactor: number;
+    collisionDist: number;
+    normalColor: string;
+    rageColor: string;
+    cursorSize: number;
+    aiLvlInterval: { [key in AiLevel]: number };
 }
 
 interface OneCharacterStats {
     name: string;
-    sprite: string;
+    img: string;
     color: string;
     speed: number;
     hp: number;
     maxHp: number;
-    healingPower: number;
+    healPow: number;
     mana: number;
     maxMana: number;
-    regenPower: number;
-    attackSprite: string;
-    attackCost: number;
-    attackSpeed: number;
-    attackStrength: number;
+    regenPow: number;
+    strength: number;
+    atkImg: string;
+    atkCost: number;
+    atkSpeed: number;
 }
