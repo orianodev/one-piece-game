@@ -3,6 +3,7 @@ const $dualModeToggle = document.querySelector("button.dual");
 const $soloModeToggle = document.querySelector("button.solo");
 const $dualModeSelection = document.querySelector("div.dual");
 const $soloModeSelection = document.querySelector("div.solo");
+// MODE SELECTION
 let modeSelected = "dual";
 function changeMode(mode) {
     if (mode === "solo") {

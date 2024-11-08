@@ -27,6 +27,11 @@ const setting = {
     transformAttackSpeedFactor: 3,
     transformRegenFactor: 3,
     cursorSize: 10,
+    aiLevelInterval: {
+        "easy": 100,
+        "medium": 50,
+        "hard": 30,
+    }
 };
 const defaultPosition = { A: { x: 0, y: $canvas.height / 2 - setting.playH }, B: { x: $canvas.width - setting.playW, y: $canvas.height / 2 - setting.playH } };
 const characterStats = {
@@ -139,58 +144,70 @@ class Player {
             $ctx.fillRect(this.x + setting.playW + 5, this.y + setting.playH / 2 - 5, setting.cursorSize, setting.cursorSize);
         _F.resetPen();
     }
-    attack() {
+    freeze() {
+        console.log("no freeze");
         if (isFrozen)
-            return;
+            return false;
+        console.log("frozen");
+        isFrozen = true;
+        unfreezeThisPlayer();
+        return true;
+    }
+    attack() {
+        if (this.id === "A" || _F.mode === "dual") {
+            if (!this.freeze())
+                return;
+        }
         if (this.mana < this.attackCost)
             return;
-        isFrozen = true;
         this.mana -= this.attackCost;
         const projectile = new Projectile(this.id, "simple", this.color, this.attackSprite, this.x + setting.playW / 2, this.y + setting.playH / 2, this.direction);
         this.thrownProjectiles.push(projectile);
         projectile.draw();
         this.updateServer();
-        unfreezeThisPlayer();
     }
     specialAttack() {
-        if (isFrozen)
-            return;
+        if (this.id === "A" || _F.mode === "dual") {
+            if (!this.freeze())
+                return;
+        }
         if (this.mana < this.attackCost * setting.specialManaMultiplier)
             return;
-        isFrozen = true;
         this.mana -= this.attackCost * setting.specialManaMultiplier;
         const projectile = new Projectile(this.id, "special", this.color, this.attackSprite, this.x + setting.playW / 2, this.y + setting.playH / 2, this.direction);
         this.thrownProjectiles.push(projectile);
         projectile.draw();
         this.updateServer();
-        unfreezeThisPlayer();
     }
     heal() {
-        if (isFrozen)
-            return;
+        if (this.id === "A" || _F.mode === "dual") {
+            if (!this.freeze())
+                return;
+        }
         if (this.hp + this.healingPower > this.maxHp)
             return;
-        isFrozen = true;
         this.hp += this.healingPower;
         this.updateServer();
-        unfreezeThisPlayer();
     }
     regen() {
-        if (isFrozen)
-            return;
+        if (this.id === "A" || _F.mode === "dual") {
+            if (!this.freeze())
+                return;
+        }
         if (this.mana + this.regenPower > this.maxMana)
             return;
-        isFrozen = true;
         this.mana += this.regenPower;
         this.updateServer();
-        unfreezeThisPlayer();
     }
     transform() {
         console.log("trying to transform");
-        if (isFrozen || this.isTransformed || this.hp > this.maxHp * setting.transformThreshold)
+        if (this.id === "A" || _F.mode === "dual") {
+            if (!this.freeze())
+                return;
+        }
+        if (this.isTransformed || this.hp > this.maxHp * setting.transformThreshold)
             return;
         this.isTransformed = true;
-        isFrozen = true;
         this.sprite = this.sprite.replace("players", "transform");
         console.log("New sprite:", this.sprite);
         this.speed *= setting.transformSpeedFactor;
@@ -203,7 +220,6 @@ class Player {
             $character2.style.color = "red";
         setTimeout(() => this.untransform(), 5000);
         this.updateServer();
-        unfreezeThisPlayer();
         console.log("successfully transformed");
     }
     untransform() {
@@ -325,17 +341,48 @@ class Projectile {
     }
 }
 class Fight {
-    constructor(roomId) {
+    constructor(roomId, mode) {
         this.thisPlayer = new Player("A", "luffy", "name", "black", "images/players/luffy.png", 0, defaultPosition.A.x, defaultPosition.A.y, "right", 10, 100, 100, 10, 100, 100, 10, "", 10, 10, 10, [], defaultPosition.B);
         this.opponentPlayer = new Player("B", "luffy", "name", "black", "images/players/zoro.png", 0, defaultPosition.B.x, defaultPosition.B.y, "right", 10, 100, 100, 10, 100, 100, 10, "", 10, 10, 10, [], defaultPosition.A);
         this.roomId = roomId;
+        this.mode = mode;
+    }
+    aiAction() {
+        const aiAction = ["move", "attack", "super", "heal", "regen", "transfo"];
+        const aiChoice = aiAction[Math.floor(Math.random() * aiAction.length)];
+        console.log(aiChoice);
+        if (aiChoice === "move") {
+            if (this.opponentPlayer.x < this.thisPlayer.x - setting.playW)
+                this.opponentPlayer.moveRight();
+            else if (this.opponentPlayer.x > this.thisPlayer.x + setting.playW)
+                this.opponentPlayer.moveLeft();
+            else if (this.opponentPlayer.y < this.thisPlayer.y - setting.playW)
+                this.opponentPlayer.moveDown();
+            else if (this.opponentPlayer.y > this.thisPlayer.y + setting.playH)
+                this.opponentPlayer.moveUp();
+        }
+        else if (aiChoice === "attack") {
+            return this.opponentPlayer.attack();
+        }
+        else if (aiChoice === "super") {
+            return this.opponentPlayer.specialAttack();
+        }
+        else if (aiChoice === "heal") {
+            return this.opponentPlayer.heal();
+        }
+        else if (aiChoice === "regen") {
+            return this.opponentPlayer.regen();
+        }
+        else if (aiChoice === "transfo") {
+            return this.opponentPlayer.transform();
+        }
     }
     rebuildPlayers(msg) {
-        if (myPlayerId === "A") {
+        if (thisPlayerId === "A") {
             _F.thisPlayer = new Player("A", msg.A.characterId, msg.A.characterName, msg.A.color, msg.A.sprite, msg.A.score, msg.A.x, msg.A.y, msg.A.direction, msg.A.speed, msg.A.hp, msg.A.maxHp, msg.A.healingPower, msg.A.mana, msg.A.maxMana, msg.A.regenPower, msg.A.attackSprite, msg.A.attackCost, msg.A.attackSpeed, msg.A.attackStrength, _F.rebuildProjectileArray(msg.A.thrownProjectiles), { x: msg.B.x, y: msg.B.y });
             _F.opponentPlayer = new Player("B", msg.B.characterId, msg.B.characterName, msg.B.color, msg.B.sprite, msg.B.score, msg.B.x, msg.B.y, msg.B.direction, msg.B.speed, msg.B.hp, msg.A.maxHp, msg.B.healingPower, msg.B.mana, msg.B.maxMana, msg.B.regenPower, msg.B.attackSprite, msg.B.attackCost, msg.B.attackSpeed, msg.B.attackStrength, _F.rebuildProjectileArray(msg.B.thrownProjectiles), { x: msg.A.x, y: msg.A.y });
         }
-        else if (myPlayerId === "B") {
+        else if (thisPlayerId === "B") {
             _F.thisPlayer = new Player("B", msg.B.characterId, msg.B.characterName, msg.B.color, msg.B.sprite, msg.B.score, msg.B.x, msg.B.y, msg.B.direction, msg.B.speed, msg.B.hp, msg.A.maxHp, msg.B.healingPower, msg.B.mana, msg.B.maxMana, msg.B.regenPower, msg.B.attackSprite, msg.B.attackCost, msg.B.attackSpeed, msg.B.attackStrength, _F.rebuildProjectileArray(msg.B.thrownProjectiles), { x: msg.A.x, y: msg.A.y });
             _F.opponentPlayer = new Player("A", msg.A.characterId, msg.A.characterName, msg.A.color, msg.A.sprite, msg.A.score, msg.A.x, msg.A.y, msg.A.direction, msg.A.speed, msg.A.hp, msg.A.maxHp, msg.A.healingPower, msg.A.mana, msg.A.maxMana, msg.A.regenPower, msg.A.attackSprite, msg.A.attackCost, msg.A.attackSpeed, msg.A.attackStrength, _F.rebuildProjectileArray(msg.A.thrownProjectiles), { x: msg.B.x, y: msg.B.y });
         }
@@ -391,8 +438,16 @@ class Fight {
         }
     }
 }
-const _F = new Fight(parseInt(localStorage.getItem("roomId")));
-let myPlayerId;
+let thisPlayerId;
+const mode = localStorage.getItem("mode");
+const roomId = parseInt(localStorage.getItem("roomId"));
+const _F = new Fight(roomId, mode);
+if (_F.mode === "dual") {
+    console.log(mode, _F.mode, roomId, _F.roomId);
+    socket.emit("whereIsthisPlayerId", { roomId: _F.roomId });
+}
+else if (_F.mode === "solo")
+    soloGameSetup();
 const stadium = localStorage.getItem("stadiumChoice");
 const $wallpaper = document.querySelector("#wallpaper");
 $wallpaper.style.backgroundImage = `url(/images/wallpapers/${stadium}.webp)`;
@@ -400,32 +455,55 @@ let isFrozen = false;
 function unfreezeThisPlayer() {
     setTimeout(() => isFrozen = false, setting.freezeDelay);
 }
-socket.emit("whereIsMyPlayerId", { roomId: _F.roomId });
-socket.on("whereIsMyPlayerId", (playerId) => {
-    if (!myPlayerId)
-        myPlayerId = playerId;
-    const myScore = parseInt(localStorage.getItem("score"));
-    const myCharacterId = localStorage.getItem("characterId");
-    let pickedCharacter;
-    switch (myCharacterId) {
-        case "luffy":
-            pickedCharacter = characterStats.luffy;
-            break;
-        case "zoro":
-            pickedCharacter = characterStats.zoro;
-            break;
-        case "sanji":
-            pickedCharacter = characterStats.sanji;
-            break;
-        case "ace":
-            pickedCharacter = characterStats.ace;
-            break;
-        default:
-            pickedCharacter = characterStats.luffy;
-            break;
-    }
-    const myPlayer = new Player(playerId, myCharacterId, pickedCharacter.name, pickedCharacter.color, pickedCharacter.sprite, myScore, defaultPosition[playerId].x, defaultPosition[playerId].y, myPlayerId === "A" ? "right" : "left", pickedCharacter.speed, pickedCharacter.hp, pickedCharacter.maxHp, pickedCharacter.healingPower, pickedCharacter.mana, pickedCharacter.maxMana, pickedCharacter.regenPower, pickedCharacter.attackSprite, pickedCharacter.attackCost, pickedCharacter.attackSpeed, pickedCharacter.attackStrength, [], defaultPosition[playerId === "A" ? "B" : "A"]);
-    socket.emit("myPlayerStats", { myPlayer, roomId: _F.roomId, playerId });
+function soloGameSetup() {
+    const thisScore = parseInt(localStorage.getItem("score"));
+    thisPlayerId = "A";
+    const thisCharacterId = localStorage.getItem("characterId");
+    const thisCharacter = characterStats[thisCharacterId];
+    const thisPlayer = new Player("A", thisCharacterId, thisCharacter.name, thisCharacter.color, thisCharacter.sprite, thisScore, defaultPosition.A.x, defaultPosition.A.y, "right", thisCharacter.speed, thisCharacter.hp, thisCharacter.maxHp, thisCharacter.healingPower, thisCharacter.mana, thisCharacter.maxMana, thisCharacter.regenPower, thisCharacter.attackSprite, thisCharacter.attackCost, thisCharacter.attackSpeed, thisCharacter.attackStrength, [], defaultPosition.B);
+    const charactersIdList = Object.keys(characterStats).filter((id) => id !== thisCharacterId);
+    const aiCharacterId = charactersIdList[Math.floor(Math.random() * charactersIdList.length)];
+    const aiCharacter = characterStats[aiCharacterId];
+    const aiPlayer = new Player("B", aiCharacterId, aiCharacter.name, aiCharacter.color, aiCharacter.sprite, 0, defaultPosition.B.x, defaultPosition.B.y, "left", aiCharacter.speed, aiCharacter.hp, aiCharacter.maxHp, aiCharacter.healingPower, aiCharacter.mana, aiCharacter.maxMana, aiCharacter.regenPower, aiCharacter.attackSprite, aiCharacter.attackCost, aiCharacter.attackSpeed, aiCharacter.attackStrength, [], defaultPosition.B);
+    const aiLevel = localStorage.getItem("aiLevel");
+    _F.rebuildPlayers({ A: thisPlayer, B: aiPlayer });
+    $character1.innerText = thisPlayer.characterName;
+    $score1.innerText = thisScore.toString();
+    $character2.innerText = aiPlayer.characterName;
+    $score2.innerText = "0";
+    soloGameInterval();
+    aiActionInterval(aiLevel);
+}
+function soloGameInterval() {
+    setInterval(() => {
+        if (_F.thisPlayer.hp <= 0 || _F.opponentPlayer.hp <= 0) {
+            const winnerId = _F.thisPlayer.hp <= 0 ? "B" : "A";
+            const winnerName = _F.thisPlayer.hp <= 0 ? _F.opponentPlayer.characterName : _F.thisPlayer.characterName;
+            if (winnerId === thisPlayerId)
+                localStorage.setItem("score", (_F.thisPlayer.score + 1).toString());
+            alert(`Player ${winnerId === "A" ? "1" : "2"} has won with ${winnerName}!`);
+            window.location.reload();
+        }
+        _F.thisPlayer.thrownProjectiles.forEach((projectile) => projectile.move());
+        _F.opponentPlayer.thrownProjectiles.forEach((projectile) => projectile.move());
+        _F.reDrawAll();
+    }, 50);
+}
+function aiActionInterval(aiLevel) {
+    setInterval(() => {
+        _F.aiAction();
+    }, setting.aiLevelInterval[aiLevel]);
+}
+socket.on("whereIsThisPlayerId", (playerId) => {
+    console.log(thisPlayerId);
+    if (!thisPlayerId)
+        thisPlayerId = playerId;
+    console.log("this player id: ", thisPlayerId);
+    const thisScore = parseInt(localStorage.getItem("score"));
+    const thisCharacterId = localStorage.getItem("characterId");
+    let thisCharacter = characterStats[thisCharacterId];
+    const thisPlayer = new Player(playerId, thisCharacterId, thisCharacter.name, thisCharacter.color, thisCharacter.sprite, thisScore, defaultPosition[playerId].x, defaultPosition[playerId].y, thisPlayerId === "A" ? "right" : "left", thisCharacter.speed, thisCharacter.hp, thisCharacter.maxHp, thisCharacter.healingPower, thisCharacter.mana, thisCharacter.maxMana, thisCharacter.regenPower, thisCharacter.attackSprite, thisCharacter.attackCost, thisCharacter.attackSpeed, thisCharacter.attackStrength, [], defaultPosition[playerId === "A" ? "B" : "A"]);
+    socket.emit("thisPlayerStats", { thisPlayer, roomId: _F.roomId, playerId });
 });
 socket.on("start", (msg) => {
     _F.rebuildPlayers(msg);
@@ -450,7 +528,7 @@ socket.on("stop", () => {
     window.location.href = "/";
 });
 socket.on("gameOver", (msg) => {
-    if (msg.id === myPlayerId)
+    if (msg.id === thisPlayerId)
         localStorage.setItem("score", (_F.thisPlayer.score + 1).toString());
     alert(`Player ${msg.id === "A" ? "1" : "2"} has won with ${msg.name}! You will be redirected to the selection page.`);
     window.location.href = "/";

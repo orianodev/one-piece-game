@@ -5,7 +5,6 @@ const $dualModeSelection = document.querySelector("div.dual") as HTMLDivElement;
 const $soloModeSelection = document.querySelector("div.solo") as HTMLDivElement;
 
 // MODE SELECTION
-type Mode = "dual" | "solo";
 let modeSelected: Mode = "dual"
 
 function changeMode(mode: Mode) {
