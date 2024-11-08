@@ -35,7 +35,7 @@ type RoomID = number;
 type Mode = "dual" | "solo";
 type StadiumChoice = "eni" | "imp" | "log" | "mar" | "sab" | "thr";
 type AiLevel = "easy" | "medium" | "hard";
-type CharacterID = "luffy" | "zoro" | "sanji" | "ace";
+type CharacterID = "luffy" | "zoro" | "sanji" | "ace" | "jinbe" | "law" | "franky" | "brook";
 
 type PlayerId = "A" | "B"
 type MoveDirections = "up" | "right" | "down" | "left";

@@ -20,7 +20,7 @@ const def = {
     atkH: 30,
     refreshRate: 50,
     freezeDelay: 150,
-    collisionDist: 30,
+    collisionDist: 40,
     superManaMult: 10,
     superDamageMult: 5,
     rageThreshold: 0.2,
@@ -45,43 +45,43 @@ const characterStats = {
         img: "/img/players/luffy.png",
         color: "red",
         speed: 20,
-        hp: 40,
-        maxHp: 200,
+        hp: 250,
+        maxHp: 350,
         healPow: 5,
-        mana: 100,
-        maxMana: 100,
+        mana: 90,
+        maxMana: 250,
         regenPow: 10,
-        strength: 10,
+        strength: 11,
         atkImg: "/img/atk/punch.png",
-        atkCost: 10,
+        atkCost: 11,
         atkSpeed: 20,
     },
     zoro: {
         name: "Roronoa Zoro",
         img: "/img/players/zoro.png",
         color: "green",
-        speed: 13,
-        hp: 40,
-        maxHp: 190,
+        speed: 15,
+        hp: 220,
+        maxHp: 300,
         healPow: 4,
         mana: 100,
-        maxMana: 100,
+        maxMana: 200,
         regenPow: 10,
         strength: 9,
         atkImg: "/img/atk/tornado.png",
         atkCost: 10,
-        atkSpeed: 25,
+        atkSpeed: 22,
     },
     sanji: {
         name: "Vinsmoke Sanji",
         img: "/img/players/sanji.png",
         color: "yellow",
-        speed: 15,
-        hp: 40,
-        maxHp: 170,
+        speed: 16,
+        hp: 200,
+        maxHp: 275,
         healPow: 3,
-        mana: 100,
-        maxMana: 100,
+        mana: 150,
+        maxMana: 200,
         regenPow: 10,
         strength: 10,
         atkImg: "/img/atk/kick.png",
@@ -93,16 +93,80 @@ const characterStats = {
         img: "/img/players/ace.png",
         color: "orange",
         speed: 18,
-        hp: 40,
+        hp: 250,
         maxHp: 250,
         healPow: 3,
-        mana: 100,
-        maxMana: 100,
+        mana: 120,
+        maxMana: 250,
         regenPow: 10,
         strength: 15,
-        atkImg: "/img/atk/flame.png",
+        atkImg: "/img/atk/fireball.png",
         atkCost: 10,
-        atkSpeed: 17,
+        atkSpeed: 18,
+    },
+    jinbe: {
+        name: "Jinbei",
+        img: "/img/players/jinbe.png",
+        color: "blue",
+        speed: 10,
+        hp: 300,
+        maxHp: 400,
+        healPow: 3,
+        mana: 140,
+        maxMana: 300,
+        regenPow: 11,
+        strength: 20,
+        atkImg: "/img/atk/wave.png",
+        atkCost: 19,
+        atkSpeed: 8,
+    },
+    law: {
+        name: "Trafalgar D Law",
+        img: "/img/players/law.png",
+        color: "brown",
+        speed: 20,
+        hp: 150,
+        maxHp: 200,
+        healPow: 10,
+        mana: 100,
+        maxMana: 190,
+        regenPow: 15,
+        strength: 11,
+        atkImg: "/img/atk/slash.png",
+        atkCost: 10,
+        atkSpeed: 20,
+    },
+    franky: {
+        name: "Franky",
+        img: "/img/players/franky.png",
+        color: "blue",
+        speed: 18,
+        hp: 200,
+        maxHp: 250,
+        healPow: 2,
+        mana: 150,
+        maxMana: 300,
+        regenPow: 12,
+        strength: 15,
+        atkImg: "/img/atk/canon.png",
+        atkCost: 10,
+        atkSpeed: 20,
+    },
+    brook: {
+        name: "Brook",
+        img: "/img/players/brook.png",
+        color: "white",
+        speed: 24,
+        hp: 150,
+        maxHp: 350,
+        healPow: 3,
+        mana: 120,
+        maxMana: 200,
+        regenPow: 10,
+        strength: 15,
+        atkImg: "/img/atk/music.png",
+        atkCost: 10,
+        atkSpeed: 20,
     }
 };
 // PLAYER
@@ -279,7 +343,8 @@ class Atk {
     draw() {
         _F.setShadow(this.color);
         const newImg = new Image(def.playW, def.playH);
-        newImg.src = this.img.replace(".png", "-" + this.direction[0] + ".png");
+        // newImg.src = this.img.replace(".png", "-" + this.direction[0] + ".png");
+        newImg.src = this.img;
         if (this.type === "simple")
             $ctx.drawImage(newImg, this.x, this.y, def.atkW, def.atkH);
         if (this.type === "super")
@@ -337,22 +402,22 @@ class Fight {
         while (attempt < maxAttempts) {
             const aiChoice = aiActions[Math.floor(Math.random() * aiActions.length)];
             if (aiChoice === "move") {
-                if (this.oppPlayer.x < this.thisPlayer.x - def.playW / 2) {
+                if (this.oppPlayer.x < this.thisPlayer.x - def.playW / 3) {
                     this.oppPlayer.moveRight();
                     this.oppPlayer.moveRight();
                     break;
                 }
-                else if (this.oppPlayer.x > this.thisPlayer.x + def.playW / 2) {
+                else if (this.oppPlayer.x > this.thisPlayer.x + def.playW / 3) {
                     this.oppPlayer.moveLeft();
                     this.oppPlayer.moveLeft();
                     break;
                 }
-                else if (this.oppPlayer.y < this.thisPlayer.y - def.playW / 2) {
+                else if (this.oppPlayer.y < this.thisPlayer.y - def.playW / 3) {
                     this.oppPlayer.moveDown();
                     this.oppPlayer.moveDown();
                     break;
                 }
-                else if (this.oppPlayer.y > this.thisPlayer.y + def.playH / 2) {
+                else if (this.oppPlayer.y > this.thisPlayer.y + def.playH / 3) {
                     this.oppPlayer.moveUp();
                     this.oppPlayer.moveUp();
                     break;
@@ -488,7 +553,9 @@ class Fight {
 // MATCHMAKING
 const stadium = localStorage.getItem("stadiumChoice");
 const $wallpaper = document.querySelector("#wallpaper");
+const $loadingScreen = document.querySelector("#loading-screen");
 $wallpaper.style.backgroundImage = `url(/img/wallpaper/${stadium}.webp)`;
+const randomImg = Math.floor(Math.random() * 5);
 let thisPlayerId;
 const mode = localStorage.getItem("mode");
 const roomId = parseInt(localStorage.getItem("roomId"));
@@ -558,6 +625,8 @@ function dualGameRefresh() {
 socket.on("getId", (playerId) => {
     if (!thisPlayerId)
         thisPlayerId = playerId;
+    $loadingScreen.style.backgroundImage = `url(/img/wait/${randomImg}.gif)`;
+    displayPopup("En attente de l'adversaire...", false);
     const thisScore = parseInt(localStorage.getItem("score"));
     const thisCharacterId = localStorage.getItem("characterId");
     const thisCharacter = characterStats[thisCharacterId];
@@ -567,6 +636,8 @@ socket.on("getId", (playerId) => {
     socket.emit("postPlayer", { thisPlayer, roomId: _F.roomId, playerId });
 });
 socket.on("start", (msg) => {
+    $loadingScreen.style.display = "none";
+    $popup.style.display = "none";
     thisPlayerId === "A" ? _F.buildPlayers(msg.A, msg.B) : _F.buildPlayers(msg.B, msg.A);
     const playerA = _F.thisPlayer.id === "A" ? _F.thisPlayer : _F.oppPlayer;
     const playerB = _F.thisPlayer.id === "B" ? _F.thisPlayer : _F.oppPlayer;
