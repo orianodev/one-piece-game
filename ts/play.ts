@@ -21,14 +21,19 @@ type AiLevel = "easy" | "medium" | "hard";
 type StadiumChoice = "eni" | "imp" | "log" | "mar" | "sab" | "thr";
 
 interface SettingsInt {
-    playH: number; // Player Height (default: 50)
     playW: number; // Player Width (default: 50)
-    projH: number; // Projectile Height (default: 10)
+    playH: number; // Player Height (default: 50)
     projW: number; // Projectile Width (default: 10)
+    projH: number; // Projectile Height (default: 10)
     freezeDelay: number; // Delay before player can attack/heal/regen again (default: 150)
     collisionDistance: number; // Distance for collision detection (default: 20)
     specialManaMultiplier: number; // Multiplier for Special Attack (default: 10)
     specialDamageMultiplier: number; // Multiplier for Special Attack (default: 4)
+    transformThreshold: number; // Threshold for low hp to transform (default: 0.1)
+    transformSpeedFactor: number; // Factor for multypling when transformed (default: 1.5)
+    transformStrengthFactor: number; // Factor for multypling when transformed (default: 1.2)
+    transformAttackSpeedFactor: number; // Factor for low hp to transform (default: 1.5)
+    transformRegenFactor: number; // Factor for low hp to transform (default: 1.5)
     cursorSize: number; // Cursor Size (default: 10)
 }
 interface CharacterStats {
@@ -57,6 +62,11 @@ const setting: SettingsInt = {
     collisionDistance: 30,
     specialManaMultiplier: 10,
     specialDamageMultiplier: 4,
+    transformThreshold: 0.1,
+    transformSpeedFactor: 3,
+    transformStrengthFactor: 3,
+    transformAttackSpeedFactor: 3,
+    transformRegenFactor: 3,
     cursorSize: 10,
 }
 const defaultPosition: { A: Position, B: Position } = { A: { x: 0, y: $canvas.height / 2 - setting.playH }, B: { x: $canvas.width - setting.playW, y: $canvas.height / 2 - setting.playH } }
@@ -127,33 +137,35 @@ const characterStats: { luffy: CharacterStats, zoro: CharacterStats, sanji: Char
         attackStrength: 15,
     }
 }
+type CharacterID = "luffy" | "zoro" | "sanji" | "ace";
 
 // PLAYER
 class Player {
-    public id: PlayerId;
-    public characterId: string;
-    public characterName: string;
-    public color: string;
+    readonly id: PlayerId;
+    readonly characterId: CharacterID;
+    readonly characterName: string;
+    readonly color: string;
     public sprite: string;
-    public score: number;
+    readonly score: number;
     public x: number;
     public y: number;
     public direction: MoveDirections;
     public speed: number;
     public hp: number;
-    public maxHp: number;
+    readonly maxHp: number;
     public healingPower: number;
     public mana: number;
     public maxMana: number;
     public regenPower: number;
-    public attackSprite: string;
-    public attackCost: number;
+    readonly attackSprite: string;
+    readonly attackCost: number;
     public attackSpeed: number;
     public attackStrength: number;
     public thrownProjectiles: Projectile[];
+    protected isTransformed: boolean = false;
     public opponentPosition: Position;
 
-    constructor(id: PlayerId, characterId: string, characterName: string, color: string, sprite: string, score: number, x: number, y: number, direction: MoveDirections, speed: number, hp: number, maxHp: number, healingPower: number, mana: number, maxMana: number, regenPower: number, attackSprite: string, attackCost: number, attackSpeed: number, attackStrength: number, thrownProjectile: Projectile[] | [], opponentPosition: Position) {
+    constructor(id: PlayerId, characterId: CharacterID, characterName: string, color: string, sprite: string, score: number, x: number, y: number, direction: MoveDirections, speed: number, hp: number, maxHp: number, healingPower: number, mana: number, maxMana: number, regenPower: number, attackSprite: string, attackCost: number, attackSpeed: number, attackStrength: number, thrownProjectile: Projectile[] | [], opponentPosition: Position) {
         this.id = id
         this.characterId = characterId
         this.characterName = characterName
@@ -236,6 +248,37 @@ class Player {
         this.mana += this.regenPower
         this.updateServer()
         unfreezeThisPlayer();
+    }
+    transform() {
+        console.log("trying to transform");
+        if (isFrozen || this.isTransformed || this.hp > this.maxHp * setting.transformThreshold) return
+        this.isTransformed = true;
+        isFrozen = true;
+        this.sprite = this.sprite.replace("players", "transform")
+        console.log("New sprite:", this.sprite);
+        this.speed *= setting.transformSpeedFactor
+        this.attackStrength *= setting.transformStrengthFactor
+        this.attackSpeed *= setting.transformAttackSpeedFactor
+        this.regenPower *= setting.transformRegenFactor
+        if (this.id === "A") $character1.style.color = "red"
+        else if (this.id === "B") $character2.style.color = "red"
+        setTimeout(() => this.untransform(), 5000)
+        this.updateServer()
+        unfreezeThisPlayer()
+        console.log("successfully transformed");
+    }
+    untransform() {
+        console.log("UNtransform");
+        console.log(characterStats[this.characterId].sprite);
+        this.sprite = characterStats[this.characterId].sprite
+        console.log(this.speed);
+        this.speed = characterStats[this.characterId].speed
+        console.log(this.speed);
+        this.attackStrength = characterStats[this.characterId].attackStrength
+        this.regenPower = characterStats[this.characterId].regenPower
+        if (this.id === "A") $character1.style.color = "whitesmoke"
+        else if (this.id === "B") $character2.style.color = "whitesmoke"
+        this.updateServer()
     }
     moveUp() {
         if (this.y < 0) return
@@ -330,8 +373,8 @@ class Projectile {
 }
 
 class Fight {
-    public thisPlayer: Player = new Player("A", "default", "name", "black", "images/players/luffy.png", 0, defaultPosition.A.x, defaultPosition.A.y, "right", 10, 100, 100, 10, 100, 100, 10, "", 10, 10, 10, [], defaultPosition.B);
-    public opponentPlayer: Player = new Player("B", "default", "name", "black", "images/players/zoro.png", 0, defaultPosition.B.x, defaultPosition.B.y, "right", 10, 100, 100, 10, 100, 100, 10, "", 10, 10, 10, [], defaultPosition.A);
+    public thisPlayer: Player = new Player("A", "luffy", "name", "black", "images/players/luffy.png", 0, defaultPosition.A.x, defaultPosition.A.y, "right", 10, 100, 100, 10, 100, 100, 10, "", 10, 10, 10, [], defaultPosition.B);
+    public opponentPlayer: Player = new Player("B", "luffy", "name", "black", "images/players/zoro.png", 0, defaultPosition.B.x, defaultPosition.B.y, "right", 10, 100, 100, 10, 100, 100, 10, "", 10, 10, 10, [], defaultPosition.A);
     public roomId: number;
     constructor(roomId: number) {
         this.roomId = roomId
@@ -356,8 +399,10 @@ class Fight {
         const playerB = this.thisPlayer.id === "B" ? this.thisPlayer : this.opponentPlayer;
 
         $hp1.innerText = playerA.hp.toString();
+        if (playerA.hp <= playerA.maxHp * setting.transformThreshold) $hp1.style.color = "red";
         $mana1.innerText = playerA.mana.toString();
         $hp2.innerText = playerB.hp.toString();
+        if (playerB.hp <= playerB.maxHp * setting.transformThreshold) $hp2.style.color = "red";
         $mana2.innerText = playerB.mana.toString();
     }
     rebuildProjectileArray(flattedProjectileArray: Projectile[]): Projectile[] {
@@ -411,7 +456,7 @@ socket.emit("whereIsMyPlayerId", { roomId: _F.roomId });
 socket.on("whereIsMyPlayerId", (playerId: PlayerId) => {
     if (!myPlayerId) myPlayerId = playerId;
     const myScore = parseInt(localStorage.getItem("score") as string) as number;
-    const myCharacterId = localStorage.getItem("characterId") as string;
+    const myCharacterId: CharacterID = localStorage.getItem("characterId") as CharacterID;
     let pickedCharacter: CharacterStats;
     switch (myCharacterId) {
         case "luffy":
@@ -492,6 +537,9 @@ document.addEventListener("keydown", (event: KeyboardEvent) => {
             break;
         case "s":
             _F.thisPlayer.specialAttack();
+            break;
+        case " ":
+            _F.thisPlayer.transform();
             break;
     }
 });

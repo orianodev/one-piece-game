@@ -21,6 +21,11 @@ const setting = {
     collisionDistance: 30,
     specialManaMultiplier: 10,
     specialDamageMultiplier: 4,
+    transformThreshold: 0.1,
+    transformSpeedFactor: 3,
+    transformStrengthFactor: 3,
+    transformAttackSpeedFactor: 3,
+    transformRegenFactor: 3,
     cursorSize: 10,
 };
 const defaultPosition = { A: { x: 0, y: $canvas.height / 2 - setting.playH }, B: { x: $canvas.width - setting.playW, y: $canvas.height / 2 - setting.playH } };
@@ -93,6 +98,7 @@ const characterStats = {
 // PLAYER
 class Player {
     constructor(id, characterId, characterName, color, sprite, score, x, y, direction, speed, hp, maxHp, healingPower, mana, maxMana, regenPower, attackSprite, attackCost, attackSpeed, attackStrength, thrownProjectile, opponentPosition) {
+        this.isTransformed = false;
         this.id = id;
         this.characterId = characterId;
         this.characterName = characterName;
@@ -178,6 +184,42 @@ class Player {
         this.mana += this.regenPower;
         this.updateServer();
         unfreezeThisPlayer();
+    }
+    transform() {
+        console.log("trying to transform");
+        if (isFrozen || this.isTransformed || this.hp > this.maxHp * setting.transformThreshold)
+            return;
+        this.isTransformed = true;
+        isFrozen = true;
+        this.sprite = this.sprite.replace("players", "transform");
+        console.log("New sprite:", this.sprite);
+        this.speed *= setting.transformSpeedFactor;
+        this.attackStrength *= setting.transformStrengthFactor;
+        this.attackSpeed *= setting.transformAttackSpeedFactor;
+        this.regenPower *= setting.transformRegenFactor;
+        if (this.id === "A")
+            $character1.style.color = "red";
+        else if (this.id === "B")
+            $character2.style.color = "red";
+        setTimeout(() => this.untransform(), 5000);
+        this.updateServer();
+        unfreezeThisPlayer();
+        console.log("successfully transformed");
+    }
+    untransform() {
+        console.log("UNtransform");
+        console.log(characterStats[this.characterId].sprite);
+        this.sprite = characterStats[this.characterId].sprite;
+        console.log(this.speed);
+        this.speed = characterStats[this.characterId].speed;
+        console.log(this.speed);
+        this.attackStrength = characterStats[this.characterId].attackStrength;
+        this.regenPower = characterStats[this.characterId].regenPower;
+        if (this.id === "A")
+            $character1.style.color = "whitesmoke";
+        else if (this.id === "B")
+            $character2.style.color = "whitesmoke";
+        this.updateServer();
     }
     moveUp() {
         if (this.y < 0)
@@ -284,8 +326,8 @@ class Projectile {
 }
 class Fight {
     constructor(roomId) {
-        this.thisPlayer = new Player("A", "default", "name", "black", "images/players/luffy.png", 0, defaultPosition.A.x, defaultPosition.A.y, "right", 10, 100, 100, 10, 100, 100, 10, "", 10, 10, 10, [], defaultPosition.B);
-        this.opponentPlayer = new Player("B", "default", "name", "black", "images/players/zoro.png", 0, defaultPosition.B.x, defaultPosition.B.y, "right", 10, 100, 100, 10, 100, 100, 10, "", 10, 10, 10, [], defaultPosition.A);
+        this.thisPlayer = new Player("A", "luffy", "name", "black", "images/players/luffy.png", 0, defaultPosition.A.x, defaultPosition.A.y, "right", 10, 100, 100, 10, 100, 100, 10, "", 10, 10, 10, [], defaultPosition.B);
+        this.opponentPlayer = new Player("B", "luffy", "name", "black", "images/players/zoro.png", 0, defaultPosition.B.x, defaultPosition.B.y, "right", 10, 100, 100, 10, 100, 100, 10, "", 10, 10, 10, [], defaultPosition.A);
         this.roomId = roomId;
     }
     rebuildPlayers(msg) {
@@ -308,8 +350,12 @@ class Fight {
         const playerA = this.thisPlayer.id === "A" ? this.thisPlayer : this.opponentPlayer;
         const playerB = this.thisPlayer.id === "B" ? this.thisPlayer : this.opponentPlayer;
         $hp1.innerText = playerA.hp.toString();
+        if (playerA.hp <= playerA.maxHp * setting.transformThreshold)
+            $hp1.style.color = "red";
         $mana1.innerText = playerA.mana.toString();
         $hp2.innerText = playerB.hp.toString();
+        if (playerB.hp <= playerB.maxHp * setting.transformThreshold)
+            $hp2.style.color = "red";
         $mana2.innerText = playerB.mana.toString();
     }
     rebuildProjectileArray(flattedProjectileArray) {
@@ -434,6 +480,9 @@ document.addEventListener("keydown", (event) => {
             break;
         case "s":
             _F.thisPlayer.specialAttack();
+            break;
+        case " ":
+            _F.thisPlayer.transform();
             break;
     }
 });
