@@ -53,6 +53,7 @@ interface SettingsInt {
     superManaMult: number;
     superDamageMult: number;
     rageThreshold: number;
+    rageDuration: number;
     rageSpeedMult: number;
     rageStrengthMult: number;
     rageAtkSpeedMult: number;

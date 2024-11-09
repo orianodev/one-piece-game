@@ -24,6 +24,7 @@ const def = {
     superManaMult: 10,
     superDamageMult: 5,
     rageThreshold: 0.2,
+    rageDuration: 10000,
     rageSpeedMult: 1.3,
     rageStrengthMult: 1.3,
     rageAtkSpeedMult: 1.3,
@@ -108,17 +109,17 @@ const characterStats = {
         name: "Jinbei",
         img: "/img/players/jinbe.png",
         color: "blue",
-        speed: 10,
+        speed: 9,
         hp: 300,
         maxHp: 400,
-        healPow: 3,
+        healPow: 2,
         mana: 140,
         maxMana: 300,
-        regenPow: 11,
+        regenPow: 5,
         strength: 20,
         atkImg: "/img/atk/wave.png",
         atkCost: 19,
-        atkSpeed: 8,
+        atkSpeed: 9,
     },
     law: {
         name: "Trafalgar D Law",
@@ -272,7 +273,7 @@ class Player {
             $character1.style.color = "red";
         else if (this.id === "B")
             $character2.style.color = "red";
-        setTimeout(() => this.unRage(), 5000);
+        setTimeout(() => this.unRage(), def.rageDuration);
         _F.updateServer();
     }
     unRage() {
@@ -284,6 +285,7 @@ class Player {
             $character1.style.color = "whitesmoke";
         else if (this.id === "B")
             $character2.style.color = "whitesmoke";
+        this.isRage = false;
         _F.updateServer();
     }
     getRage() {
@@ -292,9 +294,8 @@ class Player {
     moveUp() {
         if (this.y < 0)
             return;
-        const oppPos = { x: _F.oppPlayer.x, y: _F.oppPlayer.y };
-        if (this.y == oppPos.y + def.playH && this.x + def.playW > oppPos.x && this.x < oppPos.x + def.playW)
-            return;
+        // const oppPos: Position = { x: _F.oppPlayer.x, y: _F.oppPlayer.y }
+        // if (this.y == oppPos!.y + def.playH && this.x + def.playW > oppPos!.x && this.x < oppPos!.x + def.playW) return
         this.dir = "up";
         this.y -= this.speed;
         _F.updateServer();
@@ -302,9 +303,8 @@ class Player {
     moveDown() {
         if (this.y > $canvas.height - def.playH)
             return;
-        const oppPos = { x: _F.oppPlayer.x, y: _F.oppPlayer.y };
-        if (this.y + def.playH == oppPos.y && this.x + def.playW > oppPos.x && this.x < oppPos.x + def.playW)
-            return;
+        // const oppPos: Position = { x: _F.oppPlayer.x, y: _F.oppPlayer.y }
+        // if (this.y + def.playH == oppPos!.y && this.x + def.playW > oppPos!.x && this.x < oppPos!.x + def.playW) return
         this.dir = "down";
         this.y += this.speed;
         _F.updateServer();
@@ -312,9 +312,8 @@ class Player {
     moveLeft() {
         if (this.x < 0)
             return;
-        const oppPos = { x: _F.oppPlayer.x, y: _F.oppPlayer.y };
-        if (this.y + def.playH > oppPos.y && this.y < oppPos.y + def.playH && this.x == oppPos.x + def.playW)
-            return;
+        // const oppPos: Position = { x: _F.oppPlayer.x, y: _F.oppPlayer.y }
+        // if (this.y + def.playH > oppPos!.y && this.y < oppPos!.y + def.playH && this.x == oppPos!.x + def.playW) return
         this.dir = "left";
         this.x -= this.speed;
         _F.updateServer();
@@ -322,9 +321,8 @@ class Player {
     moveRight() {
         if (this.x > $canvas.width - def.playW)
             return;
-        const oppPos = { x: _F.oppPlayer.x, y: _F.oppPlayer.y };
-        if (this.y + def.playH > oppPos.y && this.y < oppPos.y + def.playH && this.x + def.playW == oppPos.x)
-            return;
+        // const oppPos: Position = { x: _F.oppPlayer.x, y: _F.oppPlayer.y }
+        // if (this.y + def.playH > oppPos!.y && this.y < oppPos!.y + def.playH && this.x + def.playW == oppPos!.x) return
         this.dir = "right";
         this.x += this.speed;
         _F.updateServer();
