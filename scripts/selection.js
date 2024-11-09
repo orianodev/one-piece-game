@@ -44,9 +44,17 @@ $randomId.addEventListener("click", () => {
     const generatedRoomId = Math.floor(Math.random() * 1000);
     $textId.value = generatedRoomId.toString();
 });
-// VALIDATION AND REDIRECTION
+// AI LEVEL SELECTION
 const $aiLvlSelect = document.querySelector("select#ai-level");
+const previousAiLvl = localStorage.getItem("aiLevel");
+if (previousAiLvl)
+    $aiLvlSelect.value = previousAiLvl;
+// STADIUM SELECTION
 const $stadiumSelect = document.querySelector("select#stadium");
+const previousStadium = localStorage.getItem("stadium");
+if (previousStadium)
+    $stadiumSelect.value = previousStadium;
+// VALIDATION AND REDIRECTION
 const $validate = document.querySelector("#submit");
 $validate.addEventListener("click", () => {
     const $selectedCharacter = document.querySelector('input[name="character"]:checked');
@@ -58,6 +66,6 @@ $validate.addEventListener("click", () => {
     localStorage.setItem("roomId", $textId.value);
     localStorage.setItem("characterId", $selectedCharacter.value);
     localStorage.setItem("aiLevel", $aiLvlSelect.value);
-    localStorage.setItem("stadiumChoice", $stadiumSelect.value);
+    localStorage.setItem("stadium", $stadiumSelect.value);
     window.location.href = "/play.html";
 });

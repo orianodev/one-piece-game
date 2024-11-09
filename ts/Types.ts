@@ -1,16 +1,11 @@
 // server.ts
 interface PlayerAttributesDeltas {
-    img: string;
+    rage: boolean;
     x: number;
     y: number;
-    direction: MoveDirections;
-    speed: number;
+    dir: MoveDirections;
     hp: number;
-    healPow: number;
     mana: number;
-    regenPow: number;
-    strength: number;
-    atkSpeed: number;
     atks: Atk[];
 }
 
@@ -19,12 +14,17 @@ interface PlayerAttributes extends PlayerAttributesDeltas {
     charId: CharacterID;
     charName: string;
     color: string;
+    img: string;
     score: number;
+    speed: number;
     maxHp: number;
+    healPow: number;
     maxMana: number;
+    regenPow: number;
+    strength: number;
     atkImg: string;
     atkCost: number;
-    atks: Atk[];
+    atkSpeed: number;
 }
 
 type GameState = { A: PlayerAttributes | {}, B: PlayerAttributes | {} }
@@ -39,7 +39,7 @@ type CharacterID = "luffy" | "zoro" | "sanji" | "ace" | "jinbe" | "law" | "frank
 
 type PlayerId = "A" | "B"
 type MoveDirections = "up" | "right" | "down" | "left";
-type AtkType = "simple" | "super"
+type AtkType = "sim" | "sup"
 type Position = { x: number; y: number };
 
 // play.html/play.ts
@@ -49,6 +49,7 @@ interface SettingsInt {
     atkW: number;
     atkH: number;
     refreshRate: number;
+    move60fpsRAFDivider: number;
     freezeDelay: number;
     superManaMult: number;
     superDamageMult: number;
@@ -59,8 +60,8 @@ interface SettingsInt {
     rageAtkSpeedMult: number;
     rageRegenFactor: number;
     collisionDist: number;
-    normalColor: string;
-    rageColor: string;
+    normalTextColor: string;
+    rageTextColor: string;
     cursorSize: number;
     aiLvlInterval: { [key in AiLevel]: number };
 }

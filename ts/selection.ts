@@ -50,11 +50,18 @@ $randomId.addEventListener("click", () => {
     $textId.value = generatedRoomId.toString();
 });
 
-// VALIDATION AND REDIRECTION
+// AI LEVEL SELECTION
 const $aiLvlSelect = document.querySelector("select#ai-level") as HTMLSelectElement;
-const $stadiumSelect = document.querySelector("select#stadium") as HTMLSelectElement;
-const $validate = document.querySelector("#submit") as HTMLButtonElement;
+const previousAiLvl = localStorage.getItem("aiLevel");
+if (previousAiLvl) $aiLvlSelect.value = previousAiLvl;
 
+// STADIUM SELECTION
+const $stadiumSelect = document.querySelector("select#stadium") as HTMLSelectElement;
+const previousStadium = localStorage.getItem("stadium");
+if (previousStadium) $stadiumSelect.value = previousStadium;
+
+// VALIDATION AND REDIRECTION
+const $validate = document.querySelector("#submit") as HTMLButtonElement;
 $validate.addEventListener("click", () => {
     const $selectedCharacter = document.querySelector('input[name="character"]:checked') as HTMLInputElement;
     if (!$textId.value || !$selectedCharacter || !$selectedCharacter.value) return alert("Please fill in both the room ID and character selection.");
@@ -63,6 +70,6 @@ $validate.addEventListener("click", () => {
     localStorage.setItem("roomId", $textId.value);
     localStorage.setItem("characterId", $selectedCharacter.value);
     localStorage.setItem("aiLevel", $aiLvlSelect.value);
-    localStorage.setItem("stadiumChoice", $stadiumSelect.value);
+    localStorage.setItem("stadium", $stadiumSelect.value);
     window.location.href = "/play.html";
 });

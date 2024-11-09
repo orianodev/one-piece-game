@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sélection</title>
+    <link rel="shortcut icon" href="img/logo.webp" type="image/webp" />
     <script
       src="https://kit.fontawesome.com/61fd51154e.js"
       crossorigin="anonymous"
@@ -54,35 +55,26 @@
       <form>
         <label for="luffy">
           <input type="radio" name="character" id="luffy" value="luffy" />
-          <img src="img/flag/luffy.png" alt="luffy" />
+          <img src="img/char/luffy.png" alt="luffy" />
+          <span class="tooltip">Monkey D. Luffy</span>
         </label>
+
         <label for="zoro">
           <input type="radio" name="character" id="zoro" value="zoro" />
-          <img src="img/flag/zoro.png" alt="zoro" />
+          <img src="img/char/zoro.png" alt="zoro" />
+          <span class="tooltip">Roronoa Zoro</span>
         </label>
+
         <label for="sanji">
           <input type="radio" name="character" id="sanji" value="sanji" />
-          <img src="img/flag/sanji.png" alt="sanji" />
+          <img src="img/char/sanji.png" alt="sanji" />
+          <span class="tooltip">Vinsmoke Sanji</span>
         </label>
+
         <label for="ace">
           <input type="radio" name="character" id="ace" value="ace" />
-          <img src="img/flag/ace.png" alt="ace" />
-        </label>
-        <label for="jinbe">
-          <input type="radio" name="character" id="jinbe" value="jinbe" />
-          <img src="img/flag/jinbe.png" alt="jinbe" />
-        </label>
-        <label for="law">
-          <input type="radio" name="character" id="law" value="law" />
-          <img src="img/flag/law.png" alt="law" />
-        </label>
-        <label for="franky">
-          <input type="radio" name="character" id="franky" value="franky" />
-          <img src="img/flag/franky.png" alt="franky" />
-        </label>
-        <label for="brook">
-          <input type="radio" name="character" id="brook" value="brook" />
-          <img src="img/flag/brook.png" alt="brook" />
+          <img src="img/char/ace.png" alt="ace" />
+          <span class="tooltip">Portgas D. Ace</span>
         </label>
       </form>
     </section>
@@ -97,14 +89,14 @@
         <option value="log">Loguetown</option>
         <option value="eni">Enies Lobby</option>
         <option value="thr">Thriler Bark</option>
-        <option value="sab">Archipel Saboady</option>
+        <option value="sab">Archipel Sabaody</option>
         <option value="imp">Impel Down</option>
         <option value="mar">Marineford</option>
       </select>
     </section>
 
     <section class="validate">
-      <button id="submit">START FIGHT !</button>
+      <button id="submit">COMMENCER !</button>
     </section>
     <script src="./scripts/selection.js"></script>
   </body>

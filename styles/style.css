@@ -144,7 +144,7 @@ section.stadium {
 }
 
 section.stadium > select {
-  margin: 20px 0 5px 0;
+  margin: 10px 0;
 }
 
 /* VALIDATE */
@@ -277,4 +277,46 @@ ul {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+/* Tooltip base styles */
+label {
+  position: relative;
+  display: inline-block;
+  margin: 10px;
+}
+
+.tooltip {
+  visibility: hidden;
+  width: 80px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  padding: 5px;
+  border-radius: 5px;
+  position: absolute;
+  bottom: 100%; /* Position the tooltip above */
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.8rem;
+}
+
+/* Tooltip arrow */
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%; /* Position arrow at the bottom of the tooltip */
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent transparent;
+}
+
+/* Show tooltip on hover */
+label:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
 }
