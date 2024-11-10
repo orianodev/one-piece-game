@@ -1,7 +1,7 @@
 {
-  "name": "socket-chat-example",
-  "version": "0.0.1",
-  "description": "my first socket.io app",
+  "name": "one-piece-game",
+  "version": "5.0.0",
+  "description": "One Piece Game using TypeScript and Socket.IO for real-time multiplayer",
   "type": "commonjs",
   "dependencies": {
     "@types/express": "^5.0.0",
