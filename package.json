@@ -5,6 +5,10 @@
   "author": "Oriano DEV",
   "environment": "Win10, VSCode, Git, TS, Edge/Chrome",
   "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "build": "tsc"
+  },
   "dependencies": {
     "@types/express": "^5.0.0",
     "express": "^4.21.1",
