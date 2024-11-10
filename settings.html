@@ -1,27 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Réglages</title>
+    <meta
+      name="description"
+      content="Modifie les paramètres pour cet appareil"
+    />
     <link rel="shortcut icon" href="img/logo.webp" type="image/webp" />
-    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="stylesheet" href="styles/base.css" />
+    <link rel="stylesheet" href="styles/infos.css" />
   </head>
   <body>
     <h1>Réglages</h1>
     <br />
-    <form
-      id="settings-form"
-      style="display: flex; flex-direction: column; row-gap: 10px"
-    >
-      <label for="hideMobileControls">
+    <form id="settings-form">
+      <a
+        href="https://github.com/giovanni-rn/one-piece-game"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Répertoire GitHub
+      </a>
+      <i>Ce site web ne conserve aucune donnée.</i>
+      <br />
+      <!-- <label for="hideMobileControls">
         <input
           type="checkbox"
           name="hideMobileControls"
           id="hideMobileControls"
         />
         Cacher les commandes pour mobiles
-      </label>
+      </label> -->
       <label for="resetScore">
         <input type="checkbox" name="resetScore" id="resetScore" />
         Réinitialiser le score sur cet appareil
@@ -30,16 +41,16 @@
       <button type="submit">Sauvegarder</button>
     </form>
     <script>
-      const hideMobileControls = document.getElementById("hideMobileControls");
+      // const hideMobileControls = document.getElementById("hideMobileControls");
       const resetScore = document.getElementById("resetScore");
       const form = document.getElementById("settings-form");
 
-      if (localStorage.getItem("hideMobileControls") === "true")
-        hideMobileControls.checked = true;
+      // if (localStorage.getItem("hideMobileControls") === "true")
+      //   hideMobileControls.checked = true;
 
       form.addEventListener("submit", (event) => {
         event.preventDefault();
-        localStorage.setItem("hideMobileControls", hideMobileControls.checked);
+        // localStorage.setItem("hideMobileControls", hideMobileControls.checked);
         if (resetScore.checked) localStorage.setItem("score", 0);
         alert("Réglages sauvegardés!");
       });

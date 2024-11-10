@@ -3,7 +3,6 @@ const $dualModeToggle = document.querySelector("button.dual");
 const $soloModeToggle = document.querySelector("button.solo");
 const $dualModeMenu = document.querySelector("div.dual");
 const $soloModeMenu = document.querySelector("div.solo");
-// MODE SELECTION
 let modeSelected = "dual";
 function changeMode(mode) {
     if (mode === "solo") {
@@ -23,7 +22,6 @@ if (previousMode)
     changeMode(previousMode);
 $soloModeToggle.addEventListener("click", () => changeMode("solo"));
 $dualModeToggle.addEventListener("click", () => changeMode("dual"));
-// ROOM ID GENERATION AND STORAGE
 const $randomId = document.querySelector("#random-id");
 const $copyId = document.querySelector("#copy-id");
 const $textId = document.querySelector("#text-id");
@@ -35,36 +33,44 @@ const idFromUrl = params.get("id");
 if (idFromUrl)
     $textId.value = idFromUrl;
 $copyId.addEventListener("click", () => {
-    const link = window.location.href + "?id=" + $textId.value;
-    navigator.clipboard.writeText(link);
-    const $icon = document.querySelector("#copy-id > i");
-    $icon === null || $icon === void 0 ? void 0 : $icon.setAttribute("class", "fas fa-check");
+    const $icon = document.querySelector("#copy-id > img");
+    const url = new URL(window.location.href);
+    url.searchParams.set("id", $textId.value);
+    navigator.clipboard.writeText(url.href)
+        .then(() => $icon === null || $icon === void 0 ? void 0 : $icon.setAttribute("src", "/img/icon/check.svg"))
+        .catch(err => console.error("Failed to copy URL:", err));
 });
 $randomId.addEventListener("click", () => {
-    const generatedRoomId = Math.floor(Math.random() * 1000);
+    let generatedRoomId = Math.floor(Math.random() * 1000);
+    if (generatedRoomId > 665 && generatedRoomId < 667)
+        generatedRoomId = Math.floor(Math.random() * 1000);
     $textId.value = generatedRoomId.toString();
 });
-// AI LEVEL SELECTION
 const $aiLvlSelect = document.querySelector("select#ai-level");
 const previousAiLvl = localStorage.getItem("aiLevel");
 if (previousAiLvl)
     $aiLvlSelect.value = previousAiLvl;
-// STADIUM SELECTION
 const $stadiumSelect = document.querySelector("select#stadium");
 const previousStadium = localStorage.getItem("stadium");
 if (previousStadium)
     $stadiumSelect.value = previousStadium;
-// VALIDATION AND REDIRECTION
 const $validate = document.querySelector("#submit");
 $validate.addEventListener("click", () => {
-    const $selectedCharacter = document.querySelector('input[name="character"]:checked');
-    if (!$textId.value || !$selectedCharacter || !$selectedCharacter.value)
-        return alert("Please fill in both the room ID and character selection.");
+    const $selectedCharacterRadio = document.querySelector('input[name="character"]:checked');
+    if (modeSelected === "dual" && !$textId.value)
+        return alert("Choisis un identifiant de jeu.");
+    if (!$selectedCharacterRadio)
+        return alert("Choisis un personnage.");
+    const $selectedCharacter = $selectedCharacterRadio.value;
+    const characterIDList = ["luffy", "zoro", "sanji", "ace", "jinbe", "law", "franky", "brook", "baggy", "chopper", "kuma", "nami", "robin", "sabo", "smoker", "usopp", "kid", "perona", "crocodile", "marco"];
+    if ($selectedCharacter === "random")
+        localStorage.setItem("characterId", characterIDList[Math.floor(Math.random() * characterIDList.length)]);
+    else
+        localStorage.setItem("characterId", $selectedCharacter);
     if (!localStorage.getItem("score"))
         localStorage.setItem("score", "0");
     localStorage.setItem("mode", modeSelected);
     localStorage.setItem("roomId", $textId.value);
-    localStorage.setItem("characterId", $selectedCharacter.value);
     localStorage.setItem("aiLevel", $aiLvlSelect.value);
     localStorage.setItem("stadium", $stadiumSelect.value);
     window.location.href = "/play.html";

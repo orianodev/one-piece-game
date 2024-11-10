@@ -1,54 +1,12 @@
 "use strict";
-// @ts-ignore
-const socket = io();
-// DOM
-const $canvas = document.querySelector("#canvas");
-const $ctx = $canvas.getContext("2d");
-const $character1 = document.querySelector("#character-1");
-const $hp1 = document.querySelector("#hp-1");
-const $mana1 = document.querySelector("#mana-1");
-const $score1 = document.querySelector("#score-1");
-const $character2 = document.querySelector("#character-2");
-const $hp2 = document.querySelector("#hp-2");
-const $mana2 = document.querySelector("#mana-2");
-const $score2 = document.querySelector("#score-2");
-// DEFAULT SETTINGS
-const def = {
-    playW: 50,
-    playH: 70,
-    atkW: 30,
-    atkH: 30,
-    refreshRate: 50,
-    move60fpsRAFDivider: 5,
-    freezeDelay: 150,
-    collisionDist: 40,
-    superManaMult: 10,
-    superDamageMult: 5,
-    rageThreshold: 0.2,
-    rageDuration: 10000,
-    rageSpeedMult: 1.3,
-    rageStrengthMult: 1.3,
-    rageAtkSpeedMult: 1.3,
-    rageRegenFactor: 1.3,
-    normalTextColor: "whitesmoke",
-    rageTextColor: "red",
-    cursorSize: 10,
-    aiLvlInterval: {
-        "easy": 300,
-        "medium": 200,
-        "hard": 100,
-    }
-};
-const defPos = { A: { x: 0, y: $canvas.height / 2 - def.playH }, B: { x: $canvas.width - def.playW, y: $canvas.height / 2 - def.playH } };
-// CHARACTERS
 const characterStats = {
     luffy: {
-        name: "Monkey D Luffy",
-        img: "/img/players/luffy.png",
+        name: "Monkey D. Luffy",
+        img: "/img/char/luffy.png",
         color: "red",
-        speed: 10,
-        hp: 250,
-        maxHp: 350,
+        speed: 11.5,
+        hp: 230,
+        maxHp: 330,
         healPow: 5,
         mana: 90,
         maxMana: 250,
@@ -60,12 +18,12 @@ const characterStats = {
     },
     zoro: {
         name: "Roronoa Zoro",
-        img: "/img/players/zoro.png",
-        color: "green",
+        img: "/img/char/zoro.png",
+        color: "purple",
         speed: 7.5,
         hp: 220,
         maxHp: 300,
-        healPow: 4,
+        healPow: 5,
         mana: 100,
         maxMana: 200,
         regenPow: 10,
@@ -76,7 +34,7 @@ const characterStats = {
     },
     sanji: {
         name: "Vinsmoke Sanji",
-        img: "/img/players/sanji.png",
+        img: "/img/char/sanji.png",
         color: "yellow",
         speed: 8,
         hp: 200,
@@ -91,8 +49,8 @@ const characterStats = {
         atkSpeed: 19,
     },
     ace: {
-        name: "Portgas D Ace",
-        img: "/img/players/ace.png",
+        name: "Portgas D. Ace",
+        img: "/img/char/ace.png",
         color: "orange",
         speed: 9,
         hp: 250,
@@ -108,23 +66,23 @@ const characterStats = {
     },
     jinbe: {
         name: "Jinbei",
-        img: "/img/players/jinbe.png",
+        img: "/img/char/jinbe.png",
         color: "blue",
         speed: 4.5,
         hp: 300,
         maxHp: 400,
-        healPow: 2,
+        healPow: 1.5,
         mana: 140,
         maxMana: 300,
         regenPow: 5,
         strength: 20,
         atkImg: "/img/atk/wave.png",
-        atkCost: 19,
-        atkSpeed: 9,
+        atkCost: 20,
+        atkSpeed: 8,
     },
     law: {
-        name: "Trafalgar D Law",
-        img: "/img/players/law.png",
+        name: "Trafalgar D. Law",
+        img: "/img/char/law.png",
         color: "brown",
         speed: 10,
         hp: 150,
@@ -134,13 +92,13 @@ const characterStats = {
         maxMana: 190,
         regenPow: 15,
         strength: 11,
-        atkImg: "/img/atk/slash.png",
+        atkImg: "/img/atk/scalpel.png",
         atkCost: 10,
         atkSpeed: 20,
     },
     franky: {
         name: "Franky",
-        img: "/img/players/franky.png",
+        img: "/img/char/franky.png",
         color: "blue",
         speed: 9,
         hp: 200,
@@ -156,9 +114,9 @@ const characterStats = {
     },
     brook: {
         name: "Brook",
-        img: "/img/players/brook.png",
+        img: "/img/char/brook.png",
         color: "white",
-        speed: 12,
+        speed: 14,
         hp: 150,
         maxHp: 350,
         healPow: 3,
@@ -169,9 +127,316 @@ const characterStats = {
         atkImg: "/img/atk/music.png",
         atkCost: 10,
         atkSpeed: 20,
+    },
+    baggy: {
+        name: "Baggy le Clown",
+        img: "/img/char/baggy.png",
+        color: "cyan",
+        speed: 6,
+        hp: 160,
+        maxHp: 220,
+        healPow: 4,
+        mana: 80,
+        maxMana: 180,
+        regenPow: 6,
+        strength: 8,
+        atkImg: "/img/atk/knife.png",
+        atkCost: 9,
+        atkSpeed: 18,
+    },
+    chopper: {
+        name: "Tony Tony Chopper",
+        img: "/img/char/chopper.png",
+        color: "red",
+        speed: 8,
+        hp: 180,
+        maxHp: 280,
+        healPow: 8,
+        mana: 120,
+        maxMana: 250,
+        regenPow: 12,
+        strength: 9,
+        atkImg: "/img/atk/hoof.png",
+        atkCost: 9,
+        atkSpeed: 19,
+    },
+    kuma: {
+        name: "Bartholomew Kuma",
+        img: "/img/char/kuma.png",
+        color: "black",
+        speed: 4,
+        hp: 400,
+        maxHp: 450,
+        healPow: 2,
+        mana: 100,
+        maxMana: 200,
+        regenPow: 8,
+        strength: 18,
+        atkImg: "/img/atk/pad.png",
+        atkCost: 20,
+        atkSpeed: 7,
+    },
+    nami: {
+        name: "Nami",
+        img: "/img/char/nami.png",
+        color: "orange",
+        speed: 9,
+        hp: 130,
+        maxHp: 200,
+        healPow: 5,
+        mana: 150,
+        maxMana: 250,
+        regenPow: 10,
+        strength: 7,
+        atkImg: "/img/atk/bolt.png",
+        atkCost: 10,
+        atkSpeed: 31,
+    },
+    robin: {
+        name: "Nico Robin",
+        img: "/img/char/robin.png",
+        color: "pink",
+        speed: 8.5,
+        hp: 170,
+        maxHp: 240,
+        healPow: 6,
+        mana: 140,
+        maxMana: 230,
+        regenPow: 10,
+        strength: 10,
+        atkImg: "/img/atk/arm.png",
+        atkCost: 11,
+        atkSpeed: 21,
+    },
+    sabo: {
+        name: "Sabo",
+        img: "/img/char/sabo.png",
+        color: "orange",
+        speed: 9,
+        hp: 220,
+        maxHp: 300,
+        healPow: 3,
+        mana: 130,
+        maxMana: 200,
+        regenPow: 8,
+        strength: 14,
+        atkImg: "/img/atk/flame.png",
+        atkCost: 12,
+        atkSpeed: 20,
+    },
+    smoker: {
+        name: "Smoker",
+        img: "/img/char/smoker.png",
+        color: "gray",
+        speed: 7,
+        hp: 250,
+        maxHp: 300,
+        healPow: 4,
+        mana: 110,
+        maxMana: 210,
+        regenPow: 7,
+        strength: 13,
+        atkImg: "/img/atk/smoke.png",
+        atkCost: 10,
+        atkSpeed: 19,
+    },
+    usopp: {
+        name: "Usopp",
+        img: "/img/char/usopp.png",
+        color: "green",
+        speed: 8,
+        hp: 140,
+        maxHp: 200,
+        healPow: 4,
+        mana: 100,
+        maxMana: 200,
+        regenPow: 9,
+        strength: 6,
+        atkImg: "/img/atk/plant.png",
+        atkCost: 8,
+        atkSpeed: 30,
+    },
+    crocodile: {
+        name: "Sir Crocodile",
+        img: "/img/char/crocodile.png",
+        color: "brown",
+        speed: 7,
+        hp: 220,
+        maxHp: 300,
+        healPow: 2.5,
+        mana: 130,
+        maxMana: 240,
+        regenPow: 9,
+        strength: 16,
+        atkImg: "/img/atk/sand.png",
+        atkCost: 12,
+        atkSpeed: 18,
+    },
+    perona: {
+        name: "Perona",
+        img: "/img/char/perona.png",
+        color: "pink",
+        speed: 8.5,
+        hp: 180,
+        maxHp: 230,
+        healPow: 5,
+        mana: 155,
+        maxMana: 255,
+        regenPow: 12,
+        strength: 10,
+        atkImg: "/img/atk/ghost.png",
+        atkCost: 10,
+        atkSpeed: 23.5,
+    },
+    kid: {
+        name: "Eustass Captain Kid",
+        img: "/img/char/kid.png",
+        color: "grey",
+        speed: 6.5,
+        hp: 260,
+        maxHp: 330,
+        healPow: 3,
+        mana: 110,
+        maxMana: 200,
+        regenPow: 7,
+        strength: 18,
+        atkImg: "/img/atk/metal.png",
+        atkCost: 13,
+        atkSpeed: 17,
+    },
+    marco: {
+        name: "Marco le Phoenix",
+        img: "/img/char/marco.png",
+        color: "cyan",
+        speed: 8.5,
+        hp: 200,
+        maxHp: 280,
+        healPow: 7,
+        mana: 160,
+        maxMana: 300,
+        regenPow: 12,
+        strength: 12,
+        atkImg: "/img/atk/phoenix.png",
+        atkCost: 11,
+        atkSpeed: 20,
+    },
+    kuzan: {
+        name: "Kuzan",
+        img: "/img/char/kuzan.png",
+        color: "lightblue",
+        speed: 8,
+        hp: 300,
+        maxHp: 350,
+        healPow: 4,
+        mana: 120,
+        maxMana: 250,
+        regenPow: 8,
+        strength: 14,
+        atkImg: "/img/atk/ice.png",
+        atkCost: 12,
+        atkSpeed: 17,
+    },
+    bellamy: {
+        name: "Bellamy",
+        img: "/img/char/bellamy.png",
+        color: "yellow",
+        speed: 9,
+        hp: 220,
+        maxHp: 275,
+        healPow: 2,
+        mana: 90,
+        maxMana: 180,
+        regenPow: 6,
+        strength: 13,
+        atkImg: "/img/atk/spring.png",
+        atkCost: 9,
+        atkSpeed: 19,
+    },
+    hancock: {
+        name: "Boa Hancock",
+        img: "/img/char/hancock.png",
+        color: "pink",
+        speed: 7.5,
+        hp: 250,
+        maxHp: 320,
+        healPow: 3.5,
+        mana: 160,
+        maxMana: 250,
+        regenPow: 10,
+        strength: 12,
+        atkImg: "/img/atk/heart.png",
+        atkCost: 11,
+        atkSpeed: 18,
+    },
+    katakuri: {
+        name: "Charlotte Katakuri",
+        img: "/img/char/katakuri.png",
+        color: "purple",
+        speed: 7,
+        hp: 350,
+        maxHp: 400,
+        healPow: 3,
+        mana: 110,
+        maxMana: 200,
+        regenPow: 7,
+        strength: 18,
+        atkImg: "/img/atk/mochi.png",
+        atkCost: 15,
+        atkSpeed: 15,
     }
 };
-// PLAYER
+const def = {
+    canvasWidth: 800,
+    canvasHeight: 500,
+    canvasScaleMult: 4,
+    playW: 80,
+    playH: 120,
+    atkW: 30,
+    atkH: 30,
+    refreshRate: 50,
+    move60fpsRAFDivider: 5,
+    freezeDelay: 150,
+    collisionDist: 67,
+    superSizeMult: 3,
+    superManaMult: 10,
+    superDamageMult: 5,
+    rageThreshold: 0.2,
+    rageDuration: 10000,
+    rageSpeedMult: 1.3,
+    rageStrengthMult: 1.3,
+    rageAtkSpeedMult: 1.3,
+    rageRegenFactor: 1.3,
+    normalTextColor: "whitesmoke",
+    rageTextColor: "red",
+    shadowBlur: 150,
+    cursorSize: 10,
+    aiLvlInterval: {
+        "easy": 300,
+        "medium": 200,
+        "hard": 100,
+    }
+};
+const defPos = { A: { x: 0, y: def.canvasHeight / 2 - def.playH }, B: { x: def.canvasWidth - def.playW, y: def.canvasHeight / 2 - def.playH } };
+const $playScreen = document.querySelector("#play");
+const $canvas = document.querySelector("#canvas");
+const $ctx = $canvas.getContext("2d");
+$canvas.width = def.canvasWidth * def.canvasScaleMult;
+$canvas.height = def.canvasHeight * def.canvasScaleMult;
+$canvas.style.width = `${def.canvasWidth}px`;
+$canvas.style.height = `${def.canvasHeight}px`;
+$ctx.scale(def.canvasScaleMult, def.canvasScaleMult);
+const $character1 = document.querySelector("#character-1");
+const $hpBar1 = document.querySelector("#hp-bar-1");
+const $hp1 = document.querySelector("#hp-1");
+const $manaBar1 = document.querySelector("#mana-bar-1");
+const $mana1 = document.querySelector("#mana-1");
+const $score1 = document.querySelector("#score-1");
+const $character2 = document.querySelector("#character-2");
+const $hpBar2 = document.querySelector("#hp-bar-2");
+const $hp2 = document.querySelector("#hp-2");
+const $manaBar2 = document.querySelector("#mana-bar-2");
+const $mana2 = document.querySelector("#mana-2");
+const $score2 = document.querySelector("#score-2");
 class Player {
     constructor(id, charId, charName, color, img, score, x, y, dir, speed, hp, maxHp, healPow, mana, maxMana, regenPow, strength, atkImg, atkCost, atkSpeed, atks) {
         this.rage = false;
@@ -201,7 +466,7 @@ class Player {
         $ctx.globalAlpha = 1;
         _F.setShadow(this.color);
         const newImg = new Image(def.playW, def.playH);
-        newImg.src = this.rage === false ? this.img : this.img.replace("char", "rage");
+        newImg.src = this.rage === false ? this.img : this.getRageImg();
         $ctx.drawImage(newImg, this.x, this.y, def.playW, def.playH);
         $ctx.globalAlpha = 0.5;
         if (this.dir === "up")
@@ -238,7 +503,7 @@ class Player {
         if (this.mana < this.atkCost * def.superManaMult)
             return;
         this.mana -= this.atkCost * def.superManaMult;
-        const atk = new Atk(this.id, "sup", this.x + def.playW / 2, this.y + def.playH / 2, this.dir);
+        const atk = new Atk(this.id, "sup", this.x + def.playW / 2 - def.atkW, this.y + def.playH / 2 - def.atkH, this.dir);
         this.atks.push(atk);
         atk.draw();
         _F.updateServer();
@@ -247,6 +512,8 @@ class Player {
         if ((_F.mode === "dual" || this.id === "A") && !this.freeze())
             return;
         if (this.hp + this.healPow > this.maxHp)
+            this.hp = this.maxHp;
+        if (this.hp === this.maxHp)
             return;
         this.hp += this.healPow;
         _F.updateServer();
@@ -255,6 +522,8 @@ class Player {
         if ((_F.mode === "dual" || this.id === "A") && !this.freeze())
             return;
         if (this.mana + this.regenPow > this.maxMana)
+            this.mana = this.maxMana;
+        if (this.mana === this.maxMana)
             return;
         this.mana += this.regenPow;
         _F.updateServer();
@@ -287,21 +556,20 @@ class Player {
         this.rage = false;
         _F.updateServer();
     }
+    getRageImg() {
+        return this.img.replace("char", "rage");
+    }
     moveUp() {
         if (this.y < 0)
             return;
-        // const oppPos: Position = { x: _F.oppPlayer.x, y: _F.oppPlayer.y }
-        // if (this.y == oppPos!.y + def.playH && this.x + def.playW > oppPos!.x && this.x < oppPos!.x + def.playW) return
         this.dir = "up";
         this.y -= this.speed;
         _F.drawAll();
         _F.updateServer();
     }
     moveDown() {
-        if (this.y > $canvas.height - def.playH)
+        if (this.y > def.canvasHeight - def.playH)
             return;
-        // const oppPos: Position = { x: _F.oppPlayer.x, y: _F.oppPlayer.y }
-        // if (this.y + def.playH == oppPos!.y && this.x + def.playW > oppPos!.x && this.x < oppPos!.x + def.playW) return
         this.dir = "down";
         this.y += this.speed;
         _F.drawAll();
@@ -310,26 +578,23 @@ class Player {
     moveLeft() {
         if (this.x < 0)
             return;
-        // const oppPos: Position = { x: _F.oppPlayer.x, y: _F.oppPlayer.y }
-        // if (this.y + def.playH > oppPos!.y && this.y < oppPos!.y + def.playH && this.x == oppPos!.x + def.playW) return
         this.dir = "left";
         this.x -= this.speed;
         _F.drawAll();
         _F.updateServer();
     }
     moveRight() {
-        if (this.x > $canvas.width - def.playW)
+        if (this.x > def.canvasWidth - def.playW)
             return;
-        // const oppPos: Position = { x: _F.oppPlayer.x, y: _F.oppPlayer.y }
-        // if (this.y + def.playH > oppPos!.y && this.y < oppPos!.y + def.playH && this.x + def.playW == oppPos!.x) return
         this.dir = "right";
         this.x += this.speed;
         _F.drawAll();
         _F.updateServer();
     }
     moveUpRight() {
-        if (this.y < 0 || this.x > $canvas.width - def.playW)
+        if (this.y < 0 || this.x > def.canvasWidth - def.playW)
             return;
+        this.dir = "right";
         this.x += this.speed / Math.SQRT2;
         this.y -= this.speed / Math.SQRT2;
         _F.drawAll();
@@ -338,22 +603,25 @@ class Player {
     moveUpLeft() {
         if (this.y < 0 || this.x < 0)
             return;
+        this.dir = "left";
         this.x -= this.speed / Math.SQRT2;
         this.y -= this.speed / Math.SQRT2;
         _F.drawAll();
         _F.updateServer();
     }
     moveDownRight() {
-        if (this.y > $canvas.height - def.playH || this.x > $canvas.width - def.playW)
+        if (this.y > def.canvasHeight - def.playH || this.x > def.canvasWidth - def.playW)
             return;
+        this.dir = "right";
         this.x += this.speed / Math.SQRT2;
         this.y += this.speed / Math.SQRT2;
         _F.drawAll();
         _F.updateServer();
     }
     moveDownLeft() {
-        if (this.y > $canvas.height - def.playH || this.x < 0)
+        if (this.y > def.canvasHeight - def.playH || this.x < 0)
             return;
+        this.dir = "left";
         this.x -= this.speed / Math.SQRT2;
         this.y += this.speed / Math.SQRT2;
         _F.drawAll();
@@ -371,12 +639,11 @@ class Atk {
     draw() {
         _F.setShadow(_F.getPlayer(this.id).color);
         const newImg = new Image(def.playW, def.playH);
-        // newImg.src = this.img.replace(".png", "-" + this.dir[0] + ".png");
         newImg.src = _F.getPlayer(this.id).atkImg;
         if (this.type === "sim")
             $ctx.drawImage(newImg, this.x, this.y, def.atkW, def.atkH);
         if (this.type === "sup")
-            $ctx.drawImage(newImg, this.x, this.y, def.playW, def.playH);
+            $ctx.drawImage(newImg, this.x, this.y, def.atkW * def.superSizeMult, def.atkH * def.superSizeMult);
         _F.resetPen();
     }
     move() {
@@ -395,16 +662,16 @@ class Atk {
     checkCollisionWithBorder(owner) {
         if (this.dir == "left" && this.x <= 0)
             this.destroy(owner);
-        if (this.dir == "right" && this.x >= $canvas.width - def.atkW)
+        if (this.dir == "right" && this.x >= def.canvasWidth - def.atkW)
             this.destroy(owner);
         if (this.dir == "up" && this.y <= 0)
             this.destroy(owner);
-        if (this.dir == "down" && this.y >= $canvas.height - def.atkH)
+        if (this.dir == "down" && this.y >= def.canvasHeight - def.atkH)
             this.destroy(owner);
     }
     checkCollisionWithOpp(owner) {
         const opp = _F.thisPlayer.id === this.id ? _F.oppPlayer : _F.thisPlayer;
-        const oppCenter = { x: opp.x + def.playW / 2, y: opp.y + def.playH / 2 };
+        const oppCenter = { x: opp.x + def.playW / 2, y: opp.y + def.playH * 0.4 };
         const thisAtkCenter = { x: this.x + def.atkW / 2, y: this.y + def.atkH / 2 };
         const distance = Math.sqrt(Math.pow(oppCenter.x - thisAtkCenter.x, 2) + Math.pow(oppCenter.y - thisAtkCenter.y, 2));
         if (distance < def.collisionDist) {
@@ -427,46 +694,25 @@ class Fight {
         return playerId === this.thisPlayer.id ? this.thisPlayer : this.oppPlayer;
     }
     aiAction() {
-        const aiActions = ["move", "atk", "super", "heal", "regen", "rage"];
+        const aiActions = ["move", "move", "atk", "super", "heal", "regen", "rage"];
         let attempt = 0;
         const maxAttempts = 10;
         while (attempt < maxAttempts) {
             const aiChoice = aiActions[Math.floor(Math.random() * aiActions.length)];
-            // if (aiChoice === "move") {
-            //     if (this.oppPlayer.x < this.thisPlayer.x - def.playW / 3) {
-            //         this.oppPlayer.moveRight();
-            //         this.oppPlayer.moveRight();
-            //         break;
-            //     } else if (this.oppPlayer.x > this.thisPlayer.x + def.playW / 3) {
-            //         this.oppPlayer.moveLeft();
-            //         this.oppPlayer.moveLeft();
-            //         break;
-            //     } else if (this.oppPlayer.y < this.thisPlayer.y - def.playW / 3) {
-            //         this.oppPlayer.moveDown();
-            //         this.oppPlayer.moveDown();
-            //         break;
-            //     } else if (this.oppPlayer.y > this.thisPlayer.y + def.playH / 3) {
-            //         this.oppPlayer.moveUp();
-            //         this.oppPlayer.moveUp();
-            //         break;
-            //     }
             if (aiChoice === "move") {
                 const xDiff = this.thisPlayer.x - this.oppPlayer.x;
                 const yDiff = this.thisPlayer.y - this.oppPlayer.y;
                 const threshold = def.playW / 3;
-                // Determine the horizontal and vertical directions
                 let horizontalDirection = null;
                 let verticalDirection = null;
-                // Decide horizontal movement
                 if (xDiff > threshold)
-                    horizontalDirection = "right"; // AI should move right
+                    horizontalDirection = "right";
                 else if (xDiff < -threshold)
-                    horizontalDirection = "left"; // AI should move left
+                    horizontalDirection = "left";
                 if (yDiff > threshold)
-                    verticalDirection = "down"; // AI should move down
+                    verticalDirection = "down";
                 else if (yDiff < -threshold)
-                    verticalDirection = "up"; // AI should move up
-                // Execute movement based on determined directions
+                    verticalDirection = "up";
                 if (horizontalDirection === "right" && verticalDirection === "up")
                     this.oppPlayer.moveUpRight();
                 else if (horizontalDirection === "right" && verticalDirection === "down")
@@ -512,43 +758,38 @@ class Fight {
         _F.oppPlayer = new Player(oppPlayer.id, oppPlayer.charId, oppPlayer.charName, oppPlayer.color, oppPlayer.img, oppPlayer.score, oppPlayer.x, oppPlayer.y, oppPlayer.dir, oppPlayer.speed, oppPlayer.hp, oppPlayer.maxHp, oppPlayer.healPow, oppPlayer.mana, oppPlayer.maxMana, oppPlayer.regenPow, oppPlayer.strength, oppPlayer.atkImg, oppPlayer.atkCost, oppPlayer.atkSpeed, []);
     }
     updatePlayers(thisPlayer, oppPlayer) {
-        _F.thisPlayer.rage = thisPlayer.rage;
-        _F.thisPlayer.x = thisPlayer.x;
-        _F.thisPlayer.y = thisPlayer.y;
-        _F.thisPlayer.dir = thisPlayer.dir;
-        _F.thisPlayer.hp = thisPlayer.hp;
-        _F.thisPlayer.mana = thisPlayer.mana;
-        _F.thisPlayer.atks = this.rebuildAtkArray(thisPlayer.atks);
-        _F.oppPlayer.rage = oppPlayer.rage;
-        _F.oppPlayer.x = oppPlayer.x;
-        _F.oppPlayer.y = oppPlayer.y;
-        _F.oppPlayer.dir = oppPlayer.dir;
-        _F.oppPlayer.hp = oppPlayer.hp;
-        _F.oppPlayer.mana = oppPlayer.mana;
-        _F.oppPlayer.atks = this.rebuildAtkArray(oppPlayer.atks);
+        _F.thisPlayer.rage = thisPlayer[0];
+        _F.thisPlayer.x = thisPlayer[1];
+        _F.thisPlayer.y = thisPlayer[2];
+        _F.thisPlayer.dir = thisPlayer[3];
+        _F.thisPlayer.hp = thisPlayer[4];
+        _F.thisPlayer.mana = thisPlayer[5];
+        _F.thisPlayer.atks = this.rebuildAtkArray(thisPlayer[6]);
+        _F.oppPlayer.rage = oppPlayer[0];
+        _F.oppPlayer.x = oppPlayer[1];
+        _F.oppPlayer.y = oppPlayer[2];
+        _F.oppPlayer.dir = oppPlayer[3];
+        _F.oppPlayer.hp = oppPlayer[4];
+        _F.oppPlayer.mana = oppPlayer[5];
+        _F.oppPlayer.atks = this.rebuildAtkArray(oppPlayer[6]);
     }
-    getDeltaAttributes(player) {
-        return {
-            rage: player.rage,
-            x: Math.round(player.x),
-            y: Math.round(player.y),
-            dir: player.dir,
-            hp: player.hp,
-            mana: player.mana,
-            atks: player.atks,
-        };
+    getPlayerDeltaAttributes(player) {
+        return [player.rage, Math.round(player.x), Math.round(player.y), player.dir, player.hp, player.mana, this.getAtkDeltaAttributes(player.atks)];
+    }
+    getAtkDeltaAttributes(atks) {
+        return atks.map((atk) => [atk.id, atk.type, atk.x, atk.y, atk.dir]);
     }
     updateServer() {
         if (_F.mode === "solo")
             return;
         if (thisPlayerId == "A")
-            socket.emit("update", { roomId: _F.roomId, A: this.getDeltaAttributes(_F.thisPlayer), B: this.getDeltaAttributes(_F.oppPlayer) });
+            socket.emit("update", { roomId: _F.roomId, A: this.getPlayerDeltaAttributes(_F.thisPlayer), B: this.getPlayerDeltaAttributes(_F.oppPlayer) });
         else if (thisPlayerId == "B")
-            socket.emit("update", { roomId: _F.roomId, A: this.getDeltaAttributes(_F.oppPlayer), B: this.getDeltaAttributes(_F.thisPlayer) });
+            socket.emit("update", { roomId: _F.roomId, A: this.getPlayerDeltaAttributes(_F.oppPlayer), B: this.getPlayerDeltaAttributes(_F.thisPlayer) });
     }
     ;
     drawAll() {
-        $ctx.clearRect(0, 0, $canvas.width, $canvas.height);
+        $ctx.clearRect(0, 0, def.canvasWidth, def.canvasHeight);
         this.drawGrid();
         this.thisPlayer.draw();
         this.oppPlayer.draw();
@@ -558,15 +799,23 @@ class Fight {
         const playerB = this.thisPlayer.id === "B" ? this.thisPlayer : this.oppPlayer;
         $character1.style.color = playerA.rage ? def.rageTextColor : def.normalTextColor;
         $character2.style.color = playerB.rage ? def.rageTextColor : def.normalTextColor;
-        $hp1.innerText = playerA.hp.toString();
-        $hp1.style.color = playerA.hp <= playerA.maxHp * def.rageThreshold ? def.rageTextColor : def.normalTextColor;
-        $mana1.innerText = playerA.mana.toString();
-        $hp2.innerText = playerB.hp.toString();
-        $hp2.style.color = playerB.hp <= playerB.maxHp * def.rageThreshold ? def.rageTextColor : def.normalTextColor;
-        $mana2.innerText = playerB.mana.toString();
+        const hpPercentA = (playerA.hp / playerA.maxHp) * 100;
+        $hpBar1.style.width = `${hpPercentA}%`;
+        $hpBar1.style.backgroundColor = playerA.hp <= playerA.maxHp * def.rageThreshold ? def.rageTextColor : '#ff4d4d';
+        $hp1.innerText = playerA.hp.toFixed(0);
+        const manaPercentA = (playerA.mana / playerA.maxMana) * 100;
+        $manaBar1.style.width = `${manaPercentA}%`;
+        $mana1.innerText = playerA.mana.toFixed(0);
+        const hpPercentB = (playerB.hp / playerB.maxHp) * 100;
+        $hpBar2.style.width = `${hpPercentB}%`;
+        $hpBar2.style.backgroundColor = playerB.hp <= playerB.maxHp * def.rageThreshold ? def.rageTextColor : '#ff4d4d';
+        $hp2.innerText = playerB.hp.toFixed(0);
+        const manaPercentB = (playerB.mana / playerB.maxMana) * 100;
+        $manaBar2.style.width = `${manaPercentB}%`;
+        $mana2.innerText = playerB.mana.toFixed(0);
     }
     rebuildAtkArray(flattedAtkArray) {
-        return flattedAtkArray.map((atk) => new Atk(atk.id, atk.type, atk.x, atk.y, atk.dir));
+        return flattedAtkArray.map((atk) => new Atk(atk[0], atk[1], atk[2], atk[3], atk[4]));
     }
     resetPen() {
         $ctx.globalAlpha = 1;
@@ -576,42 +825,75 @@ class Fight {
         $ctx.shadowColor = "black";
     }
     setShadow(color) {
-        $ctx.shadowBlur = 10;
-        $ctx.shadowOffsetX = 1;
-        $ctx.shadowOffsetY = 1;
+        $ctx.shadowBlur = def.shadowBlur;
         $ctx.shadowColor = color;
     }
     drawGrid(gridSize = 10) {
         $ctx.strokeStyle = "#444";
         $ctx.lineWidth = 0.5;
-        for (let x = 0; x <= $canvas.width; x += gridSize) {
+        for (let x = 0; x <= def.canvasWidth; x += gridSize) {
             $ctx.beginPath();
             $ctx.moveTo(x, 0);
-            $ctx.lineTo(x, $canvas.height);
+            $ctx.lineTo(x, def.canvasHeight);
             $ctx.stroke();
         }
-        for (let y = 0; y <= $canvas.height; y += gridSize) {
+        for (let y = 0; y <= def.canvasHeight; y += gridSize) {
             $ctx.beginPath();
             $ctx.moveTo(0, y);
-            $ctx.lineTo($canvas.width, y);
+            $ctx.lineTo(def.canvasWidth, y);
             $ctx.stroke();
         }
     }
 }
-// MATCHMAKING
-const stadium = localStorage.getItem("stadiumChoice");
-const $wallpaper = document.querySelector("#wallpaper");
+const $popup = document.querySelector("#popup");
+const $home = document.querySelector("#home");
+const $restart = document.querySelector("#restart");
+$restart.addEventListener("click", () => window.location.reload());
+$home.addEventListener("click", () => window.location.href = "/");
+function displayPopup(msg, displayRestart) {
+    $popup.style.display = 'flex';
+    $popup.querySelector("#message").textContent = msg;
+    if (displayRestart)
+        $restart.style.display = 'flex';
+    else
+        $restart.style.display = 'none';
+}
 const $loadingScreen = document.querySelector("#loading-screen");
-$wallpaper.style.backgroundImage = `url(/img/wallpaper/${stadium}.webp)`;
 const randomImg = Math.floor(Math.random() * 5);
+$loadingScreen.style.backgroundImage = `url(/img/wait/${randomImg}.gif)`;
+displayPopup("Chargement en cours...", false);
+const stadium = localStorage.getItem("stadium");
+const $wallpaper = document.querySelector("#wallpaper");
+$wallpaper.style.backgroundImage = `url(/img/back/${stadium})`;
+$wallpaper.style.backgroundImage = `url(/img/back/${stadium})`;
 let thisPlayerId;
 const mode = localStorage.getItem("mode");
 const roomId = parseInt(localStorage.getItem("roomId"));
 const _F = new Fight(roomId, mode, "playing");
+const socket = io();
 if (_F.mode === "dual")
     socket.emit("askId", _F.roomId);
 else if (_F.mode === "solo")
     soloGameSetup();
+function preloadImages(imagePaths, callback) {
+    let loadedImages = 0;
+    const totalImages = imagePaths.length;
+    imagePaths.forEach((path) => {
+        const img = new Image();
+        img.src = path;
+        img.onload = () => {
+            loadedImages++;
+            if (loadedImages === totalImages && callback)
+                callback();
+        };
+        img.onerror = () => {
+            console.warn(`Failed to load image at ${path}`);
+            loadedImages++;
+            if (loadedImages === totalImages && callback)
+                callback();
+        };
+    });
+}
 let isFrozen = false;
 function unfreezeThisPlayer() {
     setTimeout(() => isFrozen = false, def.freezeDelay);
@@ -632,8 +914,18 @@ function soloGameSetup() {
     $score1.innerText = thisScore.toString();
     $character2.innerText = aiPlayer.charName;
     $score2.innerText = "0";
-    soloGameRefresh();
-    aiActionInterval(aiLevel);
+    const imagePaths = [`/img/back/${stadium}`, thisPlayer.img, thisPlayer.getRageImg(), thisPlayer.atkImg, aiPlayer.img, aiPlayer.getRageImg(), aiPlayer.atkImg];
+    preloadImages(imagePaths, () => {
+        console.log("All images preloaded, starting the game...");
+        showGameScreen();
+        soloGameRefresh();
+        aiActionInterval(aiLevel);
+    });
+}
+function showGameScreen() {
+    $playScreen.style.display = "flex";
+    $loadingScreen.style.display = "none";
+    $popup.style.display = "none";
 }
 function soloGameRefresh() {
     setInterval(() => {
@@ -670,10 +962,15 @@ function dualGameRefresh() {
         _F.drawAll();
     }, def.refreshRate);
 }
+socket.on("stop", () => {
+    displayPopup("Ton adversaire s'est deconnecté.", false);
+});
+socket.on("busy", () => {
+    displayPopup("Cette partie est occupée, choisis un autre ID de jeu.", false);
+});
 socket.on("getId", (playerId) => {
     if (!thisPlayerId)
         thisPlayerId = playerId;
-    $loadingScreen.style.backgroundImage = `url(/img/wait/${randomImg}.gif)`;
     displayPopup("En attente de l'adversaire...", false);
     const thisScore = parseInt(localStorage.getItem("score"));
     const thisCharacterId = localStorage.getItem("characterId");
@@ -681,11 +978,13 @@ socket.on("getId", (playerId) => {
     const thisPlayer = {
         id: playerId, charId: thisCharacterId, charName: thisCharacter.name, color: thisCharacter.color, img: thisCharacter.img, score: thisScore, rage: false, x: defPos[playerId].x, y: defPos[playerId].y, dir: thisPlayerId === "A" ? "right" : "left", speed: thisCharacter.speed, hp: thisCharacter.hp, maxHp: thisCharacter.maxHp, healPow: thisCharacter.healPow, mana: thisCharacter.mana, maxMana: thisCharacter.maxMana, regenPow: thisCharacter.regenPow, strength: thisCharacter.strength, atkImg: thisCharacter.atkImg, atkCost: thisCharacter.atkCost, atkSpeed: thisCharacter.atkSpeed
     };
-    socket.emit("postPlayer", { thisPlayer, roomId: _F.roomId, playerId });
+    const imagePaths = [`/img/back/${stadium}`, thisPlayer.img, thisPlayer.atkImg, thisPlayer.img.replace("char", "rage")];
+    preloadImages(imagePaths, () => {
+        console.log("All images preloaded, starting the game...");
+        socket.emit("postPlayer", { thisPlayer, roomId: _F.roomId, playerId });
+    });
 });
 socket.on("start", (msg) => {
-    $loadingScreen.style.display = "none";
-    $popup.style.display = "none";
     thisPlayerId === "A" ? _F.buildPlayers(msg.A, msg.B) : _F.buildPlayers(msg.B, msg.A);
     const playerA = _F.thisPlayer.id === "A" ? _F.thisPlayer : _F.oppPlayer;
     const playerB = _F.thisPlayer.id === "B" ? _F.thisPlayer : _F.oppPlayer;
@@ -693,50 +992,18 @@ socket.on("start", (msg) => {
     $score1.innerText = playerA.score.toString();
     $character2.innerText = playerB.charName;
     $score2.innerText = playerB.score.toString();
+    showGameScreen();
     dualGameRefresh();
 });
 socket.on("update", (msg) => {
     thisPlayerId === "A" ? _F.updatePlayers(msg.A, msg.B) : _F.updatePlayers(msg.B, msg.A);
     _F.drawAll();
 });
-socket.on("stop", () => displayPopup("Ton adversaire s'est deconnecté.", false));
 socket.on("over", (msg) => {
     if (msg === thisPlayerId)
         localStorage.setItem("score", (_F.thisPlayer.score + 1).toString());
     displayPopup(`Le joueur ${msg === "A" ? "1" : "2"} a gagné!`, false);
 });
-// KEYBOARD CONTROLS
-// document.addEventListener("keydown", (event: KeyboardEvent) => {
-//     switch (event.key) {
-//         case "ArrowUp":
-//             _F.thisPlayer.moveUp();
-//             break;
-//         case "ArrowDown":
-//             _F.thisPlayer.moveDown();
-//             break;
-//         case "ArrowRight":
-//             _F.thisPlayer.moveRight();
-//             break;
-//         case "ArrowLeft":
-//             _F.thisPlayer.moveLeft();
-//             break;
-//         case "z":
-//             _F.thisPlayer.atk();
-//             break;
-//         case "d":
-//             _F.thisPlayer.heal();
-//             break;
-//         case "q":
-//             _F.thisPlayer.regen();
-//             break;
-//         case "s":
-//             _F.thisPlayer.superAtk();
-//             break;
-//         case " ":
-//             _F.thisPlayer.rage();
-//             break;
-//     }
-// });
 const pressedKeys = new Set();
 document.addEventListener("keydown", (event) => {
     pressedKeys.add(event.key);
@@ -793,40 +1060,3 @@ function updateMovement() {
     requestAnimationFrame(updateMovement);
 }
 updateMovement();
-// MOBILE CONTROLS
-if (localStorage.getItem("hideMobileControls") !== "true" && (window.innerWidth <= 768 || 'ontouchstart' in window || /Mobi|Android/i.test(navigator.userAgent))) {
-    const mobileControlsLeft = document.querySelector('#mobile-controls-left');
-    const mobileControlsRight = document.querySelector('#mobile-controls-right');
-    mobileControlsLeft.style.display = 'block';
-    mobileControlsRight.style.display = 'block';
-    const $up = document.querySelector("#up");
-    const $down = document.querySelector("#down");
-    const $right = document.querySelector("#right");
-    const $left = document.querySelector("#left");
-    const $atk = document.querySelector("#atk");
-    const $heal = document.querySelector("#heal");
-    const $regen = document.querySelector("#regen");
-    const $super = document.querySelector("#super");
-    $up.addEventListener("click", () => _F.thisPlayer.moveUp());
-    $down.addEventListener("click", () => _F.thisPlayer.moveDown());
-    $right.addEventListener("click", () => _F.thisPlayer.moveRight());
-    $left.addEventListener("click", () => _F.thisPlayer.moveLeft());
-    $atk.addEventListener("click", () => _F.thisPlayer.atk());
-    $heal.addEventListener("click", () => _F.thisPlayer.heal());
-    $regen.addEventListener("click", () => _F.thisPlayer.regen());
-    $super.addEventListener("click", () => _F.thisPlayer.superAtk());
-}
-// END POPUP
-const $popup = document.querySelector("#popup");
-const $home = document.querySelector("#home");
-const $restart = document.querySelector("#restart");
-$restart.addEventListener("click", () => window.location.reload());
-$home.addEventListener("click", () => window.location.href = "/");
-function displayPopup(msg, displayRestart) {
-    $popup.style.display = 'flex';
-    $popup.querySelector("#message").textContent = msg;
-    if (displayRestart)
-        $restart.style.display = 'flex';
-    else
-        $restart.style.display = 'none';
-}

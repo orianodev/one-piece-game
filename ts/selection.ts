@@ -1,4 +1,3 @@
-
 const $dualModeToggle = document.querySelector("button.dual") as HTMLButtonElement;
 const $soloModeToggle = document.querySelector("button.solo") as HTMLButtonElement;
 const $dualModeMenu = document.querySelector("div.dual") as HTMLDivElement;
@@ -39,14 +38,17 @@ const idFromUrl = params.get("id");
 if (idFromUrl) $textId.value = idFromUrl;
 
 $copyId.addEventListener("click", () => {
-    const link = window.location.href + "?id=" + $textId.value;
-    navigator.clipboard.writeText(link);
-    const $icon = document.querySelector("#copy-id > i");
-    $icon?.setAttribute("class", "fas fa-check");
-})
+    const $icon = document.querySelector("#copy-id > img");
+    const url = new URL(window.location.href);
+    url.searchParams.set("id", $textId.value);
+    navigator.clipboard.writeText(url.href)
+        .then(() => $icon?.setAttribute("src", "/img/icon/check.svg"))
+        .catch(err => console.error("Failed to copy URL:", err));
+});
 
 $randomId.addEventListener("click", () => {
-    const generatedRoomId = Math.floor(Math.random() * 1_000);
+    let generatedRoomId = Math.floor(Math.random() * 1_000);
+    if (generatedRoomId > 665 && generatedRoomId < 667) generatedRoomId = Math.floor(Math.random() * 1_000);
     $textId.value = generatedRoomId.toString();
 });
 
@@ -63,12 +65,19 @@ if (previousStadium) $stadiumSelect.value = previousStadium;
 // VALIDATION AND REDIRECTION
 const $validate = document.querySelector("#submit") as HTMLButtonElement;
 $validate.addEventListener("click", () => {
-    const $selectedCharacter = document.querySelector('input[name="character"]:checked') as HTMLInputElement;
-    if (!$textId.value || !$selectedCharacter || !$selectedCharacter.value) return alert("Please fill in both the room ID and character selection.");
+    const $selectedCharacterRadio = document.querySelector('input[name="character"]:checked') as HTMLInputElement;
+    if (modeSelected === "dual" && !$textId.value) return alert("Choisis un identifiant de jeu.");
+    if (!$selectedCharacterRadio) return alert("Choisis un personnage.");
+
+    const $selectedCharacter: CharacterID | "random" = $selectedCharacterRadio.value as CharacterID | "random";
+    const characterIDList: CharacterID[] = ["luffy", "zoro", "sanji", "ace", "jinbe", "law", "franky", "brook", "baggy", "chopper", "kuma", "nami", "robin", "sabo", "smoker", "usopp", "kid", "perona", "crocodile", "marco"]
+
+    if ($selectedCharacter === "random") localStorage.setItem("characterId", characterIDList[Math.floor(Math.random() * characterIDList.length)] as CharacterID);
+    else localStorage.setItem("characterId", $selectedCharacter);
+
     if (!localStorage.getItem("score")) localStorage.setItem("score", "0");
     localStorage.setItem("mode", modeSelected);
     localStorage.setItem("roomId", $textId.value);
-    localStorage.setItem("characterId", $selectedCharacter.value);
     localStorage.setItem("aiLevel", $aiLvlSelect.value);
     localStorage.setItem("stadium", $stadiumSelect.value);
     window.location.href = "/play.html";

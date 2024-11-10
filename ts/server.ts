@@ -30,11 +30,14 @@ io.on('connection', (socket: Socket) => {
     socket.on('askId', (roomId: RoomID) => {
         if (!gameStateCollection[roomId]) gameStateCollection[roomId] = { A: {}, B: {} };
         const thisGameState = gameStateCollection[roomId] as GameState;
-        if (Object.keys(thisGameState.A).includes("id") && Object.keys(thisGameState.B).includes("id")) socket.emit("stop")
-        const playerId: PlayerId = Object.keys(thisGameState.A).includes("id") ? "B" : "A";
-        socket.join(roomId.toString());
-        socket.emit('getId', playerId);
-        console.log(`Socket ${socket.id} joined room ${roomId} as player ${playerId}`);
+        if (Object.keys(thisGameState.A).includes("id") && Object.keys(thisGameState.B).includes("id")) {
+            socket.emit("busy")
+        } else {
+            const playerId: PlayerId = Object.keys(thisGameState.A).includes("id") ? "B" : "A";
+            socket.join(roomId.toString());
+            socket.emit('getId', playerId);
+            console.log(`Socket ${socket.id} joined room ${roomId} as player ${playerId}`);
+        }
     });
 
     socket.on("postPlayer", (msg: { thisPlayer: Player, roomId: RoomID, playerId: PlayerId }) => {
@@ -51,9 +54,9 @@ io.on('connection', (socket: Socket) => {
 
     });
 
-    socket.on('update', (msg: { roomId: RoomID, A: PlayerAttributesDeltas, B: PlayerAttributesDeltas }) => {
-        if (msg.A.hp <= 0 || msg.B.hp <= 0) {
-            io.to(msg.roomId.toString()).emit('over', msg.A.hp <= 0 ? "B" : "A");
+    socket.on('update', (msg: { roomId: RoomID, A: PlayerAttributesDeltasTuple, B: PlayerAttributesDeltasTuple }) => {
+        if (msg.A[4] <= 0 || msg.B[4] <= 0) {
+            io.to(msg.roomId.toString()).emit('over', msg.A[4] <= 0 ? "B" : "A");
             delete gameStateCollection[msg.roomId]
             console.log(`Game over in room ${msg.roomId}.`);
         }

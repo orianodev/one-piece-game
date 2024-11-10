@@ -16,7 +16,6 @@ io.on('connection', (socket) => {
     console.log(`User ${socket.id} connected`);
     socket.on('disconnect', (reason) => {
         let roomToStop;
-        // @ts-ignore
         for (const [room, clients] of socket.adapter.rooms) {
             if (!Number.isNaN(parseInt(room))) {
                 roomToStop = room;
@@ -30,12 +29,15 @@ io.on('connection', (socket) => {
         if (!gameStateCollection[roomId])
             gameStateCollection[roomId] = { A: {}, B: {} };
         const thisGameState = gameStateCollection[roomId];
-        if (Object.keys(thisGameState.A).includes("id") && Object.keys(thisGameState.B).includes("id"))
-            socket.emit("stop");
-        const playerId = Object.keys(thisGameState.A).includes("id") ? "B" : "A";
-        socket.join(roomId.toString());
-        socket.emit('getId', playerId);
-        console.log(`Socket ${socket.id} joined room ${roomId} as player ${playerId}`);
+        if (Object.keys(thisGameState.A).includes("id") && Object.keys(thisGameState.B).includes("id")) {
+            socket.emit("busy");
+        }
+        else {
+            const playerId = Object.keys(thisGameState.A).includes("id") ? "B" : "A";
+            socket.join(roomId.toString());
+            socket.emit('getId', playerId);
+            console.log(`Socket ${socket.id} joined room ${roomId} as player ${playerId}`);
+        }
     });
     socket.on("postPlayer", (msg) => {
         console.log(`Player ${msg.playerId} added his players stats in room ${msg.roomId}`);
@@ -52,8 +54,8 @@ io.on('connection', (socket) => {
         console.log(gameStateCollection);
     });
     socket.on('update', (msg) => {
-        if (msg.A.hp <= 0 || msg.B.hp <= 0) {
-            io.to(msg.roomId.toString()).emit('over', msg.A.hp <= 0 ? "B" : "A");
+        if (msg.A[4] <= 0 || msg.B[4] <= 0) {
+            io.to(msg.roomId.toString()).emit('over', msg.A[4] <= 0 ? "B" : "A");
             delete gameStateCollection[msg.roomId];
             console.log(`Game over in room ${msg.roomId}.`);
         }
