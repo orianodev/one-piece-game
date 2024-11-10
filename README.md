@@ -9,5 +9,8 @@
 ## Technical details
 
 - Language: TypeScript
+- Paradigm: OOP
+- Storage: LocalStorage on client-side, RAM only on server-side
 - Server: Express.js
-- WS Connection: Socket.IO
+- WebSocket Connection: Socket.IO
+- IMG: SVG icons, PNG sprites for Canvas, WebP for the rest.
