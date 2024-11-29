@@ -14,6 +14,5 @@
   - \_F.createBonus: on setInterval, random, push
   - type: trap, bomb, chicken, fruit
 - Alléger les requêtes WS :
-  - Remplacer les dir par des nb!
-  - Coordenées relatives
-  - Un seul delta à la fois?
+  - Coordonnées relatives
+  - Un seul delta à la fois

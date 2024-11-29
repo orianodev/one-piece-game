@@ -46,7 +46,7 @@ type AiLevel = "easy" | "medium" | "hard";
 type CharacterID = "luffy" | "zoro" | "sanji" | "ace" | "jinbe" | "law" | "franky" | "brook" | "baggy" | "chopper" | "kuma" | "nami" | "robin" | "sabo" | "smoker" | "usopp" | "kid" | "perona" | "crocodile" | "marco";
 
 type PlayerId = "A" | "B"
-type MoveDirections = "up" | "right" | "down" | "left";
+type MoveDirections = 1 | 2 | 3 | 4;
 type AtkType = "sim" | "sup"
 type Position = { x: number; y: number };
 

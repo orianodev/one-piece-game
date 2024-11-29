@@ -27,7 +27,7 @@ const characterStats = {
         mana: 100,
         maxMana: 200,
         regenPow: 10,
-        strength: 9,
+        strength: 10,
         atkImg: "/img/atk/tornado.png",
         atkCost: 10,
         atkSpeed: 22,
@@ -502,10 +502,10 @@ class Player {
         $ctx.drawImage(newImg, this.x, this.y, def.playW, def.playH);
 
         $ctx.globalAlpha = 0.5;
-        if (this.dir === "up") $ctx.fillRect(this.x + (def.playW / 2 - 5), this.y - def.cursorSize - 5, def.cursorSize, def.cursorSize);
-        if (this.dir === "down") $ctx.fillRect(this.x + (def.playW / 2 - 5), this.y + def.playH + 5, def.cursorSize, def.cursorSize);
-        if (this.dir === "left") $ctx.fillRect(this.x - def.cursorSize - 5, this.y + def.playH / 2 - 5, def.cursorSize, def.cursorSize);
-        if (this.dir === "right") $ctx.fillRect(this.x + def.playW + 5, this.y + def.playH / 2 - 5, def.cursorSize, def.cursorSize);
+        if (this.dir === 1) $ctx.fillRect(this.x + (def.playW / 2 - 5), this.y - def.cursorSize - 5, def.cursorSize, def.cursorSize);
+        if (this.dir === 3) $ctx.fillRect(this.x + (def.playW / 2 - 5), this.y + def.playH + 5, def.cursorSize, def.cursorSize);
+        if (this.dir === 4) $ctx.fillRect(this.x - def.cursorSize - 5, this.y + def.playH / 2 - 5, def.cursorSize, def.cursorSize);
+        if (this.dir === 2) $ctx.fillRect(this.x + def.playW + 5, this.y + def.playH / 2 - 5, def.cursorSize, def.cursorSize);
         _F.resetPen()
     }
     freeze(): boolean {
@@ -575,7 +575,7 @@ class Player {
         if (this.y < 0) return
         // const oppPos: Position = { x: _F.oppPlayer.x, y: _F.oppPlayer.y }
         // if (this.y == oppPos!.y + def.playH && this.x + def.playW > oppPos!.x && this.x < oppPos!.x + def.playW) return
-        this.dir = "up"
+        this.dir = 1
         this.y -= this.speed
         _F.drawAll()
         _F.updateServer()
@@ -584,7 +584,7 @@ class Player {
         if (this.y > def.canvasHeight - def.playH) return
         // const oppPos: Position = { x: _F.oppPlayer.x, y: _F.oppPlayer.y }
         // if (this.y + def.playH == oppPos!.y && this.x + def.playW > oppPos!.x && this.x < oppPos!.x + def.playW) return
-        this.dir = "down"
+        this.dir = 3
         this.y += this.speed
         _F.drawAll()
         _F.updateServer()
@@ -593,7 +593,7 @@ class Player {
         if (this.x < 0) return
         // const oppPos: Position = { x: _F.oppPlayer.x, y: _F.oppPlayer.y }
         // if (this.y + def.playH > oppPos!.y && this.y < oppPos!.y + def.playH && this.x == oppPos!.x + def.playW) return
-        this.dir = "left"
+        this.dir = 4
         this.x -= this.speed
         _F.drawAll()
         _F.updateServer()
@@ -602,14 +602,14 @@ class Player {
         if (this.x > def.canvasWidth - def.playW) return
         // const oppPos: Position = { x: _F.oppPlayer.x, y: _F.oppPlayer.y }
         // if (this.y + def.playH > oppPos!.y && this.y < oppPos!.y + def.playH && this.x + def.playW == oppPos!.x) return
-        this.dir = "right"
+        this.dir = 2
         this.x += this.speed
         _F.drawAll()
         _F.updateServer()
     }
     moveUpRight() {
         if (this.y < 0 || this.x > def.canvasWidth - def.playW) return
-        this.dir = "right"
+        this.dir = 2
         this.x += this.speed / Math.SQRT2;
         this.y -= this.speed / Math.SQRT2;
         _F.drawAll()
@@ -617,7 +617,7 @@ class Player {
     }
     moveUpLeft() {
         if (this.y < 0 || this.x < 0) return
-        this.dir = "left"
+        this.dir = 4
         this.x -= this.speed / Math.SQRT2;
         this.y -= this.speed / Math.SQRT2;
         _F.drawAll()
@@ -625,7 +625,7 @@ class Player {
     }
     moveDownRight() {
         if (this.y > def.canvasHeight - def.playH || this.x > def.canvasWidth - def.playW) return
-        this.dir = "right"
+        this.dir = 2
         this.x += this.speed / Math.SQRT2;
         this.y += this.speed / Math.SQRT2;
         _F.drawAll()
@@ -633,7 +633,7 @@ class Player {
     }
     moveDownLeft() {
         if (this.y > def.canvasHeight - def.playH || this.x < 0) return
-        this.dir = "left"
+        this.dir = 4
         this.x -= this.speed / Math.SQRT2;
         this.y += this.speed / Math.SQRT2;
         _F.drawAll()
@@ -666,18 +666,18 @@ class Atk {
     }
     move() {
         const owner = _F.thisPlayer.id === this.id ? _F.thisPlayer : _F.oppPlayer
-        if (this.dir == "left") this.x -= owner.atkSpeed
-        if (this.dir == "right") this.x += owner.atkSpeed
-        if (this.dir == "up") this.y -= owner.atkSpeed
-        if (this.dir == "down") this.y += owner.atkSpeed
+        if (this.dir == 4) this.x -= owner.atkSpeed
+        if (this.dir == 2) this.x += owner.atkSpeed
+        if (this.dir == 1) this.y -= owner.atkSpeed
+        if (this.dir == 3) this.y += owner.atkSpeed
         this.checkCollisionWithBorder(owner)
         this.checkCollisionWithOpp(owner)
     }
     checkCollisionWithBorder(owner: Player) {
-        if (this.dir == "left" && this.x <= 0) this.destroy(owner)
-        if (this.dir == "right" && this.x >= def.canvasWidth - def.atkW) this.destroy(owner)
-        if (this.dir == "up" && this.y <= 0) this.destroy(owner)
-        if (this.dir == "down" && this.y >= def.canvasHeight - def.atkH) this.destroy(owner)
+        if (this.dir == 4 && this.x <= 0) this.destroy(owner)
+        if (this.dir == 2 && this.x >= def.canvasWidth - def.atkW) this.destroy(owner)
+        if (this.dir == 1 && this.y <= 0) this.destroy(owner)
+        if (this.dir == 3 && this.y >= def.canvasHeight - def.atkH) this.destroy(owner)
     }
     checkCollisionWithOpp(owner: Player) {
         const opp = _F.thisPlayer.id === this.id ? _F.oppPlayer : _F.thisPlayer
@@ -724,23 +724,23 @@ class Fight {
                 const threshold = def.playW / 3;
 
                 // Determine the horizontal and vertical directions
-                let horizontalDirection: "left" | "right" | null = null;
-                let verticalDirection: "up" | "down" | null = null;
+                let horizontalDirection: 4 | 2 | null = null;
+                let verticalDirection: 1 | 3 | null = null;
 
-                if (xDiff > threshold) horizontalDirection = "right";
-                else if (xDiff < -threshold) horizontalDirection = "left";
-                if (yDiff > threshold) verticalDirection = "down";
-                else if (yDiff < -threshold) verticalDirection = "up";
+                if (xDiff > threshold) horizontalDirection = 2;
+                else if (xDiff < -threshold) horizontalDirection = 4;
+                if (yDiff > threshold) verticalDirection = 3;
+                else if (yDiff < -threshold) verticalDirection = 1;
 
                 // Execute movement based on determined directions
-                if (horizontalDirection === "right" && verticalDirection === "up") this.oppPlayer.moveUpRight();
-                else if (horizontalDirection === "right" && verticalDirection === "down") this.oppPlayer.moveDownRight();
-                else if (horizontalDirection === "left" && verticalDirection === "up") this.oppPlayer.moveUpLeft();
-                else if (horizontalDirection === "left" && verticalDirection === "down") this.oppPlayer.moveDownLeft();
-                else if (horizontalDirection === "right") this.oppPlayer.moveRight();
-                else if (horizontalDirection === "left") this.oppPlayer.moveLeft();
-                else if (verticalDirection === "up") this.oppPlayer.moveUp();
-                else if (verticalDirection === "down") this.oppPlayer.moveDown();
+                if (horizontalDirection === 2 && verticalDirection === 1) this.oppPlayer.moveUpRight();
+                else if (horizontalDirection === 2 && verticalDirection === 3) this.oppPlayer.moveDownRight();
+                else if (horizontalDirection === 4 && verticalDirection === 1) this.oppPlayer.moveUpLeft();
+                else if (horizontalDirection === 4 && verticalDirection === 3) this.oppPlayer.moveDownLeft();
+                else if (horizontalDirection === 2) this.oppPlayer.moveRight();
+                else if (horizontalDirection === 4) this.oppPlayer.moveLeft();
+                else if (verticalDirection === 1) this.oppPlayer.moveUp();
+                else if (verticalDirection === 3) this.oppPlayer.moveDown();
 
             } else if (aiChoice === "atk") {
                 this.oppPlayer.atk();
@@ -928,12 +928,12 @@ function soloGameSetup() {
     thisPlayerId = "A";
     const thisCharacterId: CharacterID = localStorage.getItem("characterId") as CharacterID;
     const thisCharacter: OneCharacterStats = characterStats[thisCharacterId];
-    const thisPlayer = new Player("A", thisCharacterId, thisCharacter.name, thisCharacter.color, thisCharacter.img, thisScore, defPos.A.x, defPos.A.y, "right", thisCharacter.speed, thisCharacter.hp, thisCharacter.maxHp, thisCharacter.healPow, thisCharacter.mana, thisCharacter.maxMana, thisCharacter.regenPow, thisCharacter.strength, thisCharacter.atkImg, thisCharacter.atkCost, thisCharacter.atkSpeed, []);
+    const thisPlayer = new Player("A", thisCharacterId, thisCharacter.name, thisCharacter.color, thisCharacter.img, thisScore, defPos.A.x, defPos.A.y, 2, thisCharacter.speed, thisCharacter.hp, thisCharacter.maxHp, thisCharacter.healPow, thisCharacter.mana, thisCharacter.maxMana, thisCharacter.regenPow, thisCharacter.strength, thisCharacter.atkImg, thisCharacter.atkCost, thisCharacter.atkSpeed, []);
 
     const charactersIdList: CharacterID[] = Object.keys(characterStats).filter((id) => id !== thisCharacterId) as CharacterID[];
     const aiCharacterId: CharacterID = charactersIdList[Math.floor(Math.random() * charactersIdList.length)] as CharacterID;
     const aiCharacter: OneCharacterStats = characterStats[aiCharacterId];
-    const aiPlayer = new Player("B", aiCharacterId, aiCharacter.name, aiCharacter.color, aiCharacter.img, 0, defPos.B.x, defPos.B.y, "left", aiCharacter.speed, aiCharacter.hp, aiCharacter.maxHp, aiCharacter.healPow, aiCharacter.mana, aiCharacter.maxMana, aiCharacter.regenPow, aiCharacter.strength, aiCharacter.atkImg, aiCharacter.atkCost, aiCharacter.atkSpeed, []);
+    const aiPlayer = new Player("B", aiCharacterId, aiCharacter.name, aiCharacter.color, aiCharacter.img, 0, defPos.B.x, defPos.B.y, 4, aiCharacter.speed, aiCharacter.hp, aiCharacter.maxHp, aiCharacter.healPow, aiCharacter.mana, aiCharacter.maxMana, aiCharacter.regenPow, aiCharacter.strength, aiCharacter.atkImg, aiCharacter.atkCost, aiCharacter.atkSpeed, []);
 
     const aiLevel: AiLevel = localStorage.getItem("aiLevel") as AiLevel;
     _F.buildPlayers(thisPlayer, aiPlayer);
@@ -1006,7 +1006,7 @@ socket.on("getId", (playerId: PlayerId) => {
     const thisCharacterId: CharacterID = localStorage.getItem("characterId") as CharacterID;
     const thisCharacter = characterStats[thisCharacterId];
     const thisPlayer: Omit<PlayerAttributes, "atks"> = {
-        id: playerId, charId: thisCharacterId, charName: thisCharacter.name, color: thisCharacter.color, img: thisCharacter.img, score: thisScore, rage: false, x: defPos[playerId].x, y: defPos[playerId].y, dir: thisPlayerId === "A" ? "right" : "left", speed: thisCharacter.speed, hp: thisCharacter.hp, maxHp: thisCharacter.maxHp, healPow: thisCharacter.healPow, mana: thisCharacter.mana, maxMana: thisCharacter.maxMana, regenPow: thisCharacter.regenPow, strength: thisCharacter.strength, atkImg: thisCharacter.atkImg, atkCost: thisCharacter.atkCost, atkSpeed: thisCharacter.atkSpeed
+        id: playerId, charId: thisCharacterId, charName: thisCharacter.name, color: thisCharacter.color, img: thisCharacter.img, score: thisScore, rage: false, x: defPos[playerId].x, y: defPos[playerId].y, dir: thisPlayerId === "A" ? 2 : 4, speed: thisCharacter.speed, hp: thisCharacter.hp, maxHp: thisCharacter.maxHp, healPow: thisCharacter.healPow, mana: thisCharacter.mana, maxMana: thisCharacter.maxMana, regenPow: thisCharacter.regenPow, strength: thisCharacter.strength, atkImg: thisCharacter.atkImg, atkCost: thisCharacter.atkCost, atkSpeed: thisCharacter.atkSpeed
     }
     const imagePaths = [`/img/back/${stadium}`, thisPlayer.img, thisPlayer.atkImg, thisPlayer.img.replace("char", "rage")];
     preloadImages(imagePaths, () => {
