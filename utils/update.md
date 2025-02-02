@@ -1,4 +1,5 @@
 - Affronter le même personnage d'IA (localstorage, popup)
+- Permettre les directions diagonales (properties, cursor, attack)
 - Sound design:
   - music: selection, waiting, all stadium
   - basic sfx: start, heal, regen, bonus, malus
@@ -16,3 +17,5 @@
 - Alléger les requêtes WS :
   - Coordonnées relatives
   - Un seul delta à la fois
+- Mode smartphone (buttons, events)
+- Modulariser l'app : play.ts >> characterStats.ts
