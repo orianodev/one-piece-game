@@ -10,6 +10,10 @@ const socket_io_1 = require("socket.io");
 const app = (0, express_1.default)();
 const server = (0, node_http_1.createServer)(app);
 const io = new socket_io_1.Server(server);
+app.get("/", (req, res) => res.sendFile((0, node_path_1.join)(__dirname, "views/index.html")));
+app.get("/commands", (req, res) => res.sendFile((0, node_path_1.join)(__dirname, "views/commands.html")));
+app.get("/settings", (req, res) => res.sendFile((0, node_path_1.join)(__dirname, "views/settings.html")));
+app.get("/play", (req, res) => res.sendFile((0, node_path_1.join)(__dirname, "views/play.html")));
 app.use(express_1.default.static((0, node_path_1.join)(__dirname)));
 let gameStateCollection = {};
 io.on('connection', (socket) => {

@@ -80,5 +80,5 @@ $validate.addEventListener("click", () => {
     localStorage.setItem("roomId", $textId.value);
     localStorage.setItem("aiLevel", $aiLvlSelect.value);
     localStorage.setItem("stadium", $stadiumSelect.value);
-    window.location.href = "/play.html";
+    window.location.href = "/play";
 });

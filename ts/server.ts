@@ -7,8 +7,18 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server);
 
+// ROUTER
+// @ts-ignore
+app.get("/", (req, res) => res.sendFile(join(__dirname, "views/index.html")))
+// @ts-ignore
+app.get("/commands", (req, res) => res.sendFile(join(__dirname, "views/commands.html")))
+// @ts-ignore
+app.get("/settings", (req, res) => res.sendFile(join(__dirname, "views/settings.html")))
+// @ts-ignore
+app.get("/play", (req, res) => res.sendFile(join(__dirname, "views/play.html")))
 app.use(express.static(join(__dirname)));
 
+// LOGIC
 let gameStateCollection: GameStateCollection = {};
 
 io.on('connection', (socket: Socket) => {
@@ -67,4 +77,5 @@ io.on('connection', (socket: Socket) => {
     });
 });
 
+// PORT
 server.listen(3000, () => console.log('server running at http://localhost:3000'));
