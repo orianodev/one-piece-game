@@ -1,0 +1,133 @@
+/* UNCOMPILED STYLESHEET */
+.tooltip,
+.tooltip::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+#commands,
+#settings {
+  position: absolute;
+  top: 20px;
+  background-color: inherit;
+  color: var(--content-color);
+}
+section.mode {
+  padding-bottom: 25px;
+}
+section.mode > div > h3 {
+  margin: 5px;
+  font-size: medium;
+  font-weight: 400;
+  color: rgba(245, 245, 245, 0.9);
+}
+section.mode > div > h2 {
+  margin-bottom: 2px;
+}
+input[type="text"] {
+  border: 1px solid #000;
+  border-radius: 3px;
+  padding: 5px;
+}
+div#mode-toggle {
+  margin-bottom: 10px;
+}
+div.dual > div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  column-gap: 5px;
+}
+div.dual,
+div.solo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+div.solo > select {
+  margin: 5px 0 2px 2px;
+}
+section.characters > form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+section.characters > form > label {
+  padding: 1px;
+  position: relative;
+  display: inline-block;
+  margin: 10px;
+}
+label > img {
+  border: 1.5px solid #4b0404;
+  border-radius: 10px;
+  width: 50px;
+  height: 50px;
+}
+label > img:hover {
+  cursor: pointer;
+  transition: 50ms;
+  border: 1.5px solid #0aa50a;
+}
+input[type="radio"] {
+  display: none;
+}
+input[type="radio"]:checked + img {
+  border: 1.5px solid #0aa50a;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
+}
+.tooltip {
+  visibility: hidden;
+  width: 80px;
+  background-color: #333;
+  color: var(--content-color);
+  text-align: center;
+  padding: 5px;
+  border-radius: 5px;
+  position: absolute;
+  bottom: 100%;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 0.8rem;
+}
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #333 transparent transparent;
+}
+label:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+section.stadium {
+  padding-bottom: 20px;
+}
+section.stadium > select {
+  margin: 10px 0;
+}
+section.validate {
+  background-color: inherit;
+  padding-bottom: 30px;
+}
+section.validate > button {
+  padding: 5px;
+  border-radius: var(--input-border-radius);
+}
+section.validate > button:hover {
+  box-shadow: 0 0 50px rgba(255, 0, 0, 0.3);
+  transition: 0.1s ease-in-out;
+  transform: scale(1.1);
+}
+#commands {
+  left: 20px;
+}
+#settings {
+  right: 20px;
+}

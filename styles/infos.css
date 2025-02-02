@@ -1,16 +1,1 @@
-form {
-  display: flex;
-  flex-direction: column;
-  row-gap: 10px;
-}
-
-a {
-  color: var(--content-color);
-}
-
-ul {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  row-gap: 10px;
-}
+form,ul{display:flex;row-gap:10px}form{flex-direction:column}a{color:var(--content-color)}ul{flex-direction:column;text-align:left}
