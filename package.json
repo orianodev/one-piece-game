@@ -1,7 +1,7 @@
 {
   "name": "one-piece-game",
   "version": "5.0.1",
-  "description": "One Piece Game using Typescript and Socket.IO for real-time multiplayer.",
+  "description": "One Piece game using Typescript and Socket.IO for real-time multiplayer.",
   "author": "Oriano DEV",
   "environment": "win11, vscode, git, edge/chrome",
   "type": "commonjs",
