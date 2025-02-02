@@ -71,6 +71,7 @@ interface SettingsInt {
     rageStrengthMult: number;
     rageAtkSpeedMult: number;
     rageRegenFactor: number;
+    rageHealFactor: number;
     collisionDist: number;
     normalTextColor: string;
     rageTextColor: string;
@@ -82,6 +83,7 @@ interface SettingsInt {
 interface OneCharacterStats {
     name: string;
     img: string;
+    type: string | "tank" | "balance" | "kunoichi" | "doctor";
     color: string;
     speed: number;
     hp: number;

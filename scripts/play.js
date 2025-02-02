@@ -3,6 +3,7 @@ const characterStats = {
     ace: {
         name: "Portgas D. Ace",
         img: "/img/char/ace.png",
+        type: "balance",
         color: "orange",
         speed: 9,
         hp: 250,
@@ -19,12 +20,13 @@ const characterStats = {
     baggy: {
         name: "Baggy le Clown",
         img: "/img/char/baggy.png",
+        type: "kunoichi",
         color: "cyan",
         speed: 6.5,
         hp: 160,
         maxHp: 220,
         healPow: 4,
-        mana: 100,
+        mana: 180,
         maxMana: 180,
         regenPow: 6,
         strength: 9,
@@ -35,6 +37,7 @@ const characterStats = {
     bellamy: {
         name: "Bellamy",
         img: "/img/char/bellamy.png",
+        type: "balance",
         color: "yellow",
         speed: 9,
         hp: 220,
@@ -51,6 +54,7 @@ const characterStats = {
     brook: {
         name: "Brook",
         img: "/img/char/brook.png",
+        type: "kunoichi",
         color: "white",
         speed: 14,
         hp: 150,
@@ -67,6 +71,7 @@ const characterStats = {
     chopper: {
         name: "Tony Tony Chopper",
         img: "/img/char/chopper.png",
+        type: "doctor",
         color: "red",
         speed: 8,
         hp: 180,
@@ -83,6 +88,7 @@ const characterStats = {
     crocodile: {
         name: "Sir Crocodile",
         img: "/img/char/crocodile.png",
+        type: "balance",
         color: "brown",
         speed: 7,
         hp: 220,
@@ -99,6 +105,7 @@ const characterStats = {
     franky: {
         name: "Franky",
         img: "/img/char/franky.png",
+        type: "balance",
         color: "blue",
         speed: 9,
         hp: 200,
@@ -115,6 +122,7 @@ const characterStats = {
     hancock: {
         name: "Boa Hancock",
         img: "/img/char/hancock.png",
+        type: "balance",
         color: "pink",
         speed: 7.5,
         hp: 250,
@@ -131,6 +139,7 @@ const characterStats = {
     jinbe: {
         name: "Jinbei",
         img: "/img/char/jinbe.png",
+        type: "tank",
         color: "blue",
         speed: 5,
         hp: 300,
@@ -147,6 +156,7 @@ const characterStats = {
     katakuri: {
         name: "Charlotte Katakuri",
         img: "/img/char/katakuri.png",
+        type: "tank",
         color: "purple",
         speed: 7,
         hp: 350,
@@ -163,6 +173,7 @@ const characterStats = {
     kid: {
         name: "Eustass Captain Kid",
         img: "/img/char/kid.png",
+        type: "tank",
         color: "grey",
         speed: 6.5,
         hp: 260,
@@ -179,6 +190,7 @@ const characterStats = {
     kuma: {
         name: "Bartholomew Kuma",
         img: "/img/char/kuma.png",
+        type: "tank",
         color: "black",
         speed: 4,
         hp: 400,
@@ -195,6 +207,7 @@ const characterStats = {
     kuzan: {
         name: "Kuzan",
         img: "/img/char/kuzan.png",
+        type: "tank",
         color: "lightblue",
         speed: 8,
         hp: 300,
@@ -211,6 +224,7 @@ const characterStats = {
     law: {
         name: "Trafalgar D. Law",
         img: "/img/char/law.png",
+        type: "doctor",
         color: "brown",
         speed: 10,
         hp: 150,
@@ -227,6 +241,7 @@ const characterStats = {
     luffy: {
         name: "Monkey D. Luffy",
         img: "/img/char/luffy.png",
+        type: "balance",
         color: "red",
         speed: 11.5,
         hp: 230,
@@ -243,6 +258,7 @@ const characterStats = {
     marco: {
         name: "Marco le Phoenix",
         img: "/img/char/marco.png",
+        type: "balance",
         color: "cyan",
         speed: 8.5,
         hp: 200,
@@ -259,12 +275,13 @@ const characterStats = {
     nami: {
         name: "Nami",
         img: "/img/char/nami.png",
+        type: "kunoichi",
         color: "orange",
         speed: 9,
         hp: 130,
         maxHp: 200,
         healPow: 5,
-        mana: 150,
+        mana: 250,
         maxMana: 250,
         regenPow: 10,
         strength: 7,
@@ -275,12 +292,13 @@ const characterStats = {
     perona: {
         name: "Perona",
         img: "/img/char/perona.png",
+        type: "kunoichi",
         color: "pink",
         speed: 8.5,
         hp: 180,
         maxHp: 230,
         healPow: 5,
-        mana: 155,
+        mana: 255,
         maxMana: 255,
         regenPow: 12,
         strength: 10,
@@ -291,6 +309,7 @@ const characterStats = {
     robin: {
         name: "Nico Robin",
         img: "/img/char/robin.png",
+        type: "kunoichi",
         color: "pink",
         speed: 8.5,
         hp: 170,
@@ -307,6 +326,7 @@ const characterStats = {
     sabo: {
         name: "Sabo",
         img: "/img/char/sabo.png",
+        type: "balance",
         color: "orange",
         speed: 9,
         hp: 220,
@@ -323,6 +343,7 @@ const characterStats = {
     sanji: {
         name: "Vinsmoke Sanji",
         img: "/img/char/sanji.png",
+        type: "balance",
         color: "yellow",
         speed: 8,
         hp: 200,
@@ -339,6 +360,7 @@ const characterStats = {
     smoker: {
         name: "Smoker",
         img: "/img/char/smoker.png",
+        type: "balance",
         color: "gray",
         speed: 7,
         hp: 250,
@@ -355,12 +377,13 @@ const characterStats = {
     usopp: {
         name: "Usopp",
         img: "/img/char/usopp.png",
+        type: "kunoichi",
         color: "green",
         speed: 8,
         hp: 140,
         maxHp: 200,
         healPow: 4,
-        mana: 100,
+        mana: 200,
         maxMana: 200,
         regenPow: 9,
         strength: 6,
@@ -371,6 +394,7 @@ const characterStats = {
     zoro: {
         name: "Roronoa Zoro",
         img: "/img/char/zoro.png",
+        type: "balance",
         color: "purple",
         speed: 7.5,
         hp: 220,
@@ -400,20 +424,21 @@ const def = {
     superSizeMult: 3,
     superManaMult: 10,
     superDamageMult: 5,
-    rageThreshold: 0.2,
+    rageThreshold: 0.25,
     rageDuration: 10000,
     rageSpeedMult: 1.3,
     rageStrengthMult: 1.3,
     rageAtkSpeedMult: 1.3,
     rageRegenFactor: 1.3,
+    rageHealFactor: 1.3,
     normalTextColor: "whitesmoke",
     rageTextColor: "red",
     shadowBlur: 150,
     cursorSize: 10,
     aiLvlInterval: {
-        "easy": 300,
-        "medium": 200,
-        "hard": 100,
+        "easy": 250,
+        "medium": 180,
+        "hard": 160,
     }
 };
 const defPos = { A: { x: 0, y: def.canvasHeight / 2 - def.playH }, B: { x: def.canvasWidth - def.playW, y: def.canvasHeight / 2 - def.playH } };
@@ -538,6 +563,7 @@ class Player {
         this.strength *= def.rageStrengthMult;
         this.atkSpeed *= def.rageAtkSpeedMult;
         this.regenPow *= def.rageRegenFactor;
+        this.healPow *= def.rageHealFactor;
         if (this.id === "A")
             $character1.style.color = def.rageTextColor;
         else if (this.id === "B")
@@ -549,6 +575,7 @@ class Player {
         this.speed = characterStats[this.charId].speed;
         this.strength = characterStats[this.charId].strength;
         this.regenPow = characterStats[this.charId].regenPow;
+        this.healPow = characterStats[this.charId].healPow;
         if (this.id === "A")
             $character1.style.color = def.normalTextColor;
         else if (this.id === "B")
