@@ -4,15 +4,13 @@ Try now : https://one-piece-game.onrender.com/
 
 ## What's new ?
 
-- V5.0 : True 2D experience with both online 2-player mode and 1-player mode against AI, as well as 24 characters (10/11/2024)
-- V2.0 : AI mode for 1-player game and bug fixes (29/08/2023)
-- V1.0 : 1D gameplay with 2-player on 1 keyboard with 8 characters (28/08/2023)
+- V5.0 : 2D gameplay with both online 2-players and 1-player mode against AI (2024)
+- V2.0 : AI mode for 1-player game (2023)
+- V1.0 : Original game with 2 players on the same computer (2023)
 
 ## Technical details
 
-- Language: TypeScript
-- Paradigm: OOP
-- Storage: LocalStorage on client-side, RAM only on server-side
-- Server: Express.js
-- WebSocket Connection: Socket.IO
-- IMG: SVG icons, PNG sprites for Canvas, WebP for the rest.
+- Language: Typescript (OOP)
+- Server: Node/Express + Socket.IO
+- Storage: LocalStorage for client, RAM only for server (No dB)
+- Images: SVG icons, PNG sprites in canvas, WebP for the rest
