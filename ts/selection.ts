@@ -35,7 +35,10 @@ if (previousRoomId) $textId.value = previousRoomId;
 
 const params = new URLSearchParams(document.location.search);
 const idFromUrl = params.get("id");
-if (idFromUrl) $textId.value = idFromUrl;
+if (idFromUrl) {
+    $textId.value = idFromUrl
+    changeMode("dual")
+};
 
 $copyId.addEventListener("click", () => {
     const $icon = document.querySelector("#copy-id > img");
