@@ -60,6 +60,11 @@ const $aiLvlSelect = document.querySelector("select#ai-level") as HTMLSelectElem
 const previousAiLvl = localStorage.getItem("aiLevel");
 if (previousAiLvl) $aiLvlSelect.value = previousAiLvl;
 
+// PLAYER PRE-SELECTION
+const previousCharacterId: CharacterID = localStorage.getItem("characterId") as CharacterID
+const $previousCharacterRadio = document.querySelector(`input#${previousCharacterId}`) as HTMLInputElement;
+if (previousCharacterId) { $previousCharacterRadio.checked = true }
+
 // STADIUM SELECTION
 const $stadiumSelect = document.querySelector("select#stadium") as HTMLSelectElement;
 const previousStadium = localStorage.getItem("stadium");

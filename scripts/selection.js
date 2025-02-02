@@ -53,6 +53,11 @@ const $aiLvlSelect = document.querySelector("select#ai-level");
 const previousAiLvl = localStorage.getItem("aiLevel");
 if (previousAiLvl)
     $aiLvlSelect.value = previousAiLvl;
+const previousCharacterId = localStorage.getItem("characterId");
+const $previousCharacterRadio = document.querySelector(`input#${previousCharacterId}`);
+if (previousCharacterId) {
+    $previousCharacterRadio.checked = true;
+}
 const $stadiumSelect = document.querySelector("select#stadium");
 const previousStadium = localStorage.getItem("stadium");
 if (previousStadium)
