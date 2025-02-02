@@ -439,9 +439,9 @@ const def: SettingsInt = {
     shadowBlur: 150,
     cursorSize: 10,
     aiLvlInterval: {
-        "easy": 250,
-        "medium": 180,
-        "hard": 160,
+        "easy": 240,
+        "medium": 170,
+        "hard": 100,
     }
 }
 const defPos: { A: Position, B: Position } = { A: { x: 0, y: def.canvasHeight / 2 - def.playH }, B: { x: def.canvasWidth - def.playW, y: def.canvasHeight / 2 - def.playH } }
