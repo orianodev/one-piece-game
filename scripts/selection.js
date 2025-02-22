@@ -40,13 +40,13 @@ $copyId.addEventListener("click", () => {
     const url = new URL(window.location.href);
     url.searchParams.set("id", $textId.value);
     navigator.clipboard.writeText(url.href)
-        .then(() => $icon === null || $icon === void 0 ? void 0 : $icon.setAttribute("src", "/img/icon/check.svg"))
+        .then(() => $icon?.setAttribute("src", "/img/icon/check.svg"))
         .catch(err => console.error("Failed to copy URL:", err));
 });
 $randomId.addEventListener("click", () => {
-    let generatedRoomId = Math.floor(Math.random() * 1000);
+    let generatedRoomId = Math.floor(Math.random() * 1_000);
     if (generatedRoomId > 665 && generatedRoomId < 667)
-        generatedRoomId = Math.floor(Math.random() * 1000);
+        generatedRoomId = Math.floor(Math.random() * 1_000);
     $textId.value = generatedRoomId.toString();
 });
 const $aiLvlSelect = document.querySelector("select#ai-level");

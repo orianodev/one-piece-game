@@ -1,447 +1,5 @@
-"use strict";
-const characterStats = {
-    ace: {
-        name: "Portgas D. Ace",
-        img: "/img/char/ace.png",
-        type: "balance",
-        color: "orange",
-        speed: 9,
-        hp: 250,
-        maxHp: 250,
-        healPow: 3,
-        mana: 120,
-        maxMana: 250,
-        regenPow: 10,
-        strength: 15,
-        atkImg: "/img/atk/fireball.png",
-        atkCost: 10,
-        atkSpeed: 18,
-    },
-    baggy: {
-        name: "Baggy le Clown",
-        img: "/img/char/baggy.png",
-        type: "kunoichi",
-        color: "cyan",
-        speed: 6.5,
-        hp: 160,
-        maxHp: 220,
-        healPow: 4,
-        mana: 180,
-        maxMana: 180,
-        regenPow: 6,
-        strength: 9,
-        atkImg: "/img/atk/knife.png",
-        atkCost: 6,
-        atkSpeed: 18,
-    },
-    bellamy: {
-        name: "Bellamy",
-        img: "/img/char/bellamy.png",
-        type: "balance",
-        color: "yellow",
-        speed: 9,
-        hp: 220,
-        maxHp: 275,
-        healPow: 2,
-        mana: 90,
-        maxMana: 180,
-        regenPow: 6,
-        strength: 13,
-        atkImg: "/img/atk/spring.png",
-        atkCost: 9,
-        atkSpeed: 19,
-    },
-    brook: {
-        name: "Brook",
-        img: "/img/char/brook.png",
-        type: "kunoichi",
-        color: "white",
-        speed: 14,
-        hp: 150,
-        maxHp: 350,
-        healPow: 3,
-        mana: 120,
-        maxMana: 200,
-        regenPow: 10,
-        strength: 15,
-        atkImg: "/img/atk/music.png",
-        atkCost: 10,
-        atkSpeed: 20,
-    },
-    chopper: {
-        name: "Tony Tony Chopper",
-        img: "/img/char/chopper.png",
-        type: "doctor",
-        color: "red",
-        speed: 8,
-        hp: 180,
-        maxHp: 280,
-        healPow: 8,
-        mana: 120,
-        maxMana: 250,
-        regenPow: 12,
-        strength: 9,
-        atkImg: "/img/atk/hoof.png",
-        atkCost: 9,
-        atkSpeed: 19,
-    },
-    crocodile: {
-        name: "Sir Crocodile",
-        img: "/img/char/crocodile.png",
-        type: "balance",
-        color: "brown",
-        speed: 7,
-        hp: 220,
-        maxHp: 300,
-        healPow: 2.5,
-        mana: 130,
-        maxMana: 240,
-        regenPow: 9,
-        strength: 16,
-        atkImg: "/img/atk/sand.png",
-        atkCost: 12,
-        atkSpeed: 18,
-    },
-    franky: {
-        name: "Franky",
-        img: "/img/char/franky.png",
-        type: "balance",
-        color: "blue",
-        speed: 9,
-        hp: 200,
-        maxHp: 250,
-        healPow: 2,
-        mana: 150,
-        maxMana: 300,
-        regenPow: 12,
-        strength: 15,
-        atkImg: "/img/atk/canon.png",
-        atkCost: 10,
-        atkSpeed: 20,
-    },
-    hancock: {
-        name: "Boa Hancock",
-        img: "/img/char/hancock.png",
-        type: "balance",
-        color: "pink",
-        speed: 7.5,
-        hp: 250,
-        maxHp: 320,
-        healPow: 3.5,
-        mana: 160,
-        maxMana: 250,
-        regenPow: 10,
-        strength: 12,
-        atkImg: "/img/atk/heart.png",
-        atkCost: 11,
-        atkSpeed: 18,
-    },
-    jinbe: {
-        name: "Jinbei",
-        img: "/img/char/jinbe.png",
-        type: "tank",
-        color: "blue",
-        speed: 5,
-        hp: 300,
-        maxHp: 400,
-        healPow: 1.5,
-        mana: 140,
-        maxMana: 300,
-        regenPow: 5,
-        strength: 20,
-        atkImg: "/img/atk/wave.png",
-        atkCost: 20,
-        atkSpeed: 11,
-    },
-    katakuri: {
-        name: "Charlotte Katakuri",
-        img: "/img/char/katakuri.png",
-        type: "tank",
-        color: "purple",
-        speed: 7,
-        hp: 350,
-        maxHp: 400,
-        healPow: 3,
-        mana: 110,
-        maxMana: 200,
-        regenPow: 7,
-        strength: 18,
-        atkImg: "/img/atk/mochi.png",
-        atkCost: 15,
-        atkSpeed: 15,
-    },
-    kid: {
-        name: "Eustass Captain Kid",
-        img: "/img/char/kid.png",
-        type: "tank",
-        color: "grey",
-        speed: 6.5,
-        hp: 260,
-        maxHp: 330,
-        healPow: 3,
-        mana: 110,
-        maxMana: 200,
-        regenPow: 7,
-        strength: 18,
-        atkImg: "/img/atk/metal.png",
-        atkCost: 13,
-        atkSpeed: 17,
-    },
-    kuma: {
-        name: "Bartholomew Kuma",
-        img: "/img/char/kuma.png",
-        type: "tank",
-        color: "black",
-        speed: 4,
-        hp: 400,
-        maxHp: 450,
-        healPow: 2,
-        mana: 100,
-        maxMana: 200,
-        regenPow: 8,
-        strength: 18,
-        atkImg: "/img/atk/pad.png",
-        atkCost: 20,
-        atkSpeed: 7,
-    },
-    kuzan: {
-        name: "Kuzan",
-        img: "/img/char/kuzan.png",
-        type: "tank",
-        color: "lightblue",
-        speed: 8,
-        hp: 300,
-        maxHp: 350,
-        healPow: 4,
-        mana: 120,
-        maxMana: 250,
-        regenPow: 8,
-        strength: 14,
-        atkImg: "/img/atk/ice.png",
-        atkCost: 12,
-        atkSpeed: 17,
-    },
-    law: {
-        name: "Trafalgar D. Law",
-        img: "/img/char/law.png",
-        type: "doctor",
-        color: "brown",
-        speed: 10,
-        hp: 150,
-        maxHp: 200,
-        healPow: 10,
-        mana: 100,
-        maxMana: 190,
-        regenPow: 15,
-        strength: 11,
-        atkImg: "/img/atk/scalpel.png",
-        atkCost: 10,
-        atkSpeed: 20,
-    },
-    luffy: {
-        name: "Monkey D. Luffy",
-        img: "/img/char/luffy.png",
-        type: "balance",
-        color: "red",
-        speed: 11.5,
-        hp: 230,
-        maxHp: 330,
-        healPow: 5,
-        mana: 90,
-        maxMana: 250,
-        regenPow: 10,
-        strength: 11,
-        atkImg: "/img/atk/punch.png",
-        atkCost: 11,
-        atkSpeed: 20,
-    },
-    marco: {
-        name: "Marco le Phoenix",
-        img: "/img/char/marco.png",
-        type: "balance",
-        color: "cyan",
-        speed: 8.5,
-        hp: 200,
-        maxHp: 280,
-        healPow: 7,
-        mana: 160,
-        maxMana: 300,
-        regenPow: 12,
-        strength: 12,
-        atkImg: "/img/atk/phoenix.png",
-        atkCost: 11,
-        atkSpeed: 20,
-    },
-    nami: {
-        name: "Nami",
-        img: "/img/char/nami.png",
-        type: "kunoichi",
-        color: "orange",
-        speed: 9,
-        hp: 130,
-        maxHp: 200,
-        healPow: 5,
-        mana: 250,
-        maxMana: 250,
-        regenPow: 10,
-        strength: 7,
-        atkImg: "/img/atk/bolt.png",
-        atkCost: 10,
-        atkSpeed: 31,
-    },
-    perona: {
-        name: "Perona",
-        img: "/img/char/perona.png",
-        type: "kunoichi",
-        color: "pink",
-        speed: 8.5,
-        hp: 180,
-        maxHp: 230,
-        healPow: 5,
-        mana: 255,
-        maxMana: 255,
-        regenPow: 12,
-        strength: 10,
-        atkImg: "/img/atk/ghost.png",
-        atkCost: 10,
-        atkSpeed: 23.5,
-    },
-    robin: {
-        name: "Nico Robin",
-        img: "/img/char/robin.png",
-        type: "kunoichi",
-        color: "pink",
-        speed: 8.5,
-        hp: 170,
-        maxHp: 240,
-        healPow: 6,
-        mana: 140,
-        maxMana: 230,
-        regenPow: 10,
-        strength: 10,
-        atkImg: "/img/atk/arm.png",
-        atkCost: 11,
-        atkSpeed: 21,
-    },
-    sabo: {
-        name: "Sabo",
-        img: "/img/char/sabo.png",
-        type: "balance",
-        color: "orange",
-        speed: 9,
-        hp: 220,
-        maxHp: 300,
-        healPow: 3,
-        mana: 130,
-        maxMana: 200,
-        regenPow: 8,
-        strength: 14,
-        atkImg: "/img/atk/flame.png",
-        atkCost: 12,
-        atkSpeed: 20,
-    },
-    sanji: {
-        name: "Vinsmoke Sanji",
-        img: "/img/char/sanji.png",
-        type: "balance",
-        color: "yellow",
-        speed: 8,
-        hp: 200,
-        maxHp: 275,
-        healPow: 3,
-        mana: 150,
-        maxMana: 200,
-        regenPow: 10,
-        strength: 10,
-        atkImg: "/img/atk/kick.png",
-        atkCost: 10,
-        atkSpeed: 19,
-    },
-    smoker: {
-        name: "Smoker",
-        img: "/img/char/smoker.png",
-        type: "balance",
-        color: "gray",
-        speed: 7,
-        hp: 250,
-        maxHp: 300,
-        healPow: 4,
-        mana: 110,
-        maxMana: 210,
-        regenPow: 7,
-        strength: 13,
-        atkImg: "/img/atk/smoke.png",
-        atkCost: 10,
-        atkSpeed: 19,
-    },
-    usopp: {
-        name: "Usopp",
-        img: "/img/char/usopp.png",
-        type: "kunoichi",
-        color: "green",
-        speed: 8,
-        hp: 140,
-        maxHp: 200,
-        healPow: 4,
-        mana: 200,
-        maxMana: 200,
-        regenPow: 9,
-        strength: 6,
-        atkImg: "/img/atk/plant.png",
-        atkCost: 8,
-        atkSpeed: 30,
-    },
-    zoro: {
-        name: "Roronoa Zoro",
-        img: "/img/char/zoro.png",
-        type: "balance",
-        color: "purple",
-        speed: 7.5,
-        hp: 220,
-        maxHp: 300,
-        healPow: 5,
-        mana: 100,
-        maxMana: 200,
-        regenPow: 10,
-        strength: 10,
-        atkImg: "/img/atk/tornado.png",
-        atkCost: 10,
-        atkSpeed: 22,
-    }
-};
-const def = {
-    canvasWidth: 800,
-    canvasHeight: 500,
-    canvasScaleMult: 4,
-    playW: 80,
-    playH: 120,
-    atkW: 30,
-    atkH: 30,
-    refreshRate: 50,
-    move60fpsRAFDivider: 5,
-    freezeDelay: 150,
-    collisionDist: 67,
-    superSizeMult: 3,
-    superManaMult: 10,
-    superDamageMult: 5,
-    rageThreshold: 0.25,
-    rageDuration: 10000,
-    rageSpeedMult: 1.3,
-    rageStrengthMult: 1.3,
-    rageAtkSpeedMult: 1.3,
-    rageRegenFactor: 1.3,
-    rageHealFactor: 1.3,
-    normalTextColor: "whitesmoke",
-    rageTextColor: "red",
-    shadowBlur: 150,
-    cursorSize: 10,
-    aiLvlInterval: {
-        "easy": 240,
-        "medium": 170,
-        "hard": 100,
-    }
-};
-const defPos = { A: { x: 0, y: def.canvasHeight / 2 - def.playH }, B: { x: def.canvasWidth - def.playW, y: def.canvasHeight / 2 - def.playH } };
+import { characterStats } from "./charactersStats.js";
+import { def, defPos } from "./defaultSettings.js";
 const $playScreen = document.querySelector("#play");
 const $canvas = document.querySelector("#canvas");
 const $ctx = $canvas.getContext("2d");
@@ -463,8 +21,29 @@ const $manaBar2 = document.querySelector("#mana-bar-2");
 const $mana2 = document.querySelector("#mana-2");
 const $score2 = document.querySelector("#score-2");
 class Player {
+    id;
+    charId;
+    charName;
+    color;
+    img;
+    score;
+    rage = false;
+    x;
+    y;
+    dir;
+    speed;
+    hp;
+    maxHp;
+    healPow;
+    mana;
+    maxMana;
+    regenPow;
+    strength;
+    atkImg;
+    atkCost;
+    atkSpeed;
+    atks;
     constructor(id, charId, charName, color, img, score, x, y, dir, speed, hp, maxHp, healPow, mana, maxMana, regenPow, strength, atkImg, atkCost, atkSpeed, atks) {
-        this.rage = false;
         this.id = id;
         this.charId = charId;
         this.charName = charName;
@@ -656,6 +235,11 @@ class Player {
     }
 }
 class Atk {
+    id;
+    type;
+    x;
+    y;
+    dir;
     constructor(owner, type, x, y, dir) {
         this.id = owner;
         this.type = type;
@@ -712,6 +296,13 @@ class Atk {
     }
 }
 class Fight {
+    thisPlayer;
+    oppPlayer;
+    roomId;
+    mode;
+    state;
+    pressedKeys = new Set();
+    frameCount = 0;
     constructor(roomId, mode, state) {
         this.roomId = roomId;
         this.mode = mode;
@@ -871,6 +462,52 @@ class Fight {
             $ctx.stroke();
         }
     }
+    handleActionKeys(key) {
+        switch (key) {
+            case "z":
+                _F.thisPlayer.atk();
+                break;
+            case "d":
+                _F.thisPlayer.heal();
+                break;
+            case "q":
+                _F.thisPlayer.regen();
+                break;
+            case "s":
+                _F.thisPlayer.superAtk();
+                break;
+            case " ":
+                _F.thisPlayer.enrage();
+                break;
+        }
+    }
+    updateMovement() {
+        if (this.frameCount % def.move60fpsRAFDivider === 0) {
+            const player = _F.thisPlayer;
+            const movingUp = this.pressedKeys.has("ArrowUp");
+            const movingRight = this.pressedKeys.has("ArrowRight");
+            const movingDown = this.pressedKeys.has("ArrowDown");
+            const movingLeft = this.pressedKeys.has("ArrowLeft");
+            if (movingUp && movingRight)
+                player.moveUpRight();
+            else if (movingUp && movingLeft)
+                player.moveUpLeft();
+            else if (movingDown && movingRight)
+                player.moveDownRight();
+            else if (movingDown && movingLeft)
+                player.moveDownLeft();
+            else if (movingUp)
+                player.moveUp();
+            else if (movingRight)
+                player.moveRight();
+            else if (movingDown)
+                player.moveDown();
+            else if (movingLeft)
+                player.moveLeft();
+        }
+        this.frameCount++;
+        requestAnimationFrame(this.updateMovement.bind(this));
+    }
 }
 const $popup = document.querySelector("#popup");
 const $home = document.querySelector("#home");
@@ -897,11 +534,6 @@ let thisPlayerId;
 const mode = localStorage.getItem("mode");
 const roomId = parseInt(localStorage.getItem("roomId"));
 const _F = new Fight(roomId, mode, "playing");
-const socket = io();
-if (_F.mode === "dual")
-    socket.emit("askId", _F.roomId);
-else if (_F.mode === "solo")
-    soloGameSetup();
 function preloadImages(imagePaths, callback) {
     let loadedImages = 0;
     const totalImages = imagePaths.length;
@@ -989,6 +621,19 @@ function dualGameRefresh() {
         _F.drawAll();
     }, def.refreshRate);
 }
+document.addEventListener("keydown", (event) => {
+    _F.pressedKeys.add(event.key);
+    _F.handleActionKeys(event.key);
+});
+document.addEventListener("keyup", (event) => {
+    _F.pressedKeys.delete(event.key);
+});
+_F.updateMovement();
+const socket = io();
+if (_F.mode === "dual")
+    socket.emit("askId", _F.roomId);
+else if (_F.mode === "solo")
+    soloGameSetup();
 socket.on("stop", () => {
     displayPopup("Ton adversaire s'est deconnecté.", false);
 });
@@ -1031,59 +676,3 @@ socket.on("over", (msg) => {
         localStorage.setItem("score", (_F.thisPlayer.score + 1).toString());
     displayPopup(`Le joueur ${msg === "A" ? "1" : "2"} a gagné!`, false);
 });
-const pressedKeys = new Set();
-document.addEventListener("keydown", (event) => {
-    pressedKeys.add(event.key);
-    handleActionKeys(event.key);
-});
-document.addEventListener("keyup", (event) => {
-    pressedKeys.delete(event.key);
-});
-function handleActionKeys(key) {
-    switch (key) {
-        case "z":
-            _F.thisPlayer.atk();
-            break;
-        case "d":
-            _F.thisPlayer.heal();
-            break;
-        case "q":
-            _F.thisPlayer.regen();
-            break;
-        case "s":
-            _F.thisPlayer.superAtk();
-            break;
-        case " ":
-            _F.thisPlayer.enrage();
-            break;
-    }
-}
-let frameCount = 0;
-function updateMovement() {
-    if (frameCount % def.move60fpsRAFDivider === 0) {
-        const player = _F.thisPlayer;
-        const movingUp = pressedKeys.has("ArrowUp");
-        const movingRight = pressedKeys.has("ArrowRight");
-        const movingDown = pressedKeys.has("ArrowDown");
-        const movingLeft = pressedKeys.has("ArrowLeft");
-        if (movingUp && movingRight)
-            player.moveUpRight();
-        else if (movingUp && movingLeft)
-            player.moveUpLeft();
-        else if (movingDown && movingRight)
-            player.moveDownRight();
-        else if (movingDown && movingLeft)
-            player.moveDownLeft();
-        else if (movingUp)
-            player.moveUp();
-        else if (movingRight)
-            player.moveRight();
-        else if (movingDown)
-            player.moveDown();
-        else if (movingLeft)
-            player.moveLeft();
-    }
-    frameCount++;
-    requestAnimationFrame(updateMovement);
-}
-updateMovement();

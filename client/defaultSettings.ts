@@ -1,0 +1,33 @@
+export const def: SettingsInt = {
+    canvasWidth: 800,
+    canvasHeight: 500,
+    canvasScaleMult: 4,
+    playW: 80,
+    playH: 120,
+    atkW: 30,
+    atkH: 30,
+    refreshRate: 50,
+    move60fpsRAFDivider: 5,
+    freezeDelay: 150,
+    collisionDist: 67,
+    superSizeMult: 3,
+    superManaMult: 10,
+    superDamageMult: 5,
+    rageThreshold: 0.25,
+    rageDuration: 10000,
+    rageSpeedMult: 1.3,
+    rageStrengthMult: 1.3,
+    rageAtkSpeedMult: 1.3,
+    rageRegenFactor: 1.3,
+    rageHealFactor: 1.3,
+    normalTextColor: "whitesmoke",
+    rageTextColor: "red",
+    shadowBlur: 150,
+    cursorSize: 10,
+    aiLvlInterval: {
+        "easy": 240,
+        "medium": 170,
+        "hard": 100,
+    }
+}
+export const defPos: { A: Position, B: Position } = { A: { x: 0, y: def.canvasHeight / 2 - def.playH }, B: { x: def.canvasWidth - def.playW, y: def.canvasHeight / 2 - def.playH } }

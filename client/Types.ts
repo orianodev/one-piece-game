@@ -1,4 +1,3 @@
-// server.ts
 type PlayerAttributesDeltasTuple = [rage, x, y, dir, hp, mana, atks];
 type rage = boolean;
 type x = number;
@@ -9,6 +8,13 @@ type mana = number;
 type atks = AtkAttributesDeltasTuple[];
 type AtkAttributesDeltasTuple = [PlayerId, AtkType, x, y, dir];
 
+interface Atk {
+    id: PlayerId;
+    type: AtkType;
+    x: number;
+    y: number;
+    dir: MoveDirections;
+}
 
 interface PlayerAttributes {
     id: PlayerId;
@@ -39,7 +45,6 @@ type GameState = { A: PlayerAttributes | {}, B: PlayerAttributes | {} }
 type GameStateCollection = { [key: RoomID]: GameState }
 type RoomID = number;
 
-// index.html/selection.ts -> LocalStorage
 type Mode = "dual" | "solo";
 type Stadium = "eni" | "imp" | "log" | "mar" | "sab" | "thr";
 type AiLevel = "easy" | "medium" | "hard";
@@ -50,7 +55,6 @@ type MoveDirections = 1 | 2 | 3 | 4;
 type AtkType = "sim" | "sup"
 type Position = { x: number; y: number };
 
-// play.html/play.ts
 interface SettingsInt {
     canvasWidth: number;
     canvasHeight: number;

@@ -8,13 +8,13 @@ const server = createServer(app);
 const io = new Server(server);
 
 // ROUTER
-// @ts-ignore
+// @ts-expect-error
 app.get("/", (req, res) => res.sendFile(join(__dirname, "views/index.html")))
-// @ts-ignore
+// @ts-expect-error
 app.get("/commands", (req, res) => res.sendFile(join(__dirname, "views/commands.html")))
-// @ts-ignore
+// @ts-expect-error
 app.get("/settings", (req, res) => res.sendFile(join(__dirname, "views/settings.html")))
-// @ts-ignore
+// @ts-expect-error
 app.get("/play", (req, res) => res.sendFile(join(__dirname, "views/play.html")))
 app.use(express.static(join(__dirname)));
 
@@ -26,7 +26,7 @@ io.on('connection', (socket: Socket) => {
 
     socket.on('disconnect', (reason: DisconnectReason) => {
         let roomToStop: RoomID;
-        // @ts-ignore
+        // @ts-expect-error
         for (const [room, clients] of socket.adapter.rooms) {
             if (!Number.isNaN(parseInt(room))) {
                 roomToStop = room;
