@@ -385,7 +385,7 @@ class Fight {
         console.log(this.thisPlayer.sprite, this.oppPlayer.sprite);
 
         $ctx.clearRect(0, 0, def.canvasWidth, def.canvasHeight);
-        this.drawGrid();
+        // this.drawGrid();
         this.thisPlayer.draw();
         this.oppPlayer.draw();
 
@@ -435,22 +435,22 @@ class Fight {
         $ctx.shadowBlur = def.shadowBlur;
         $ctx.shadowColor = color;
     }
-    drawGrid(gridSize: number = 10) {
-        $ctx.strokeStyle = "#444";
-        $ctx.lineWidth = 0.5;
-        for (let x = 0; x <= def.canvasWidth; x += gridSize) {
-            $ctx.beginPath();
-            $ctx.moveTo(x, 0);
-            $ctx.lineTo(x, def.canvasHeight);
-            $ctx.stroke();
-        }
-        for (let y = 0; y <= def.canvasHeight; y += gridSize) {
-            $ctx.beginPath();
-            $ctx.moveTo(0, y);
-            $ctx.lineTo(def.canvasWidth, y);
-            $ctx.stroke();
-        }
-    }
+    // drawGrid(gridSize: number = 10) {
+    //     $ctx.strokeStyle = "#444";
+    //     $ctx.lineWidth = 0.5;
+    //     for (let x = 0; x <= def.canvasWidth; x += gridSize) {
+    //         $ctx.beginPath();
+    //         $ctx.moveTo(x, 0);
+    //         $ctx.lineTo(x, def.canvasHeight);
+    //         $ctx.stroke();
+    //     }
+    //     for (let y = 0; y <= def.canvasHeight; y += gridSize) {
+    //         $ctx.beginPath();
+    //         $ctx.moveTo(0, y);
+    //         $ctx.lineTo(def.canvasWidth, y);
+    //         $ctx.stroke();
+    //     }
+    // }
     handleActionKeys(key: string) {
         switch (key) {
             case "z":

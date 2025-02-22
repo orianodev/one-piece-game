@@ -415,7 +415,6 @@ class Fight {
     drawAll() {
         console.log(this.thisPlayer.sprite, this.oppPlayer.sprite);
         $ctx.clearRect(0, 0, def.canvasWidth, def.canvasHeight);
-        this.drawGrid();
         this.thisPlayer.draw();
         this.oppPlayer.draw();
         this.thisPlayer.atks.forEach((atk) => atk.draw());
@@ -452,22 +451,6 @@ class Fight {
     setShadow(color) {
         $ctx.shadowBlur = def.shadowBlur;
         $ctx.shadowColor = color;
-    }
-    drawGrid(gridSize = 10) {
-        $ctx.strokeStyle = "#444";
-        $ctx.lineWidth = 0.5;
-        for (let x = 0; x <= def.canvasWidth; x += gridSize) {
-            $ctx.beginPath();
-            $ctx.moveTo(x, 0);
-            $ctx.lineTo(x, def.canvasHeight);
-            $ctx.stroke();
-        }
-        for (let y = 0; y <= def.canvasHeight; y += gridSize) {
-            $ctx.beginPath();
-            $ctx.moveTo(0, y);
-            $ctx.lineTo(def.canvasWidth, y);
-            $ctx.stroke();
-        }
     }
     handleActionKeys(key) {
         switch (key) {

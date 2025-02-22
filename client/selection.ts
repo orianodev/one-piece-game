@@ -51,7 +51,9 @@ $copyId.addEventListener("click", () => {
 
 $randomId.addEventListener("click", () => {
     let generatedRoomId = Math.floor(Math.random() * 1_000);
-    if (generatedRoomId > 665 && generatedRoomId < 667) generatedRoomId = Math.floor(Math.random() * 1_000);
+    while (665 < generatedRoomId && generatedRoomId < 667) {
+        generatedRoomId = Math.floor(Math.random() * 1_000);
+    }
     $textId.value = generatedRoomId.toString();
 });
 

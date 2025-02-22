@@ -7,7 +7,7 @@ export const def: SettingsInt = {
     atkW: 30,
     atkH: 30,
     refreshRate: 50,
-    move60fpsRAFDivider: 5,
+    move60fpsRAFDivider: 4,
     freezeDelay: 150,
     collisionDist: 67,
     superSizeMult: 3,
