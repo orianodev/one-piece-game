@@ -5,12 +5,14 @@ type y = number;
 type dir = MoveDirections;
 type hp = number;
 type mana = number;
-type atks = AtkAttributesDeltasTuple[];
-type AtkAttributesDeltasTuple = [PlayerId, AtkType, x, y, dir];
+type atks = AtkAttributesTuple[];
+type AtkAttributesTuple = [PlayerId, AtkType, string, HTMLImageElement, x, y, dir];
 
 interface Atk {
     id: PlayerId;
     type: AtkType;
+    img: string;
+    sprite: HTMLImageElement;
     x: number;
     y: number;
     dir: MoveDirections;
@@ -22,6 +24,7 @@ interface PlayerAttributes {
     charName: string;
     color: string;
     img: string;
+    sprite: HTMLImageElement;
     score: number;
     rage: boolean;
     x: number;
