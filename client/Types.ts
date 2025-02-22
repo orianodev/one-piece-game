@@ -6,7 +6,7 @@ type dir = MoveDirections;
 type hp = number;
 type mana = number;
 type atks = AtkAttributesTuple[];
-type AtkAttributesTuple = [PlayerId, AtkType, string, HTMLImageElement, x, y, dir];
+type AtkAttributesTuple = [PlayerId, AtkType, x, y, dir];
 
 interface Atk {
     id: PlayerId;
@@ -24,7 +24,8 @@ interface PlayerAttributes {
     charName: string;
     color: string;
     img: string;
-    sprite: HTMLImageElement;
+    // sprite: HTMLImageElement;
+    // atkSprite: HTMLImageElement;
     score: number;
     rage: boolean;
     x: number;

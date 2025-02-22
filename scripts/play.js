@@ -26,7 +26,8 @@ class Player {
     charName;
     color;
     img;
-    sprite;
+    sprite = new Image(def.playW, def.playH);
+    atkSprite = new Image(def.atkW, def.atkH);
     score;
     rage = false;
     x;
@@ -44,13 +45,12 @@ class Player {
     atkCost;
     atkSpeed;
     atks;
-    constructor(id, charId, charName, color, img, sprite, score, x, y, dir, speed, hp, maxHp, healPow, mana, maxMana, regenPow, strength, atkImg, atkCost, atkSpeed, atks) {
+    constructor(id, charId, charName, color, img, score, x, y, dir, speed, hp, maxHp, healPow, mana, maxMana, regenPow, strength, atkImg, atkCost, atkSpeed, atks) {
         this.id = id;
         this.charId = charId;
         this.charName = charName;
         this.color = color;
         this.img = img;
-        this.sprite = sprite;
         this.score = score;
         this.x = x;
         this.y = y;
@@ -71,6 +71,7 @@ class Player {
     draw() {
         $ctx.globalAlpha = 1;
         _F.setShadow(this.color);
+        console.log(this.sprite);
         $ctx.drawImage(this.sprite, this.x, this.y, def.playW, def.playH);
         $ctx.globalAlpha = 0.5;
         if (this.dir === 1)
@@ -96,9 +97,7 @@ class Player {
         if (this.mana < this.atkCost)
             return;
         this.mana -= this.atkCost;
-        const atkSprite = new Image(def.atkW, def.atkH);
-        atkSprite.src = this.atkImg;
-        const atk = new Atk(this.id, "sim", this.atkImg, atkSprite, this.x + def.playW / 2, this.y + def.playH / 2, this.dir);
+        const atk = new Atk(this.id, "sim", this.x + def.playW / 2, this.y + def.playH / 2, this.dir);
         this.atks.push(atk);
         atk.draw();
         _F.updateServer();
@@ -109,9 +108,7 @@ class Player {
         if (this.mana < this.atkCost * def.superManaMult)
             return;
         this.mana -= this.atkCost * def.superManaMult;
-        const atkSprite = new Image(def.atkW, def.atkH);
-        atkSprite.src = this.atkImg;
-        const atk = new Atk(this.id, "sup", this.atkImg, atkSprite, this.x + def.playW / 2 - def.atkW, this.y + def.playH / 2 - def.atkH, this.dir);
+        const atk = new Atk(this.id, "sup", this.x + def.playW / 2 - def.atkW, this.y + def.playH / 2 - def.atkH, this.dir);
         this.atks.push(atk);
         atk.draw();
         _F.updateServer();
@@ -243,28 +240,23 @@ class Player {
 class Atk {
     id;
     type;
-    img;
-    sprite;
     x;
     y;
     dir;
-    constructor(owner, type, img, sprite, x, y, dir) {
+    constructor(owner, type, x, y, dir) {
         this.id = owner;
         this.type = type;
-        this.img = img;
-        this.sprite = sprite;
         this.x = x;
         this.y = y;
         this.dir = dir;
     }
     draw() {
-        _F.setShadow(_F.getPlayer(this.id).color);
-        const atkSprite = new Image(def.atkW, def.atkH);
-        atkSprite.src = this.img;
+        const owner = _F.getPlayer(this.id);
+        _F.setShadow(owner.color);
         if (this.type === "sim")
-            $ctx.drawImage(atkSprite, this.x, this.y, def.atkW, def.atkH);
+            $ctx.drawImage(owner.atkSprite, this.x, this.y, def.atkW, def.atkH);
         if (this.type === "sup")
-            $ctx.drawImage(atkSprite, this.x, this.y, def.atkW * def.superSizeMult, def.atkH * def.superSizeMult);
+            $ctx.drawImage(owner.atkSprite, this.x, this.y, def.atkW * def.superSizeMult, def.atkH * def.superSizeMult);
         _F.resetPen();
     }
     move() {
@@ -382,8 +374,12 @@ class Fight {
         }
     }
     buildPlayers(thisPlayer, oppPlayer) {
-        _F.thisPlayer = new Player(thisPlayer.id, thisPlayer.charId, thisPlayer.charName, thisPlayer.color, thisPlayer.img, thisPlayer.sprite, thisPlayer.score, thisPlayer.x, thisPlayer.y, thisPlayer.dir, thisPlayer.speed, thisPlayer.hp, thisPlayer.maxHp, thisPlayer.healPow, thisPlayer.mana, thisPlayer.maxMana, thisPlayer.regenPow, thisPlayer.strength, thisPlayer.atkImg, thisPlayer.atkCost, thisPlayer.atkSpeed, []);
-        _F.oppPlayer = new Player(oppPlayer.id, oppPlayer.charId, oppPlayer.charName, oppPlayer.color, oppPlayer.img, oppPlayer.sprite, oppPlayer.score, oppPlayer.x, oppPlayer.y, oppPlayer.dir, oppPlayer.speed, oppPlayer.hp, oppPlayer.maxHp, oppPlayer.healPow, oppPlayer.mana, oppPlayer.maxMana, oppPlayer.regenPow, oppPlayer.strength, oppPlayer.atkImg, oppPlayer.atkCost, oppPlayer.atkSpeed, []);
+        _F.thisPlayer = new Player(thisPlayer.id, thisPlayer.charId, thisPlayer.charName, thisPlayer.color, thisPlayer.img, thisPlayer.score, thisPlayer.x, thisPlayer.y, thisPlayer.dir, thisPlayer.speed, thisPlayer.hp, thisPlayer.maxHp, thisPlayer.healPow, thisPlayer.mana, thisPlayer.maxMana, thisPlayer.regenPow, thisPlayer.strength, thisPlayer.atkImg, thisPlayer.atkCost, thisPlayer.atkSpeed, []);
+        _F.oppPlayer = new Player(oppPlayer.id, oppPlayer.charId, oppPlayer.charName, oppPlayer.color, oppPlayer.img, oppPlayer.score, oppPlayer.x, oppPlayer.y, oppPlayer.dir, oppPlayer.speed, oppPlayer.hp, oppPlayer.maxHp, oppPlayer.healPow, oppPlayer.mana, oppPlayer.maxMana, oppPlayer.regenPow, oppPlayer.strength, oppPlayer.atkImg, oppPlayer.atkCost, oppPlayer.atkSpeed, []);
+        _F.oppPlayer.sprite.src = _F.oppPlayer.img;
+        _F.oppPlayer.atkSprite.src = _F.oppPlayer.atkImg;
+        _F.thisPlayer.sprite.src = _F.thisPlayer.img;
+        _F.thisPlayer.atkSprite.src = _F.thisPlayer.atkImg;
     }
     updatePlayers(thisPlayer, oppPlayer) {
         _F.thisPlayer.rage = thisPlayer[0];
@@ -405,7 +401,7 @@ class Fight {
         return [player.rage, Math.round(player.x), Math.round(player.y), player.dir, player.hp, player.mana, this.getAtkDeltaAttributes(player.atks)];
     }
     getAtkDeltaAttributes(atks) {
-        return atks.map((atk) => [atk.id, atk.type, atk.img, atk.sprite, atk.x, atk.y, atk.dir]);
+        return atks.map((atk) => [atk.id, atk.type, atk.x, atk.y, atk.dir]);
     }
     updateServer() {
         if (_F.mode === "solo")
@@ -417,6 +413,7 @@ class Fight {
     }
     ;
     drawAll() {
+        console.log(this.thisPlayer.sprite, this.oppPlayer.sprite);
         $ctx.clearRect(0, 0, def.canvasWidth, def.canvasHeight);
         this.drawGrid();
         this.thisPlayer.draw();
@@ -443,7 +440,7 @@ class Fight {
         $mana2.innerText = playerB.mana.toFixed(0);
     }
     rebuildAtkArray(flattedAtkArray) {
-        return flattedAtkArray.map((atk) => new Atk(atk[0], atk[1], atk[2], atk[3], atk[4], atk[5], atk[6]));
+        return flattedAtkArray.map((atk) => new Atk(atk[0], atk[1], atk[2], atk[3], atk[4]));
     }
     resetPen() {
         $ctx.globalAlpha = 1;
@@ -553,18 +550,14 @@ function soloGameSetup() {
     thisPlayerId = "A";
     const thisCharacterId = localStorage.getItem("characterId");
     const thisCharacter = characterStats[thisCharacterId];
-    const thisCharacterSprite = new Image(def.playW, def.playH);
-    thisCharacterSprite.src = thisCharacter.img;
-    const thisPlayer = new Player("A", thisCharacterId, thisCharacter.name, thisCharacter.color, thisCharacter.img, thisCharacterSprite, thisScore, defPos.A.x, defPos.A.y, 2, thisCharacter.speed, thisCharacter.hp, thisCharacter.maxHp, thisCharacter.healPow, thisCharacter.mana, thisCharacter.maxMana, thisCharacter.regenPow, thisCharacter.strength, thisCharacter.atkImg, thisCharacter.atkCost, thisCharacter.atkSpeed, []);
+    const thisPlayer = new Player("A", thisCharacterId, thisCharacter.name, thisCharacter.color, thisCharacter.img, thisScore, defPos.A.x, defPos.A.y, 2, thisCharacter.speed, thisCharacter.hp, thisCharacter.maxHp, thisCharacter.healPow, thisCharacter.mana, thisCharacter.maxMana, thisCharacter.regenPow, thisCharacter.strength, thisCharacter.atkImg, thisCharacter.atkCost, thisCharacter.atkSpeed, []);
     const charactersIdList = Object.keys(characterStats).filter((id) => id !== thisCharacterId);
     const aiCharacterId = charactersIdList[Math.floor(Math.random() * charactersIdList.length)];
     const aiCharacter = characterStats[aiCharacterId];
-    const aiCharacterSprite = new Image(def.playW, def.playH);
-    aiCharacterSprite.src = aiCharacter.img;
-    const aiPlayer = new Player("B", aiCharacterId, aiCharacter.name, aiCharacter.color, aiCharacter.img, aiCharacterSprite, 0, defPos.B.x, defPos.B.y, 4, aiCharacter.speed, aiCharacter.hp, aiCharacter.maxHp, aiCharacter.healPow, aiCharacter.mana, aiCharacter.maxMana, aiCharacter.regenPow, aiCharacter.strength, aiCharacter.atkImg, aiCharacter.atkCost, aiCharacter.atkSpeed, []);
+    const aiPlayer = new Player("B", aiCharacterId, aiCharacter.name, aiCharacter.color, aiCharacter.img, 0, defPos.B.x, defPos.B.y, 4, aiCharacter.speed, aiCharacter.hp, aiCharacter.maxHp, aiCharacter.healPow, aiCharacter.mana, aiCharacter.maxMana, aiCharacter.regenPow, aiCharacter.strength, aiCharacter.atkImg, aiCharacter.atkCost, aiCharacter.atkSpeed, []);
     const aiLevel = localStorage.getItem("aiLevel");
     _F.buildPlayers(thisPlayer, aiPlayer);
-    console.log(thisCharacterSprite.src, aiCharacterSprite.src, thisPlayer.sprite, aiPlayer.sprite);
+    console.log(thisPlayer.sprite, aiPlayer.sprite);
     $character1.innerText = thisPlayer.charName;
     $score1.innerText = thisScore.toString();
     $character2.innerText = aiPlayer.charName;
@@ -579,6 +572,7 @@ function showGameScreen() {
     $popup.style.display = "none";
 }
 function soloGameRefresh() {
+    console.log(_F.thisPlayer.sprite, _F.oppPlayer.sprite);
     setInterval(() => {
         if (_F.state === "over")
             return;
@@ -639,11 +633,8 @@ socket.on("getId", (playerId) => {
     const thisScore = parseInt(localStorage.getItem("score"));
     const thisCharacterId = localStorage.getItem("characterId");
     const thisCharacter = characterStats[thisCharacterId];
-    const thisCharacterSprite = new Image(def.playW, def.playH);
-    thisCharacterSprite.src = thisCharacter.img;
-    console.log(thisCharacterSprite);
     const thisPlayer = {
-        id: playerId, charId: thisCharacterId, charName: thisCharacter.name, color: thisCharacter.color, img: thisCharacter.img, sprite: thisCharacterSprite, score: thisScore, rage: false, x: defPos[playerId].x, y: defPos[playerId].y, dir: thisPlayerId === "A" ? 2 : 4, speed: thisCharacter.speed, hp: thisCharacter.hp, maxHp: thisCharacter.maxHp, healPow: thisCharacter.healPow, mana: thisCharacter.mana, maxMana: thisCharacter.maxMana, regenPow: thisCharacter.regenPow, strength: thisCharacter.strength, atkImg: thisCharacter.atkImg, atkCost: thisCharacter.atkCost, atkSpeed: thisCharacter.atkSpeed
+        id: playerId, charId: thisCharacterId, charName: thisCharacter.name, color: thisCharacter.color, img: thisCharacter.img, score: thisScore, rage: false, x: defPos[playerId].x, y: defPos[playerId].y, dir: thisPlayerId === "A" ? 2 : 4, speed: thisCharacter.speed, hp: thisCharacter.hp, maxHp: thisCharacter.maxHp, healPow: thisCharacter.healPow, mana: thisCharacter.mana, maxMana: thisCharacter.maxMana, regenPow: thisCharacter.regenPow, strength: thisCharacter.strength, atkImg: thisCharacter.atkImg, atkCost: thisCharacter.atkCost, atkSpeed: thisCharacter.atkSpeed
     };
     socket.emit("postPlayer", { thisPlayer, roomId: _F.roomId, playerId });
 });
@@ -651,13 +642,7 @@ socket.on("start", (msg) => {
     thisPlayerId === "A" ? _F.buildPlayers(msg.A, msg.B) : _F.buildPlayers(msg.B, msg.A);
     const playerA = _F.thisPlayer.id === "A" ? _F.thisPlayer : _F.oppPlayer;
     const playerB = _F.thisPlayer.id === "B" ? _F.thisPlayer : _F.oppPlayer;
-    const playerASprite = new Image(def.playW, def.playH);
-    playerASprite.src = playerA.img;
-    playerA.sprite = playerASprite;
-    const playerBSprite = new Image(def.playW, def.playH);
-    playerBSprite.src = playerB.img;
-    playerB.sprite = playerBSprite;
-    console.log(playerA.sprite, playerB.sprite);
+    console.log(playerA.sprite, playerA.atkSprite, playerB.sprite, playerB.atkSprite);
     $character1.innerText = playerA.charName;
     $score1.innerText = playerA.score.toString();
     $character2.innerText = playerB.charName;
