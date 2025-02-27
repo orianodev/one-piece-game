@@ -138,7 +138,8 @@ class Player {
         this.sprite.src = this.getRageImg();
         if (this.id === "A") $character1.style.color = def.rageTextColor
         else if (this.id === "B") $character2.style.color = def.rageTextColor
-        setTimeout(() => this.unRage(this.sprite.src), def.rageDuration)
+        console.log("Will un-rage in:", def.rageDuration);
+        setTimeout(() => this.unRage(this.img), def.rageDuration)
         _F.updateServer()
     }
     unRage(defaultSpriteSrc: string) {
