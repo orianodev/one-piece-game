@@ -1,20 +1,27 @@
 {
   "name": "one-piece-game",
-  "version": "5.4.1",
-  "description": "One Piece game using Typescript and Socket.IO for real-time multiplayer.",
+  "version": "5.5.0",
+  "description": "One Piece 2D game using Typescript and Socket.IO for real-time multiplayer.",
   "author": "Oriano DEV",
-  "environment": "win11, vscode, git, edge/chrome",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/orianodev/one-piece-game"
+  },
   "type": "commonjs",
+  "main": "server/dist/server.js",
   "scripts": {
-    "start": "node server.js",
-    "build": "npm i"
+    "build": "npm run build:server && npm run build:client && npm i",
+    "build:server": "npx tsc -p server/src",
+    "build:client": "npx tsc -p client/src",
+    "start": "node server/dist/server.js",
+    "watch": "npm run watch:server & npm run watch:client",
+    "watch:server": "npx tsc --watch -p server/src",
+    "watch:client": "npx tsc --watch -p client/src"
   },
   "dependencies": {
-    "express": "^4.21.2",
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
-    "@types/express": "^5.0.0",
     "typescript": "^5.7.3"
   }
 }

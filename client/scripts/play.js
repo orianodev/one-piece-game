@@ -71,7 +71,6 @@ class Player {
     draw() {
         $ctx.globalAlpha = 1;
         _F.setShadow(this.color);
-        console.log(this.sprite);
         $ctx.drawImage(this.sprite, this.x, this.y, def.playW, def.playH);
         $ctx.globalAlpha = 0.5;
         if (this.dir === 1)
@@ -398,7 +397,7 @@ class Fight {
         _F.oppPlayer.atks = this.rebuildAtkArray(oppPlayer[6]);
     }
     getPlayerDeltaAttributes(player) {
-        return [player.rage, Math.round(player.x), Math.round(player.y), player.dir, player.hp, player.mana, this.getAtkDeltaAttributes(player.atks)];
+        return [player.rage, Math.round(player.x), Math.round(player.y), player.dir, Math.round(player.hp), Math.round(player.mana), this.getAtkDeltaAttributes(player.atks)];
     }
     getAtkDeltaAttributes(atks) {
         return atks.map((atk) => [atk.id, atk.type, atk.x, atk.y, atk.dir]);
@@ -413,7 +412,6 @@ class Fight {
     }
     ;
     drawAll() {
-        console.log(this.thisPlayer.sprite, this.oppPlayer.sprite);
         $ctx.clearRect(0, 0, def.canvasWidth, def.canvasHeight);
         this.thisPlayer.draw();
         this.oppPlayer.draw();
@@ -540,7 +538,6 @@ function soloGameSetup() {
     const aiPlayer = new Player("B", aiCharacterId, aiCharacter.name, aiCharacter.color, aiCharacter.img, 0, defPos.B.x, defPos.B.y, 4, aiCharacter.speed, aiCharacter.hp, aiCharacter.maxHp, aiCharacter.healPow, aiCharacter.mana, aiCharacter.maxMana, aiCharacter.regenPow, aiCharacter.strength, aiCharacter.atkImg, aiCharacter.atkCost, aiCharacter.atkSpeed, []);
     const aiLevel = localStorage.getItem("aiLevel");
     _F.buildPlayers(thisPlayer, aiPlayer);
-    console.log(thisPlayer.sprite, aiPlayer.sprite);
     $character1.innerText = thisPlayer.charName;
     $score1.innerText = thisScore.toString();
     $character2.innerText = aiPlayer.charName;
@@ -555,7 +552,6 @@ function showGameScreen() {
     $popup.style.display = "none";
 }
 function soloGameRefresh() {
-    console.log(_F.thisPlayer.sprite, _F.oppPlayer.sprite);
     setInterval(() => {
         if (_F.state === "over")
             return;

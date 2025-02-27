@@ -1,38 +1,17 @@
-import express from 'express';
-import { createServer } from 'node:http';
-import { join } from 'node:path';
-import { Server, DisconnectReason, Socket } from "socket.io";
+import { DefaultEventsMap, DisconnectReason, Server, Socket } from "socket.io";
 
-const app = express();
-const server = createServer(app);
-const io = new Server(server);
-
-// ROUTER
-// @ts-expect-error
-app.get("/", (req, res) => res.sendFile(join(__dirname, "views/index.html")))
-// @ts-expect-error
-app.get("/commands", (req, res) => res.sendFile(join(__dirname, "views/commands.html")))
-// @ts-expect-error
-app.get("/settings", (req, res) => res.sendFile(join(__dirname, "views/settings.html")))
-// @ts-expect-error
-app.get("/play", (req, res) => res.sendFile(join(__dirname, "views/play.html")))
-app.use(express.static(join(__dirname)));
-
-// LOGIC
-let gameStateCollection: GameStateCollection = {};
-
-io.on('connection', (socket: Socket) => {
+export function socketIOListener(socket: Socket, io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, gameStateCollection: GameStateCollection) {
     console.log(`User ${socket.id} connected`);
 
     socket.on('disconnect', (reason: DisconnectReason) => {
-        let roomToStop: RoomID;
+        let roomId: RoomID;
         // @ts-expect-error
         for (const [room, clients] of socket.adapter.rooms) {
-            if (!Number.isNaN(parseInt(room))) {
-                roomToStop = room;
-                io.to(room.toString()).emit('stop');
+            if (!isNaN(parseInt(room))) {
+                roomId = room;
+                io.to(room).emit('stop');
                 console.log(`Fight interrupted in room ${room} by ${socket.id} disconnected for ${reason}.`);
-                delete gameStateCollection[roomToStop]
+                delete gameStateCollection[roomId]
             }
         }
     });
@@ -67,15 +46,13 @@ io.on('connection', (socket: Socket) => {
     socket.on('update', (msg: { roomId: RoomID, A: PlayerAttributesDeltasTuple, B: PlayerAttributesDeltasTuple }) => {
         if (msg.A[4] <= 0 || msg.B[4] <= 0) {
             io.to(msg.roomId.toString()).emit('over', msg.A[4] <= 0 ? "B" : "A");
-            delete gameStateCollection[msg.roomId]
             console.log(`Game over in room ${msg.roomId}.`);
+            setTimeout(() => delete gameStateCollection[msg.roomId], 500); // Delay to ensure event reaches all clients
         }
         console.log(`Update from ${socket.id} :`, msg.A, msg.B);
-        const packetSize = Buffer.byteLength(JSON.stringify(msg), 'utf8');
-        console.log(`Packet size: ${packetSize} bytes`);
+        const sizeA = Buffer.byteLength(JSON.stringify(msg.A), 'utf8');
+        const sizeB = Buffer.byteLength(JSON.stringify(msg.B), 'utf8');
+        console.log(`Update from ${socket.id} | Packet Size: A = ${sizeA} bytes, B = ${sizeB} bytes`);
         io.to(msg.roomId.toString()).emit('update', { A: msg.A, B: msg.B });
     });
-});
-
-// PORT
-server.listen(3000, () => console.log('server running at http://localhost:3000'));
+}

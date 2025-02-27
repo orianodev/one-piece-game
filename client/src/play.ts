@@ -78,7 +78,7 @@ class Player {
         // Draw sprite
         $ctx.globalAlpha = 1;
         _F.setShadow(this.color)
-        console.log(this.sprite);
+        // console.log(this.sprite);
         $ctx.drawImage(this.sprite, this.x, this.y, def.playW, def.playH);
         // Draw cursor
         $ctx.globalAlpha = 0.5;
@@ -371,7 +371,7 @@ class Fight {
         _F.oppPlayer.atks = this.rebuildAtkArray(oppPlayer[6])
     }
     getPlayerDeltaAttributes(player: Player): PlayerAttributesDeltasTuple {
-        return [player.rage, Math.round(player.x), Math.round(player.y), player.dir, player.hp, player.mana, this.getAtkDeltaAttributes(player.atks)]
+        return [player.rage, Math.round(player.x), Math.round(player.y), player.dir, Math.round(player.hp), Math.round(player.mana), this.getAtkDeltaAttributes(player.atks)]
     }
     getAtkDeltaAttributes(atks: Atk[]): AtkAttributesTuple[] {
         return atks.map((atk) => [atk.id, atk.type, atk.x, atk.y, atk.dir]);
@@ -382,7 +382,7 @@ class Fight {
         else if (thisPlayerId == "B") socket.emit("update", { roomId: _F.roomId, A: this.getPlayerDeltaAttributes(_F.oppPlayer), B: this.getPlayerDeltaAttributes(_F.thisPlayer) });
     };
     drawAll() {
-        console.log(this.thisPlayer.sprite, this.oppPlayer.sprite);
+        // console.log(this.thisPlayer.sprite, this.oppPlayer.sprite);
 
         $ctx.clearRect(0, 0, def.canvasWidth, def.canvasHeight);
         // this.drawGrid();
@@ -575,7 +575,7 @@ function soloGameSetup() {
 
     const aiLevel: AiLevel = localStorage.getItem("aiLevel") as AiLevel;
     _F.buildPlayers(thisPlayer, aiPlayer);
-    console.log(thisPlayer.sprite, aiPlayer.sprite);
+    // console.log(thisPlayer.sprite, aiPlayer.sprite);
 
     $character1.innerText = thisPlayer.charName;
     $score1.innerText = thisScore.toString();
@@ -596,7 +596,7 @@ function showGameScreen() {
 }
 
 function soloGameRefresh() {
-    console.log(_F.thisPlayer.sprite, _F.oppPlayer.sprite);
+    // console.log(_F.thisPlayer.sprite, _F.oppPlayer.sprite);
 
     setInterval(() => {
         if (_F.state === "over") return
