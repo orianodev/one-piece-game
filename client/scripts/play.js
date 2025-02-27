@@ -148,7 +148,6 @@ class Player {
             $character1.style.color = def.rageTextColor;
         else if (this.id === "B")
             $character2.style.color = def.rageTextColor;
-        console.log("Will un-rage in:", def.rageDuration);
         setTimeout(() => this.unRage(this.img), def.rageDuration);
         _F.updateServer();
     }
@@ -622,7 +621,6 @@ socket.on("start", (msg) => {
     thisPlayerId === "A" ? _F.buildPlayers(msg.A, msg.B) : _F.buildPlayers(msg.B, msg.A);
     const playerA = _F.thisPlayer.id === "A" ? _F.thisPlayer : _F.oppPlayer;
     const playerB = _F.thisPlayer.id === "B" ? _F.thisPlayer : _F.oppPlayer;
-    console.log(playerA.sprite, playerA.atkSprite, playerB.sprite, playerB.atkSprite);
     $character1.innerText = playerA.charName;
     $score1.innerText = playerA.score.toString();
     $character2.innerText = playerB.charName;

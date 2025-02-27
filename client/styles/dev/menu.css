@@ -45,6 +45,9 @@ div.solo {
   justify-content: center;
   align-items: center;
 }
+div.solo {
+  display: none;
+}
 div.solo > select {
   margin: 5px 0 2px 2px;
 }

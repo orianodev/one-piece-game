@@ -78,7 +78,6 @@ class Player {
         // Draw sprite
         $ctx.globalAlpha = 1;
         _F.setShadow(this.color)
-        // console.log(this.sprite);
         $ctx.drawImage(this.sprite, this.x, this.y, def.playW, def.playH);
         // Draw cursor
         $ctx.globalAlpha = 0.5;
@@ -138,7 +137,6 @@ class Player {
         this.sprite.src = this.getRageImg();
         if (this.id === "A") $character1.style.color = def.rageTextColor
         else if (this.id === "B") $character2.style.color = def.rageTextColor
-        console.log("Will un-rage in:", def.rageDuration);
         setTimeout(() => this.unRage(this.img), def.rageDuration)
         _F.updateServer()
     }
@@ -383,8 +381,6 @@ class Fight {
         else if (thisPlayerId == "B") socket.emit("update", { roomId: _F.roomId, A: this.getPlayerDeltaAttributes(_F.oppPlayer), B: this.getPlayerDeltaAttributes(_F.thisPlayer) });
     };
     drawAll() {
-        // console.log(this.thisPlayer.sprite, this.oppPlayer.sprite);
-
         $ctx.clearRect(0, 0, def.canvasWidth, def.canvasHeight);
         // this.drawGrid();
         this.thisPlayer.draw();
@@ -555,28 +551,16 @@ function soloGameSetup() {
 
     const thisCharacterId: CharacterID = localStorage.getItem("characterId") as CharacterID;
     const thisCharacter: OneCharacterStats = characterStats[thisCharacterId];
-    // const thisCharacterSprite = new Image(def.playW, def.playH);
-    // thisCharacterSprite.src = thisCharacter.img
-    // const thisCharacterAtkSprite = new Image(def.atkW, def.atkH);
-    // thisCharacterAtkSprite.src = thisCharacter.atkImg
     const thisPlayer = new Player("A", thisCharacterId, thisCharacter.name, thisCharacter.color, thisCharacter.img, thisScore, defPos.A.x, defPos.A.y, 2, thisCharacter.speed, thisCharacter.hp, thisCharacter.maxHp, thisCharacter.healPow, thisCharacter.mana, thisCharacter.maxMana, thisCharacter.regenPow, thisCharacter.strength, thisCharacter.atkImg, thisCharacter.atkCost, thisCharacter.atkSpeed, []);
-    // thisPlayer.sprite.src = thisPlayer.img
-    // thisPlayer.atkSprite.src = thisPlayer.atkImg
 
     const charactersIdList: CharacterID[] = Object.keys(characterStats).filter((id) => id !== thisCharacterId) as CharacterID[];
 
     const aiCharacterId: CharacterID = charactersIdList[Math.floor(Math.random() * charactersIdList.length)] as CharacterID;
     const aiCharacter: OneCharacterStats = characterStats[aiCharacterId];
-    // const aiCharacterSprite = new Image(def.playW, def.playH);
-    // aiCharacterSprite.src = aiCharacter.img
-    // const aiCharacterAtkSprite = new Image(def.atkW, def.atkH);
-    // aiCharacterAtkSprite.src = aiCharacter.atkImg
     const aiPlayer = new Player("B", aiCharacterId, aiCharacter.name, aiCharacter.color, aiCharacter.img, 0, defPos.B.x, defPos.B.y, 4, aiCharacter.speed, aiCharacter.hp, aiCharacter.maxHp, aiCharacter.healPow, aiCharacter.mana, aiCharacter.maxMana, aiCharacter.regenPow, aiCharacter.strength, aiCharacter.atkImg, aiCharacter.atkCost, aiCharacter.atkSpeed, []);
-
 
     const aiLevel: AiLevel = localStorage.getItem("aiLevel") as AiLevel;
     _F.buildPlayers(thisPlayer, aiPlayer);
-    // console.log(thisPlayer.sprite, aiPlayer.sprite);
 
     $character1.innerText = thisPlayer.charName;
     $score1.innerText = thisScore.toString();
@@ -597,8 +581,6 @@ function showGameScreen() {
 }
 
 function soloGameRefresh() {
-    // console.log(_F.thisPlayer.sprite, _F.oppPlayer.sprite);
-
     setInterval(() => {
         if (_F.state === "over") return
         if (_F.thisPlayer.hp <= 0 || _F.oppPlayer.hp <= 0) {
@@ -679,13 +661,6 @@ socket.on("start", (msg: { A: Player, B: Player }) => {
     thisPlayerId === "A" ? _F.buildPlayers(msg.A, msg.B) : _F.buildPlayers(msg.B, msg.A);
     const playerA = _F.thisPlayer.id === "A" ? _F.thisPlayer : _F.oppPlayer;
     const playerB = _F.thisPlayer.id === "B" ? _F.thisPlayer : _F.oppPlayer;
-
-    // playerA.sprite.src = playerA.img
-    // playerA.atkSprite.src = playerA.atkImg
-    // playerB.sprite.src = playerB.img
-    // playerB.atkSprite.src = playerB.atkImg
-    console.log(playerA.sprite, playerA.atkSprite, playerB.sprite, playerB.atkSprite);
-
     $character1.innerText = playerA.charName;
     $score1.innerText = playerA.score.toString();
     $character2.innerText = playerB.charName;
