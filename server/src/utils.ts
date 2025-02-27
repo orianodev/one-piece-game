@@ -8,6 +8,7 @@ export function mimeType(fileExtension: string): string | undefined {
         css: "text/css",
         svg: "image/svg+xml",
         png: "image/png",
+        gif: "image/gif",
         webp: "image/webp",
         js: "text/javascript",
     };

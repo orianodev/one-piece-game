@@ -6,6 +6,7 @@ function mimeType(fileExtension) {
         css: "text/css",
         svg: "image/svg+xml",
         png: "image/png",
+        gif: "image/gif",
         webp: "image/webp",
         js: "text/javascript",
     };
