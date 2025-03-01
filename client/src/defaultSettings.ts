@@ -21,6 +21,7 @@ export const def: SettingsInt = {
     rageRegenFactor: 1.3,
     rageHealFactor: 1.3,
     normalTextColor: "whitesmoke",
+    normalHpColor: "#ff4d4d",
     rageTextColor: "red",
     shadowBlur: 150,
     cursorSize: 10,

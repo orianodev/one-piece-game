@@ -1,25 +1,23 @@
 import { characterStats } from "./charactersStats.js";
 import { def, defPos } from "./defaultSettings.js";
-const $playScreen = document.querySelector("#play");
-const $canvas = document.querySelector("#canvas");
-const $ctx = $canvas.getContext("2d");
-$canvas.width = def.canvasWidth * def.canvasScaleMult;
-$canvas.height = def.canvasHeight * def.canvasScaleMult;
-$canvas.style.width = `${def.canvasWidth}px`;
-$canvas.style.height = `${def.canvasHeight}px`;
-$ctx.scale(def.canvasScaleMult, def.canvasScaleMult);
-const $character1 = document.querySelector("#character-1");
-const $hpBar1 = document.querySelector("#hp-bar-1");
-const $hp1 = document.querySelector("#hp-1");
-const $manaBar1 = document.querySelector("#mana-bar-1");
-const $mana1 = document.querySelector("#mana-1");
-const $score1 = document.querySelector("#score-1");
-const $character2 = document.querySelector("#character-2");
-const $hpBar2 = document.querySelector("#hp-bar-2");
-const $hp2 = document.querySelector("#hp-2");
-const $manaBar2 = document.querySelector("#mana-bar-2");
-const $mana2 = document.querySelector("#mana-2");
-const $score2 = document.querySelector("#score-2");
+const $dom = {
+    1: {
+        character: document.querySelector("#character-1"),
+        hpBar: document.querySelector("#hp-bar-1"),
+        hp: document.querySelector("#hp-1"),
+        manaBar: document.querySelector("#mana-bar-1"),
+        mana: document.querySelector("#mana-1"),
+        score: document.querySelector("#score-1"),
+    },
+    2: {
+        character: document.querySelector("#character-2"),
+        hpBar: document.querySelector("#hp-bar-2"),
+        hp: document.querySelector("#hp-2"),
+        manaBar: document.querySelector("#mana-bar-2"),
+        mana: document.querySelector("#mana-2"),
+        score: document.querySelector("#score-2"),
+    }
+};
 class Player {
     id;
     charId;
@@ -73,14 +71,32 @@ class Player {
         _F.setShadow(this.color);
         $ctx.drawImage(this.sprite, this.x, this.y, def.playW, def.playH);
         $ctx.globalAlpha = 0.5;
-        if (this.dir === 1)
-            $ctx.fillRect(this.x + (def.playW / 2 - 5), this.y - def.cursorSize - 5, def.cursorSize, def.cursorSize);
-        if (this.dir === 3)
-            $ctx.fillRect(this.x + (def.playW / 2 - 5), this.y + def.playH + 5, def.cursorSize, def.cursorSize);
-        if (this.dir === 4)
-            $ctx.fillRect(this.x - def.cursorSize - 5, this.y + def.playH / 2 - 5, def.cursorSize, def.cursorSize);
-        if (this.dir === 2)
-            $ctx.fillRect(this.x + def.playW + 5, this.y + def.playH / 2 - 5, def.cursorSize, def.cursorSize);
+        switch (this.dir) {
+            case 1:
+                $ctx.fillRect(this.x + (def.playW / 2 - 5), this.y - def.cursorSize - 5, def.cursorSize, def.cursorSize);
+                break;
+            case 2:
+                $ctx.fillRect(this.x + def.playW + 5, this.y - def.cursorSize - 5, def.cursorSize, def.cursorSize);
+                break;
+            case 3:
+                $ctx.fillRect(this.x + def.playW + 5, this.y + def.playH / 2 - 5, def.cursorSize, def.cursorSize);
+                break;
+            case 4:
+                $ctx.fillRect(this.x + def.playW + 5, this.y + def.playH + 5, def.cursorSize, def.cursorSize);
+                break;
+            case 5:
+                $ctx.fillRect(this.x + (def.playW / 2 - 5), this.y + def.playH + 5, def.cursorSize, def.cursorSize);
+                break;
+            case 6:
+                $ctx.fillRect(this.x - def.cursorSize - 5, this.y + def.playH + 5, def.cursorSize, def.cursorSize);
+                break;
+            case 7:
+                $ctx.fillRect(this.x - def.cursorSize - 5, this.y + def.playH / 2 - 5, def.cursorSize, def.cursorSize);
+                break;
+            case 8:
+                $ctx.fillRect(this.x - def.cursorSize - 5, this.y - def.cursorSize - 5, def.cursorSize, def.cursorSize);
+                break;
+        }
         _F.resetPen();
     }
     freeze() {
@@ -145,9 +161,9 @@ class Player {
         this.healPow *= def.rageHealFactor;
         this.sprite.src = this.getRageImg();
         if (this.id === "A")
-            $character1.style.color = def.rageTextColor;
+            $dom[1].character.style.color = def.rageTextColor;
         else if (this.id === "B")
-            $character2.style.color = def.rageTextColor;
+            $dom[2].character.style.color = def.rageTextColor;
         setTimeout(() => this.unRage(this.img), def.rageDuration);
         _F.updateServer();
     }
@@ -158,80 +174,63 @@ class Player {
         this.regenPow = characterStats[this.charId].regenPow;
         this.healPow = characterStats[this.charId].healPow;
         if (this.id === "A")
-            $character1.style.color = def.normalTextColor;
+            $dom[1].character.style.color = def.normalTextColor;
         else if (this.id === "B")
-            $character2.style.color = def.normalTextColor;
+            $dom[2].character.style.color = def.normalTextColor;
         this.rage = false;
         _F.updateServer();
     }
     getRageImg() {
         return this.sprite.src.replace("char", "rage");
     }
-    moveUp() {
-        if (this.y < 0)
-            return;
-        this.dir = 1;
-        this.y -= this.speed;
-        _F.drawAll();
-        _F.updateServer();
-    }
-    moveDown() {
-        if (this.y > def.canvasHeight - def.playH)
-            return;
-        this.dir = 3;
-        this.y += this.speed;
-        _F.drawAll();
-        _F.updateServer();
-    }
-    moveLeft() {
-        if (this.x < 0)
-            return;
-        this.dir = 4;
-        this.x -= this.speed;
-        _F.drawAll();
-        _F.updateServer();
-    }
-    moveRight() {
-        if (this.x > def.canvasWidth - def.playW)
-            return;
-        this.dir = 2;
-        this.x += this.speed;
-        _F.drawAll();
-        _F.updateServer();
-    }
-    moveUpRight() {
-        if (this.y < 0 || this.x > def.canvasWidth - def.playW)
-            return;
-        this.dir = 2;
-        this.x += this.speed / Math.SQRT2;
-        this.y -= this.speed / Math.SQRT2;
-        _F.drawAll();
-        _F.updateServer();
-    }
-    moveUpLeft() {
-        if (this.y < 0 || this.x < 0)
-            return;
-        this.dir = 4;
-        this.x -= this.speed / Math.SQRT2;
-        this.y -= this.speed / Math.SQRT2;
-        _F.drawAll();
-        _F.updateServer();
-    }
-    moveDownRight() {
-        if (this.y > def.canvasHeight - def.playH || this.x > def.canvasWidth - def.playW)
-            return;
-        this.dir = 2;
-        this.x += this.speed / Math.SQRT2;
-        this.y += this.speed / Math.SQRT2;
-        _F.drawAll();
-        _F.updateServer();
-    }
-    moveDownLeft() {
-        if (this.y > def.canvasHeight - def.playH || this.x < 0)
-            return;
-        this.dir = 4;
-        this.x -= this.speed / Math.SQRT2;
-        this.y += this.speed / Math.SQRT2;
+    move(direction) {
+        switch (direction) {
+            case 1:
+                if (this.y < 0)
+                    return;
+                this.y -= this.speed;
+                break;
+            case 2:
+                if (this.y < 0 || this.x > def.canvasWidth - def.playW)
+                    return;
+                this.x += this.speed / Math.SQRT2;
+                this.y -= this.speed / Math.SQRT2;
+                break;
+            case 3:
+                if (this.x > def.canvasWidth - def.playW)
+                    return;
+                this.x += this.speed;
+                break;
+            case 4:
+                if (this.y > def.canvasHeight - def.playH || this.x > def.canvasWidth - def.playW)
+                    return;
+                this.x += this.speed / Math.SQRT2;
+                this.y += this.speed / Math.SQRT2;
+                break;
+            case 5:
+                if (this.y > def.canvasHeight - def.playH)
+                    return;
+                this.y += this.speed;
+                break;
+            case 6:
+                if (this.y > def.canvasHeight - def.playH || this.x < 0)
+                    return;
+                this.x -= this.speed / Math.SQRT2;
+                this.y += this.speed / Math.SQRT2;
+                break;
+            case 7:
+                if (this.x < 0)
+                    return;
+                this.x -= this.speed;
+                break;
+            case 8:
+                if (this.y < 0 || this.x < 0)
+                    return;
+                this.x -= this.speed / Math.SQRT2;
+                this.y -= this.speed / Math.SQRT2;
+                break;
+        }
+        this.dir = direction;
         _F.drawAll();
         _F.updateServer();
     }
@@ -260,25 +259,41 @@ class Atk {
     }
     move() {
         const owner = _F.thisPlayer.id === this.id ? _F.thisPlayer : _F.oppPlayer;
-        if (this.dir == 4)
-            this.x -= owner.atkSpeed;
-        if (this.dir == 2)
-            this.x += owner.atkSpeed;
-        if (this.dir == 1)
-            this.y -= owner.atkSpeed;
-        if (this.dir == 3)
-            this.y += owner.atkSpeed;
+        switch (this.dir) {
+            case 1:
+                this.y -= owner.atkSpeed;
+                break;
+            case 2:
+                this.x += owner.atkSpeed / Math.SQRT2;
+                this.y -= owner.atkSpeed / Math.SQRT2;
+                break;
+            case 3:
+                this.x += owner.atkSpeed;
+                break;
+            case 4:
+                this.x += owner.atkSpeed / Math.SQRT2;
+                this.y += owner.atkSpeed / Math.SQRT2;
+                break;
+            case 5:
+                this.y += owner.atkSpeed;
+                break;
+            case 6:
+                this.x -= owner.atkSpeed / Math.SQRT2;
+                this.y += owner.atkSpeed / Math.SQRT2;
+                break;
+            case 7:
+                this.x -= owner.atkSpeed;
+                break;
+            case 8:
+                this.x -= owner.atkSpeed / Math.SQRT2;
+                this.y -= owner.atkSpeed / Math.SQRT2;
+                break;
+        }
         this.checkCollisionWithBorder(owner);
         this.checkCollisionWithOpp(owner);
     }
     checkCollisionWithBorder(owner) {
-        if (this.dir == 4 && this.x <= 0)
-            this.destroy(owner);
-        if (this.dir == 2 && this.x >= def.canvasWidth - def.atkW)
-            this.destroy(owner);
-        if (this.dir == 1 && this.y <= 0)
-            this.destroy(owner);
-        if (this.dir == 3 && this.y >= def.canvasHeight - def.atkH)
+        if (this.x <= 0 || this.x >= def.canvasWidth - def.atkW || this.y <= 0 || this.y >= def.canvasHeight - def.atkH)
             this.destroy(owner);
     }
     checkCollisionWithOpp(owner) {
@@ -333,21 +348,21 @@ class Fight {
                 else if (yDiff < -threshold)
                     verticalDirection = 1;
                 if (horizontalDirection === 2 && verticalDirection === 1)
-                    this.oppPlayer.moveUpRight();
+                    this.oppPlayer.move(2);
                 else if (horizontalDirection === 2 && verticalDirection === 3)
-                    this.oppPlayer.moveDownRight();
+                    this.oppPlayer.move(4);
                 else if (horizontalDirection === 4 && verticalDirection === 1)
-                    this.oppPlayer.moveUpLeft();
+                    this.oppPlayer.move(8);
                 else if (horizontalDirection === 4 && verticalDirection === 3)
-                    this.oppPlayer.moveDownLeft();
+                    this.oppPlayer.move(6);
                 else if (horizontalDirection === 2)
-                    this.oppPlayer.moveRight();
+                    this.oppPlayer.move(3);
                 else if (horizontalDirection === 4)
-                    this.oppPlayer.moveLeft();
+                    this.oppPlayer.move(7);
                 else if (verticalDirection === 1)
-                    this.oppPlayer.moveUp();
+                    this.oppPlayer.move(1);
                 else if (verticalDirection === 3)
-                    this.oppPlayer.moveDown();
+                    this.oppPlayer.move(5);
             }
             else if (aiChoice === "atk") {
                 this.oppPlayer.atk();
@@ -419,22 +434,20 @@ class Fight {
         this.oppPlayer.atks.forEach((atk) => atk.draw());
         const playerA = this.thisPlayer.id === "A" ? this.thisPlayer : this.oppPlayer;
         const playerB = this.thisPlayer.id === "B" ? this.thisPlayer : this.oppPlayer;
-        $character1.style.color = playerA.rage ? def.rageTextColor : def.normalTextColor;
-        $character2.style.color = playerB.rage ? def.rageTextColor : def.normalTextColor;
-        const hpPercentA = (playerA.hp / playerA.maxHp) * 100;
-        $hpBar1.style.width = `${hpPercentA}%`;
-        $hpBar1.style.backgroundColor = playerA.hp <= playerA.maxHp * def.rageThreshold ? def.rageTextColor : '#ff4d4d';
-        $hp1.innerText = playerA.hp.toFixed(0);
-        const manaPercentA = (playerA.mana / playerA.maxMana) * 100;
-        $manaBar1.style.width = `${manaPercentA}%`;
-        $mana1.innerText = playerA.mana.toFixed(0);
-        const hpPercentB = (playerB.hp / playerB.maxHp) * 100;
-        $hpBar2.style.width = `${hpPercentB}%`;
-        $hpBar2.style.backgroundColor = playerB.hp <= playerB.maxHp * def.rageThreshold ? def.rageTextColor : '#ff4d4d';
-        $hp2.innerText = playerB.hp.toFixed(0);
-        const manaPercentB = (playerB.mana / playerB.maxMana) * 100;
-        $manaBar2.style.width = `${manaPercentB}%`;
-        $mana2.innerText = playerB.mana.toFixed(0);
+        this.updateLateralColumns(playerA);
+        this.updateLateralColumns(playerB);
+    }
+    updateLateralColumns(player) {
+        const playerDom = player.id === "A" ? $dom[1] : $dom[2];
+        console.log(playerDom.character.style.color, player.rage, def.rageTextColor, def.normalTextColor);
+        playerDom.character.style.color = player.rage ? def.rageTextColor : def.normalTextColor;
+        const hpPercent = (player.hp / player.maxHp) * 100;
+        const manaPercent = (player.mana / player.maxMana) * 100;
+        playerDom.hpBar.style.width = `${hpPercent}%`;
+        playerDom.hpBar.style.backgroundColor = player.hp <= player.maxHp * def.rageThreshold ? def.rageTextColor : def.normalHpColor;
+        playerDom.hp.innerText = player.hp.toFixed(0);
+        playerDom.manaBar.style.width = `${manaPercent}%`;
+        playerDom.mana.innerText = player.mana.toFixed(0);
     }
     rebuildAtkArray(flattedAtkArray) {
         return flattedAtkArray.map((atk) => new Atk(atk[0], atk[1], atk[2], atk[3], atk[4]));
@@ -449,6 +462,15 @@ class Fight {
     setShadow(color) {
         $ctx.shadowBlur = def.shadowBlur;
         $ctx.shadowColor = color;
+    }
+    attachKeyboardEvent() {
+        document.addEventListener("keydown", (event) => {
+            _F.pressedKeys.add(event.key);
+            _F.handleActionKeys(event.key);
+        });
+        document.addEventListener("keyup", (event) => {
+            _F.pressedKeys.delete(event.key);
+        });
     }
     handleActionKeys(key) {
         switch (key) {
@@ -477,21 +499,21 @@ class Fight {
             const movingDown = this.pressedKeys.has("ArrowDown");
             const movingLeft = this.pressedKeys.has("ArrowLeft");
             if (movingUp && movingRight)
-                player.moveUpRight();
+                player.move(2);
             else if (movingUp && movingLeft)
-                player.moveUpLeft();
+                player.move(8);
             else if (movingDown && movingRight)
-                player.moveDownRight();
+                player.move(4);
             else if (movingDown && movingLeft)
-                player.moveDownLeft();
+                player.move(6);
             else if (movingUp)
-                player.moveUp();
+                player.move(1);
             else if (movingRight)
-                player.moveRight();
+                player.move(3);
             else if (movingDown)
-                player.moveDown();
+                player.move(5);
             else if (movingLeft)
-                player.moveLeft();
+                player.move(7);
         }
         this.frameCount++;
         requestAnimationFrame(this.updateMovement.bind(this));
@@ -538,15 +560,26 @@ function soloGameSetup() {
     const aiPlayer = new Player("B", aiCharacterId, aiCharacter.name, aiCharacter.color, aiCharacter.img, 0, defPos.B.x, defPos.B.y, 4, aiCharacter.speed, aiCharacter.hp, aiCharacter.maxHp, aiCharacter.healPow, aiCharacter.mana, aiCharacter.maxMana, aiCharacter.regenPow, aiCharacter.strength, aiCharacter.atkImg, aiCharacter.atkCost, aiCharacter.atkSpeed, []);
     const aiLevel = localStorage.getItem("aiLevel");
     _F.buildPlayers(thisPlayer, aiPlayer);
-    $character1.innerText = thisPlayer.charName;
-    $score1.innerText = thisScore.toString();
-    $character2.innerText = aiPlayer.charName;
-    $score2.innerText = "0";
+    $dom[1].character.innerText = thisPlayer.charName;
+    $dom[1].score.innerText = thisScore.toString();
+    $dom[2].character.innerText = aiPlayer.charName;
+    $dom[2].score.innerText = "0";
     showGameScreen();
     soloGameRefresh();
     aiActionInterval(aiLevel);
+    _F.attachKeyboardEvent();
+    _F.updateMovement();
 }
+let $ctx;
 function showGameScreen() {
+    const $canvas = document.querySelector("#canvas");
+    $canvas.width = def.canvasWidth * def.canvasScaleMult;
+    $canvas.height = def.canvasHeight * def.canvasScaleMult;
+    $canvas.style.width = `${def.canvasWidth}px`;
+    $canvas.style.height = `${def.canvasHeight}px`;
+    $ctx = $canvas.getContext("2d");
+    $ctx.scale(def.canvasScaleMult, def.canvasScaleMult);
+    const $playScreen = document.querySelector("#play");
     $playScreen.style.display = "flex";
     $loadingScreen.style.display = "none";
     $popup.style.display = "none";
@@ -586,14 +619,6 @@ function dualGameRefresh() {
         _F.drawAll();
     }, def.refreshRate);
 }
-document.addEventListener("keydown", (event) => {
-    _F.pressedKeys.add(event.key);
-    _F.handleActionKeys(event.key);
-});
-document.addEventListener("keyup", (event) => {
-    _F.pressedKeys.delete(event.key);
-});
-_F.updateMovement();
 const socket = io();
 if (_F.mode === "dual")
     socket.emit("askId", _F.roomId);
@@ -621,10 +646,12 @@ socket.on("start", (msg) => {
     thisPlayerId === "A" ? _F.buildPlayers(msg.A, msg.B) : _F.buildPlayers(msg.B, msg.A);
     const playerA = _F.thisPlayer.id === "A" ? _F.thisPlayer : _F.oppPlayer;
     const playerB = _F.thisPlayer.id === "B" ? _F.thisPlayer : _F.oppPlayer;
-    $character1.innerText = playerA.charName;
-    $score1.innerText = playerA.score.toString();
-    $character2.innerText = playerB.charName;
-    $score2.innerText = playerB.score.toString();
+    $dom[1].score.innerText = playerA.charName;
+    $dom[1].score.innerText = playerA.score.toString();
+    $dom[2].score.innerText = playerB.charName;
+    $dom[2].score.innerText = playerB.score.toString();
+    _F.attachKeyboardEvent();
+    _F.updateMovement();
     showGameScreen();
     dualGameRefresh();
 });

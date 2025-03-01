@@ -55,7 +55,7 @@ type AiLevel = "easy" | "medium" | "hard";
 type CharacterID = "luffy" | "zoro" | "sanji" | "ace" | "jinbe" | "law" | "franky" | "brook" | "baggy" | "chopper" | "kuma" | "nami" | "robin" | "sabo" | "smoker" | "usopp" | "kid" | "perona" | "crocodile" | "marco";
 
 type PlayerId = "A" | "B"
-type MoveDirections = 1 | 2 | 3 | 4;
+type MoveDirections = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 type AtkType = "sim" | "sup"
 type Position = { x: number; y: number };
 
@@ -82,6 +82,7 @@ interface SettingsInt {
     rageHealFactor: number;
     collisionDist: number;
     normalTextColor: string;
+    normalHpColor: string;
     rageTextColor: string;
     shadowBlur: number;
     cursorSize: number;
