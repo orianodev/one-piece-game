@@ -20,7 +20,6 @@ const $dom = {
     }
 }
 
-// PLAYER
 class Player {
     readonly id: PlayerId;
     readonly charId: CharacterID;
@@ -411,8 +410,6 @@ class Fight {
     }
     updateLateralColumns(player: Player) {
         const playerDom = player.id === "A" ? $dom[1] : $dom[2];
-        console.log(playerDom.character.style.color, player.rage, def.rageTextColor, def.normalTextColor);
-
         playerDom.character.style.color = player.rage ? def.rageTextColor : def.normalTextColor;
         const hpPercent = (player.hp / player.maxHp) * 100;
         const manaPercent = (player.mana / player.maxMana) * 100;
@@ -435,6 +432,30 @@ class Fight {
     setShadow(color: string) {
         $ctx.shadowBlur = def.shadowBlur;
         $ctx.shadowColor = color;
+    }
+    preloadImages(thisPlayer: Player | Omit<PlayerAttributes, "atks">, callback: { (): void; (): void; }) {
+        const imagePaths = [`/img/back/${stadium}`, thisPlayer.img, thisPlayer.atkImg, thisPlayer.img.replace("char", "rage")];
+
+        let loadedImages = 0;
+        const totalImages = imagePaths.length;
+
+        imagePaths.forEach((path) => {
+            const img = new Image();
+            img.src = path;
+
+            img.onload = () => {
+                loadedImages++;
+                if (loadedImages === totalImages && callback) callback();
+            };
+
+            img.onerror = () => {
+                console.warn(`Failed to load image at ${path}`);
+                loadedImages++;
+                if (loadedImages === totalImages && callback) callback();
+            };
+        });
+
+        console.log("All images preloaded, starting the game...")
     }
     attachKeyboardEvent() {
         document.addEventListener("keydown", (event: KeyboardEvent) => {
@@ -517,27 +538,6 @@ const mode: Mode = localStorage.getItem("mode") as Mode;
 const roomId: number = parseInt(localStorage.getItem("roomId") as string)
 const _F = new Fight(roomId, mode, "playing");
 
-// function preloadImages(imagePaths: string[], callback: { (): void; (): void; }) {
-//     let loadedImages = 0;
-//     const totalImages = imagePaths.length;
-
-//     imagePaths.forEach((path) => {
-//         const img = new Image();
-//         img.src = path;
-
-//         img.onload = () => {
-//             loadedImages++;
-//             if (loadedImages === totalImages && callback) callback();
-//         };
-
-//         img.onerror = () => {
-//             console.warn(`Failed to load image at ${path}`);
-//             loadedImages++;
-//             if (loadedImages === totalImages && callback) callback();
-//         };
-//     });
-// }
-
 let isFrozen = false;
 function unfreezeThisPlayer() {
     setTimeout(() => isFrozen = false, def.freezeDelay);
@@ -564,13 +564,13 @@ function soloGameSetup() {
     $dom[1].score.innerText = thisScore.toString();
     $dom[2].character.innerText = aiPlayer.charName;
     $dom[2].score.innerText = "0";
-    // const imagePaths = [`/img/back/${stadium}`, thisPlayer.img, thisPlayer.getRageImg(), thisPlayer.atkImg, aiPlayer.img, aiPlayer.getRageImg(), aiPlayer.atkImg];
-    // preloadImages(imagePaths, () => {
-    // console.log("All images preloaded, starting the game...")
-    showGameScreen()
-    soloGameRefresh()
-    aiActionInterval(aiLevel)
-    // });
+    _F.preloadImages(thisPlayer, () => {
+        _F.preloadImages(aiPlayer, () => {
+            showGameScreen()
+            soloGameRefresh()
+            aiActionInterval(aiLevel)
+        })
+    });
 
     _F.attachKeyboardEvent();
     _F.updateMovement();
@@ -616,7 +616,6 @@ function aiActionInterval(aiLevel: AiLevel) {
     }, def.aiLvlInterval[aiLevel]);
 }
 
-
 function dualGameRefresh() {
     setInterval(() => {
         if (_F.state === "over") return
@@ -649,11 +648,9 @@ socket.on("getId", (playerId: PlayerId) => {
     const thisPlayer: Omit<PlayerAttributes, "atks"> = {
         id: playerId, charId: thisCharacterId, charName: thisCharacter.name, color: thisCharacter.color, img: thisCharacter.img, score: thisScore, rage: false, x: defPos[playerId].x, y: defPos[playerId].y, dir: thisPlayerId === "A" ? 2 : 4, speed: thisCharacter.speed, hp: thisCharacter.hp, maxHp: thisCharacter.maxHp, healPow: thisCharacter.healPow, mana: thisCharacter.mana, maxMana: thisCharacter.maxMana, regenPow: thisCharacter.regenPow, strength: thisCharacter.strength, atkImg: thisCharacter.atkImg, atkCost: thisCharacter.atkCost, atkSpeed: thisCharacter.atkSpeed
     }
-    // const imagePaths = [`/img/back/${stadium}`, thisPlayer.img, thisPlayer.atkImg, thisPlayer.img.replace("char", "rage")];
-    // preloadImages(imagePaths, () => {
-    //     console.log("All images preloaded, starting the game...")
-    socket.emit("postPlayer", { thisPlayer, roomId: _F.roomId, playerId });
-    // });
+    _F.preloadImages(thisPlayer, () => {
+        socket.emit("postPlayer", { thisPlayer, roomId: _F.roomId, playerId })
+    });
 })
 
 socket.on("start", (msg: { A: Player, B: Player }) => {
