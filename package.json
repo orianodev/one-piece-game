@@ -1,6 +1,6 @@
 {
   "name": "one-piece-game",
-  "version": "5.6.3",
+  "version": "5.6.4",
   "description": "One Piece 2D game using Typescript and Socket.IO for real-time multiplayer.",
   "author": "Oriano DEV",
   "repository": {

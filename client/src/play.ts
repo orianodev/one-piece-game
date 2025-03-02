@@ -105,9 +105,9 @@ class Player {
         _F.resetPen()
     }
     freeze(): boolean {
-        if (isFrozen) return false;
-        isFrozen = true;
-        unfreezeThisPlayer();
+        if (_F.isThisPlayerFrozen) return false;
+        _F.isThisPlayerFrozen = true;
+        _F.unfreezeThisPlayer();
         return true;
     }
     atk() {
@@ -296,6 +296,7 @@ class Fight {
     public thisPlayer: Player;
     // @ts-expect-error
     public oppPlayer: Player;
+    isThisPlayerFrozen = false;
     readonly roomId: number;
     readonly mode: Mode;
     public state: "playing" | "over";
@@ -308,6 +309,9 @@ class Fight {
     }
     getPlayer(playerId: PlayerId): Player {
         return playerId === this.thisPlayer.id ? this.thisPlayer : this.oppPlayer
+    }
+    unfreezeThisPlayer() {
+        setTimeout(() => this.isThisPlayerFrozen = false, def.freezeDelay);
     }
     aiAction(): void {
         const aiActions = ["move", "move", "atk", "super", "heal", "regen", "rage"];
@@ -515,6 +519,7 @@ const $home = document.querySelector("#home") as HTMLButtonElement;
 const $restart = document.querySelector("#restart") as HTMLButtonElement;
 $restart.addEventListener("click", () => window.location.reload());
 $home.addEventListener("click", () => window.location.href = "/");
+
 function displayPopup(msg: string, displayRestart: boolean) {
     $popup.style.display = 'flex';
     $popup.querySelector("#message")!.textContent = msg;
@@ -531,17 +536,11 @@ displayPopup("Chargement en cours...", false);
 const stadium: Stadium = localStorage.getItem("stadium") as Stadium;
 const $wallpaper = document.querySelector("#wallpaper") as HTMLDivElement;
 $wallpaper.style.backgroundImage = `url(/img/back/${stadium})`;
-$wallpaper.style.backgroundImage = `url(/img/back/${stadium})`;
 
 let thisPlayerId: PlayerId;
 const mode: Mode = localStorage.getItem("mode") as Mode;
 const roomId: number = parseInt(localStorage.getItem("roomId") as string)
 const _F = new Fight(roomId, mode, "playing");
-
-let isFrozen = false;
-function unfreezeThisPlayer() {
-    setTimeout(() => isFrozen = false, def.freezeDelay);
-}
 
 function soloGameSetup() {
     const thisScore = parseInt(localStorage.getItem("score") as string) as number;

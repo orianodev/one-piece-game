@@ -100,10 +100,10 @@ class Player {
         _F.resetPen();
     }
     freeze() {
-        if (isFrozen)
+        if (_F.isThisPlayerFrozen)
             return false;
-        isFrozen = true;
-        unfreezeThisPlayer();
+        _F.isThisPlayerFrozen = true;
+        _F.unfreezeThisPlayer();
         return true;
     }
     atk() {
@@ -314,6 +314,7 @@ class Atk {
 class Fight {
     thisPlayer;
     oppPlayer;
+    isThisPlayerFrozen = false;
     roomId;
     mode;
     state;
@@ -326,6 +327,9 @@ class Fight {
     }
     getPlayer(playerId) {
         return playerId === this.thisPlayer.id ? this.thisPlayer : this.oppPlayer;
+    }
+    unfreezeThisPlayer() {
+        setTimeout(() => this.isThisPlayerFrozen = false, def.freezeDelay);
     }
     aiAction() {
         const aiActions = ["move", "move", "atk", "super", "heal", "regen", "rage"];
@@ -559,15 +563,10 @@ displayPopup("Chargement en cours...", false);
 const stadium = localStorage.getItem("stadium");
 const $wallpaper = document.querySelector("#wallpaper");
 $wallpaper.style.backgroundImage = `url(/img/back/${stadium})`;
-$wallpaper.style.backgroundImage = `url(/img/back/${stadium})`;
 let thisPlayerId;
 const mode = localStorage.getItem("mode");
 const roomId = parseInt(localStorage.getItem("roomId"));
 const _F = new Fight(roomId, mode, "playing");
-let isFrozen = false;
-function unfreezeThisPlayer() {
-    setTimeout(() => isFrozen = false, def.freezeDelay);
-}
 function soloGameSetup() {
     const thisScore = parseInt(localStorage.getItem("score"));
     thisPlayerId = "A";
