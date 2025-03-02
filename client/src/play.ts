@@ -367,7 +367,7 @@ class Fight {
         _F.thisPlayer.sprite.src = _F.thisPlayer.img
         _F.thisPlayer.atkSprite.src = _F.thisPlayer.atkImg
     }
-    updatePlayers(thisPlayer: PlayerAttributesDeltasTuple, oppPlayer: PlayerAttributesDeltasTuple) {
+    updatePlayers(thisPlayer: PlayerAttributesTuple, oppPlayer: PlayerAttributesTuple) {
         _F.thisPlayer.rage = thisPlayer[0]
         _F.thisPlayer.x = thisPlayer[1]
         _F.thisPlayer.y = thisPlayer[2]
@@ -384,7 +384,7 @@ class Fight {
         _F.oppPlayer.mana = oppPlayer[5]
         _F.oppPlayer.atks = this.rebuildAtkArray(oppPlayer[6])
     }
-    getPlayerDeltaAttributes(player: Player): PlayerAttributesDeltasTuple {
+    getPlayerDeltaAttributes(player: Player): PlayerAttributesTuple {
         return [player.rage, Math.round(player.x), Math.round(player.y), player.dir, Math.round(player.hp), Math.round(player.mana), this.getAtkDeltaAttributes(player.atks)]
     }
     getAtkDeltaAttributes(atks: Atk[]): AtkAttributesTuple[] {
@@ -668,7 +668,7 @@ socket.on("start", (msg: { A: Player, B: Player }) => {
     dualGameRefresh()
 });
 
-socket.on("update", (msg: { A: PlayerAttributesDeltasTuple, B: PlayerAttributesDeltasTuple }) => {
+socket.on("update", (msg: { A: PlayerAttributesTuple, B: PlayerAttributesTuple }) => {
     thisPlayerId === "A" ? _F.updatePlayers(msg.A, msg.B) : _F.updatePlayers(msg.B, msg.A);
     _F.drawAll()
 });

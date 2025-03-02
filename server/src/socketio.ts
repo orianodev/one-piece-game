@@ -41,7 +41,7 @@ export function socketIOListener(socket: Socket, io: Server<DefaultEventsMap, De
         }
     });
 
-    socket.on("postPlayer", (msg: { thisPlayer: Player, roomId: RoomID, playerId: PlayerId }) => {
+    socket.on("postPlayer", (msg: { thisPlayer: PlayerAttributes, roomId: RoomID, playerId: PlayerId }) => {
         console.log(`Player ${msg.playerId} added his players stats in room ${msg.roomId}`);
         if (gameStateCollection[msg.roomId]) {
             gameStateCollection[msg.roomId]![msg.playerId] = msg.thisPlayer
@@ -55,7 +55,7 @@ export function socketIOListener(socket: Socket, io: Server<DefaultEventsMap, De
 
     });
 
-    socket.on('update', (msg: { roomId: RoomID, A: PlayerAttributesDeltasTuple, B: PlayerAttributesDeltasTuple }) => {
+    socket.on('update', (msg: { roomId: RoomID, A: PlayerAttributesTuple, B: PlayerAttributesTuple }) => {
         const startTime = performance.now();
 
         if (msg.A[4] <= 0 || msg.B[4] <= 0) {

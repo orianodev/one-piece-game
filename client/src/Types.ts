@@ -1,63 +1,7 @@
-type PlayerAttributesDeltasTuple = [rage, x, y, dir, hp, mana, atks];
-type rage = boolean;
-type x = number;
-type y = number;
-type dir = MoveDirections;
-type hp = number;
-type mana = number;
-type atks = AtkAttributesTuple[];
-type AtkAttributesTuple = [PlayerId, AtkType, x, y, dir];
-
-interface Atk {
-    id: PlayerId;
-    type: AtkType;
-    img: string;
-    sprite: HTMLImageElement;
-    x: number;
-    y: number;
-    dir: MoveDirections;
-}
-
-interface PlayerAttributes {
-    id: PlayerId;
-    charId: CharacterID;
-    charName: string;
-    color: string;
-    img: string;
-    // sprite: HTMLImageElement;
-    // atkSprite: HTMLImageElement;
-    score: number;
-    rage: boolean;
-    x: number;
-    y: number;
-    dir: MoveDirections;
-    speed: number;
-    hp: number;
-    maxHp: number;
-    healPow: number;
-    mana: number;
-    maxMana: number;
-    regenPow: number;
-    strength: number;
-    atkImg: string;
-    atkCost: number;
-    atkSpeed: number;
-    atks: Atk[];
-}
-
-type GameState = { A: PlayerAttributes | {}, B: PlayerAttributes | {} }
-type GameStateCollection = { [key: RoomID]: GameState }
-type RoomID = number;
-
 type Mode = "dual" | "solo";
 type Stadium = "eni" | "imp" | "log" | "mar" | "sab" | "thr";
 type AiLevel = "easy" | "medium" | "hard";
 type CharacterID = "luffy" | "zoro" | "sanji" | "ace" | "jinbe" | "law" | "franky" | "brook" | "baggy" | "chopper" | "kuma" | "nami" | "robin" | "sabo" | "smoker" | "usopp" | "kid" | "perona" | "crocodile" | "marco";
-
-type PlayerId = "A" | "B"
-type MoveDirections = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-type AtkType = "sim" | "sup"
-type Position = { x: number; y: number };
 
 interface SettingsInt {
     canvasWidth: number;
@@ -88,6 +32,7 @@ interface SettingsInt {
     cursorSize: number;
     aiLvlInterval: { [key in AiLevel]: number };
 }
+type Position = { x: number; y: number };
 
 interface OneCharacterStats {
     name: string;
@@ -106,3 +51,35 @@ interface OneCharacterStats {
     atkCost: number;
     atkSpeed: number;
 }
+
+interface PlayerAttributes {
+    id: PlayerId;
+    charId: CharacterID;
+    charName: string;
+    color: string;
+    img: string;
+    score: number;
+    rage: boolean;
+    x: number;
+    y: number;
+    dir: MoveDirections;
+    speed: number;
+    hp: number;
+    maxHp: number;
+    healPow: number;
+    mana: number;
+    maxMana: number;
+    regenPow: number;
+    strength: number;
+    atkImg: string;
+    atkCost: number;
+    atkSpeed: number;
+    atks: AtkAttributesTuple[];
+}
+
+type PlayerId = "A" | "B"
+type MoveDirections = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+type AtkType = "sim" | "sup"
+
+type PlayerAttributesTuple = [rage: boolean, x: number, y: number, dir: MoveDirections, hp: number, mana: number, atks: AtkAttributesTuple[]];
+type AtkAttributesTuple = [id: PlayerId, type: AtkType, x: number, y: number, dir: MoveDirections];
