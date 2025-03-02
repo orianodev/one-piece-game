@@ -30,8 +30,7 @@ const http = createServer((req, res): ServerResponse<IncomingMessage> | Promise<
 })
 
 const io = new Server();
-let gameStateCollection: GameStateCollection = {};
-io.on('connection', (socket: Socket) => socketIOListener(socket, io, gameStateCollection));
+io.on('connection', (socket: Socket) => socketIOListener(socket, io));
 
 http.listen(3000, () => {
     console.log('Server running at http://localhost:3000')

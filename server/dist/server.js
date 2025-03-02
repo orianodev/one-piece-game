@@ -31,8 +31,7 @@ const http = (0, node_http_1.createServer)((req, res) => {
     }
 });
 const io = new socket_io_1.Server();
-let gameStateCollection = {};
-io.on('connection', (socket) => (0, socketio_1.socketIOListener)(socket, io, gameStateCollection));
+io.on('connection', (socket) => (0, socketio_1.socketIOListener)(socket, io));
 http.listen(3000, () => {
     console.log('Server running at http://localhost:3000');
     io.attach(http);

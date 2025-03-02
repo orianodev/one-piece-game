@@ -1,23 +1,35 @@
 import { DefaultEventsMap, DisconnectReason, Server, Socket } from "socket.io";
 
-export function socketIOListener(socket: Socket, io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>, gameStateCollection: GameStateCollection) {
+let gameStateCollection: GameStateCollection = {};
+const socketRoomMap: Map<string, RoomID> = new Map();
+
+export function socketIOListener(socket: Socket, io: Server<DefaultEventsMap, DefaultEventsMap, DefaultEventsMap, any>) {
     console.log(`User ${socket.id} connected`);
 
     socket.on('disconnect', (reason: DisconnectReason) => {
-        let roomId: RoomID;
-        // @ts-expect-error
-        for (const [room, clients] of socket.adapter.rooms) {
-            if (!isNaN(parseInt(room))) {
-                roomId = room;
-                io.to(room).emit('stop');
-                console.log(`Fight interrupted in room ${room} by ${socket.id} disconnected for ${reason}.`);
-                delete gameStateCollection[roomId]
+        const roomToClear = socketRoomMap.get(socket.id);
+        console.log(`Fight interrupted in room ${roomToClear} by ${socket.id} disconnected for ${reason}.`);
+        if (roomToClear) {
+            io.to(roomToClear.toString()).emit('stop');
+            console.log(`\n\nFight interrupted in room ${roomToClear} by ${socket.id} disconnected for ${reason}.`);
+            socketRoomMap.delete(socket.id);
+            for (const [socketID, roomID] of socketRoomMap) {
+                if (roomID === roomToClear) {
+                    io.to(socketID).emit('stop');
+                    socketRoomMap.delete(socketID);
+                }
             }
+            delete gameStateCollection[roomToClear]
+            console.log("Game state after deletion:", gameStateCollection, "Socket map after deletion:", socketRoomMap);
         }
     });
 
     socket.on('askId', (roomId: RoomID) => {
-        if (!gameStateCollection[roomId]) gameStateCollection[roomId] = { A: {}, B: {} };
+        socketRoomMap.set(socket.id, roomId);
+        console.log(socketRoomMap);
+        if (!gameStateCollection[roomId]) {
+            gameStateCollection[roomId] = { A: {}, B: {} }
+        };
         const thisGameState = gameStateCollection[roomId] as GameState;
         if (Object.keys(thisGameState.A).includes("id") && Object.keys(thisGameState.B).includes("id")) {
             socket.emit("busy")
@@ -44,15 +56,19 @@ export function socketIOListener(socket: Socket, io: Server<DefaultEventsMap, De
     });
 
     socket.on('update', (msg: { roomId: RoomID, A: PlayerAttributesDeltasTuple, B: PlayerAttributesDeltasTuple }) => {
+        const startTime = performance.now();
+
         if (msg.A[4] <= 0 || msg.B[4] <= 0) {
             io.to(msg.roomId.toString()).emit('over', msg.A[4] <= 0 ? "B" : "A");
             console.log(`Game over in room ${msg.roomId}.`);
             setTimeout(() => delete gameStateCollection[msg.roomId], 500); // Delay to ensure event reaches all clients
         }
         console.log(`Update from ${socket.id} :`, msg.A, msg.B);
-        const sizeA = Buffer.byteLength(JSON.stringify(msg.A), 'utf8');
-        const sizeB = Buffer.byteLength(JSON.stringify(msg.B), 'utf8');
-        console.log(`Update from ${socket.id} | Packet Size: A = ${sizeA} bytes, B = ${sizeB} bytes`);
+        const size = Buffer.byteLength(JSON.stringify(msg));
+        console.log(`Packet Size: ${size} bytes.`);
         io.to(msg.roomId.toString()).emit('update', { A: msg.A, B: msg.B });
+
+        const endTime = performance.now();
+        console.log(`Update handling time: ${endTime - startTime} ms`);
     });
 }
