@@ -1,5 +1,7 @@
-import { characterStats } from "./charactersStats.js";
-import { def, defPos } from "./defaultSettings.js";
+import { CharacterID, characterStats } from "./data/charactersInfos.js";
+import { def, defPos } from "./data/defaultSettings.js";
+import { StadiumID } from "./data/stadiumsInfos.js";
+import { PlayerId, MoveDirections, AtkType, Position, Mode, PlayerAttributesTuple, AtkAttributesTuple, PlayerAttributes, OneCharacterStats, AiLevel } from "./Types.js";
 
 const $dom = {
     1: {
@@ -533,7 +535,7 @@ const randomImg = Math.floor(Math.random() * 5);
 $loadingScreen.style.backgroundImage = `url(/img/wait/${randomImg}.gif)`;
 displayPopup("Chargement en cours...", false);
 
-const stadium: Stadium = localStorage.getItem("stadium") as Stadium;
+const stadium: StadiumID = localStorage.getItem("stadium") as StadiumID;
 const $wallpaper = document.querySelector("#wallpaper") as HTMLDivElement;
 $wallpaper.style.backgroundImage = `url(/img/back/${stadium})`;
 

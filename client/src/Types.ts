@@ -1,9 +1,9 @@
-type Mode = "dual" | "solo";
-type Stadium = "eni" | "imp" | "log" | "mar" | "sab" | "thr";
-type AiLevel = "easy" | "medium" | "hard";
-type CharacterID = "luffy" | "zoro" | "sanji" | "ace" | "jinbe" | "law" | "franky" | "brook" | "baggy" | "chopper" | "kuma" | "nami" | "robin" | "sabo" | "smoker" | "usopp" | "kid" | "perona" | "crocodile" | "marco";
+import { CharacterID } from "./data/charactersInfos";
 
-interface SettingsInt {
+export type Mode = "dual" | "solo";
+export type AiLevel = "easy" | "medium" | "hard";
+
+export interface SettingsInt {
     canvasWidth: number;
     canvasHeight: number;
     canvasScaleMult: number;
@@ -32,9 +32,9 @@ interface SettingsInt {
     cursorSize: number;
     aiLvlInterval: { [key in AiLevel]: number };
 }
-type Position = { x: number; y: number };
+export type Position = { x: number; y: number };
 
-interface OneCharacterStats {
+export interface OneCharacterStats {
     name: string;
     img: string;
     type: string | "tank" | "balance" | "kunoichi" | "doctor";
@@ -52,7 +52,7 @@ interface OneCharacterStats {
     atkSpeed: number;
 }
 
-interface PlayerAttributes {
+export interface PlayerAttributes {
     id: PlayerId;
     charId: CharacterID;
     charName: string;
@@ -77,9 +77,9 @@ interface PlayerAttributes {
     atks: AtkAttributesTuple[];
 }
 
-type PlayerId = "A" | "B"
-type MoveDirections = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-type AtkType = "sim" | "sup"
+export type PlayerId = "A" | "B"
+export type MoveDirections = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+export type AtkType = "sim" | "sup"
 
-type PlayerAttributesTuple = [rage: boolean, x: number, y: number, dir: MoveDirections, hp: number, mana: number, atks: AtkAttributesTuple[]];
-type AtkAttributesTuple = [id: PlayerId, type: AtkType, x: number, y: number, dir: MoveDirections];
+export type PlayerAttributesTuple = [rage: boolean, x: number, y: number, dir: MoveDirections, hp: number, mana: number, atks: AtkAttributesTuple[]];
+export type AtkAttributesTuple = [id: PlayerId, type: AtkType, x: number, y: number, dir: MoveDirections];

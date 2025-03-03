@@ -1,5 +1,5 @@
-import { characterStats } from "./charactersStats.js";
-import { def, defPos } from "./defaultSettings.js";
+import { characterStats } from "./data/charactersInfos.js";
+import { def, defPos } from "./data/defaultSettings.js";
 const $dom = {
     1: {
         character: document.querySelector("#character-1"),

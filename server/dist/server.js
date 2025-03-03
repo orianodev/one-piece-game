@@ -10,7 +10,7 @@ const pageRoutes = {
     "/index.html": "index.html",
     "/play": "play.html",
     "/settings": "settings.html",
-    "/commands": "commands.html",
+    "/controls": "controls.html",
 };
 const http = (0, node_http_1.createServer)((req, res) => {
     try {

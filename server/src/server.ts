@@ -9,7 +9,7 @@ const pageRoutes: Record<string, string> = {
     "/index.html": "index.html",
     "/play": "play.html",
     "/settings": "settings.html",
-    "/commands": "commands.html",
+    "/controls": "controls.html",
 };
 
 const http = createServer((req, res): ServerResponse<IncomingMessage> | Promise<ServerResponse<IncomingMessage>> | void => {

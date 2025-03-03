@@ -1,266 +1,82 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="img/logo.webp" type="image/webp" />
-    <link rel="stylesheet" href="/styles/base.css" />
-    <link rel="stylesheet" href="/styles/menu.css" />
-    <title>Menu de sélection</title>
-    <meta
-      name="description"
-      content="Jouer à One Piece en duel en ligne ou seul contre l'IA."
-    />
-  </head>
-  <body>
-    <a href="/settings">
-      <button id="settings">
-        <img src="/img/icon/settings.svg" alt="Réglages" class="icon white" />
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="img/logo.webp" type="image/webp" />
+  <link rel="stylesheet" href="/styles/base.css" />
+  <link rel="stylesheet" href="/styles/menu.css" />
+  <title>Menu de sélection</title>
+  <meta name="description" content="Jouer à One Piece en duel en ligne ou seul contre l'IA." />
+</head>
+
+<body>
+  <a href="/settings">
+    <button id="settings">
+      <img src="/img/icon/settings.svg" alt="Réglages" class="icon white" />
+    </button>
+  </a>
+  <a href="/controls">
+    <button id="controls">
+      <img src="/img/icon/question.svg" alt="Commandes" class="icon white" />
+    </button>
+  </a>
+
+  <section class="mode">
+    <h2>MODE DE JEU</h2>
+    <div id="mode-toggle">
+      <button class="dual">
+        <img src="/img/icon/dual.svg" alt="Commandes" class="icon" />
       </button>
-    </a>
-    <a href="/commands">
-      <button id="commands">
-        <img src="/img/icon/question.svg" alt="Commandes" class="icon white" />
+      <button class="solo">
+        <img src="/img/icon/solo.svg" alt="Commandes" class="icon" />
       </button>
-    </a>
+    </div>
 
-    <section class="mode">
-      <h2>MODE DE JEU</h2>
-      <div id="mode-toggle">
-        <button class="dual">
-          <img src="/img/icon/dual.svg" alt="Commandes" class="icon" />
+    <div class="mode-selction dual">
+      <h3>MODE 2 JOUEURS</h3>
+      <h2><label for="text-id">IDENTIFIANT DE JEU</label></h2>
+      <div>
+        <input type="text" name="text-id" id="text-id" />
+        <button id="random-id">
+          <img src="/img/icon/dice.svg" alt="Commandes" class="icon" />
         </button>
-        <button class="solo">
-          <img src="/img/icon/solo.svg" alt="Commandes" class="icon" />
+        <button id="copy-id">
+          <img src="/img/icon/link.svg" alt="Commandes" class="icon" />
         </button>
       </div>
+    </div>
 
-      <div class="mode-selction dual">
-        <h3>MODE 2 JOUEURS</h3>
-        <h2><label for="text-id">IDENTIFIANT DE JEU</label></h2>
-        <div>
-          <input type="text" name="text-id" id="text-id" />
-          <button id="random-id">
-            <img src="/img/icon/dice.svg" alt="Commandes" class="icon" />
-          </button>
-          <button id="copy-id">
-            <img src="/img/icon/link.svg" alt="Commandes" class="icon" />
-          </button>
-        </div>
-      </div>
-
-      <div class="mode-selction solo">
-        <h3>MODE 1 JOUEUR</h3>
-        <h2><label for="ai-level">NIVEAU DE L'ORDI</label></h2>
-        <select name="ai-level" id="ai-level">
-          <option value="easy">Facile</option>
-          <option value="medium">Intermédiaire</option>
-          <option value="hard">Difficile</option>
-        </select>
-      </div>
-    </section>
-
-    <section class="characters">
-      <h2>CHOISIS UN PERSONNAGE</h2>
-      <form>
-        <label for="luffy">
-          <input type="radio" name="character" id="luffy" value="luffy" />
-          <img loading="lazy" src="img/face/luffy.webp" alt="luffy" />
-          <span class="tooltip">Monkey D. Luffy</span>
-        </label>
-
-        <label for="zoro">
-          <input type="radio" name="character" id="zoro" value="zoro" />
-          <img loading="lazy" src="img/face/zoro.webp" alt="zoro" />
-          <span class="tooltip">Roronoa Zoro</span>
-        </label>
-
-        <label for="sanji">
-          <input type="radio" name="character" id="sanji" value="sanji" />
-          <img loading="lazy" src="img/face/sanji.webp" alt="sanji" />
-          <span class="tooltip">Vinsmoke Sanji</span>
-        </label>
-
-        <label for="ace">
-          <input type="radio" name="character" id="ace" value="ace" />
-          <img loading="lazy" src="img/face/ace.webp" alt="ace" />
-          <span class="tooltip">Portgas D. Ace</span>
-        </label>
-
-        <label for="baggy">
-          <input type="radio" name="character" id="baggy" value="baggy" />
-          <img loading="lazy" src="img/face/baggy.webp" alt="baggy" />
-          <span class="tooltip">Baggy le Clown</span>
-        </label>
-
-        <label for="brook">
-          <input type="radio" name="character" id="brook" value="brook" />
-          <img loading="lazy" src="img/face/brook.webp" alt="brook" />
-          <span class="tooltip">Soul King Brook</span>
-        </label>
-
-        <label for="chopper">
-          <input type="radio" name="character" id="chopper" value="chopper" />
-          <img loading="lazy" src="img/face/chopper.webp" alt="chopper" />
-          <span class="tooltip">Tony Tony Chopper</span>
-        </label>
-
-        <label for="franky">
-          <input type="radio" name="character" id="franky" value="franky" />
-          <img loading="lazy" src="img/face/franky.webp" alt="franky" />
-          <span class="tooltip">Franky</span>
-        </label>
-
-        <label for="jinbe">
-          <input type="radio" name="character" id="jinbe" value="jinbe" />
-          <img loading="lazy" src="img/face/jinbe.webp" alt="jinbe" />
-          <span class="tooltip">Jinbe</span>
-        </label>
-
-        <label for="kuma">
-          <input type="radio" name="character" id="kuma" value="kuma" />
-          <img loading="lazy" src="img/face/kuma.webp" alt="kuma" />
-          <span class="tooltip">Bartholomew Kuma</span>
-        </label>
-
-        <label for="law">
-          <input type="radio" name="character" id="law" value="law" />
-          <img loading="lazy" src="img/face/law.webp" alt="law" />
-          <span class="tooltip">Trafalgar D. Law</span>
-        </label>
-
-        <label for="nami">
-          <input type="radio" name="character" id="nami" value="nami" />
-          <img loading="lazy" src="img/face/nami.webp" alt="nami" />
-          <span class="tooltip">Nami</span>
-        </label>
-
-        <label for="robin">
-          <input type="radio" name="character" id="robin" value="robin" />
-          <img loading="lazy" src="img/face/robin.webp" alt="robin" />
-          <span class="tooltip">Nico Robin</span>
-        </label>
-
-        <label for="sabo">
-          <input type="radio" name="character" id="sabo" value="sabo" />
-          <img loading="lazy" src="img/face/sabo.webp" alt="sabo" />
-          <span class="tooltip">Sabo</span>
-        </label>
-
-        <label for="smoker">
-          <input type="radio" name="character" id="smoker" value="smoker" />
-          <img loading="lazy" src="img/face/smoker.webp" alt="smoker" />
-          <span class="tooltip">Smoker</span>
-        </label>
-
-        <label for="usopp">
-          <input type="radio" name="character" id="usopp" value="usopp" />
-          <img loading="lazy" src="img/face/usopp.webp" alt="usopp" />
-          <span class="tooltip">Roi Usopp</span>
-        </label>
-
-        <label for="crocodile">
-          <input
-            type="radio"
-            name="character"
-            id="crocodile"
-            value="crocodile"
-          />
-          <img loading="lazy" src="img/face/crocodile.webp" alt="crocodile" />
-          <span class="tooltip">Sir Crocodile</span>
-        </label>
-
-        <label for="perona">
-          <input type="radio" name="character" id="perona" value="perona" />
-          <img loading="lazy" src="img/face/perona.webp" alt="perona" />
-          <span class="tooltip">Perona</span>
-        </label>
-
-        <label for="kid">
-          <input type="radio" name="character" id="kid" value="kid" />
-          <img loading="lazy" src="img/face/kid.webp" alt="kid" />
-          <span class="tooltip">Eustass Captain Kid</span>
-        </label>
-
-        <label for="marco">
-          <input type="radio" name="character" id="marco" value="marco" />
-          <img loading="lazy" src="img/face/marco.webp" alt="marco" />
-          <span class="tooltip">Marco le Phoenix</span>
-        </label>
-
-        <label for="kuzan">
-          <input type="radio" name="character" id="kuzan" value="kuzan" />
-          <img loading="lazy" src="img/face/kuzan.webp" alt="kuzan" />
-          <span class="tooltip">Kuzan</span>
-        </label>
-
-        <label for="bellamy">
-          <input type="radio" name="character" id="bellamy" value="bellamy" />
-          <img loading="lazy" src="img/face/bellamy.webp" alt="bellamy" />
-          <span class="tooltip">Bellamy</span>
-        </label>
-
-        <label for="hancock">
-          <input type="radio" name="character" id="hancock" value="hancock" />
-          <img loading="lazy" src="img/face/hancock.webp" alt="hancock" />
-          <span class="tooltip">Boa Hancock</span>
-        </label>
-
-        <label for="katakuri">
-          <input type="radio" name="character" id="katakuri" value="katakuri" />
-          <img loading="lazy" src="img/face/katakuri.webp" alt="katakuri" />
-          <span class="tooltip">Charlotte Katakuri</span>
-        </label>
-
-        <!-- Random -->
-        <label for="random">
-          <input type="radio" name="character" id="random" value="random" />
-          <img loading="lazy" src="img/face/random.webp" alt="random" />
-          <span class="tooltip">Sélection aléaroire</span>
-        </label>
-      </form>
-    </section>
-
-    <section class="stadium">
-      <h2><label for="stadium">CHOISIS UN TERRAIN</label></h2>
-      <!-- <p>
-        Le terrain sera déterminé aléatoirement entre ton choix et celui de ton
-        adversaire.
-      </p> -->
-      <select name="stadium" id="stadium">
-        <option value="fushia.webp">Village de Fushia</option>
-        <option value="baratie.webp">Baratie</option>
-        <option value="logue-town.webp">Logue Town</option>
-        <option value="alabasta.webp">Alabasta</option>
-        <option value="drum.gif">Royaume de Drum</option>
-        <option value="skypiea.webp">Île de Skypiea (ruines)</option>
-        <option value="water-seven.webp">Water Seven (canaux)</option>
-        <option value="enies-lobby.webp">Enies Lobby</option>
-        <option value="thriller-mansion.webp">Thriller Bark (manoir)</option>
-        <option value="thriller-forest.webp">Thriller Bark (fôret)</option>
-        <option value="thriller-boat.webp">Thriller Bark (bâteau)</option>
-        <option value="sabaody.webp">Archipel des Sabaody</option>
-        <option value="impel-down-desert.webp">Impel Down (désert)</option>
-        <option value="impel-down-lava.webp">Impel Down (fournaise)</option>
-        <option value="impel-down-snow.webp">Impel Down (neige)</option>
-        <option value="marineford.webp">QG de Marineford</option>
-        <option value="goa.webp">Ville de Goa</option>
-        <option value="fish-man.webp">Île des hommes poissons</option>
-        <option value="punk-lava.webp">Punk Hazard (lave)</option>
-        <option value="punk-ice.webp">Punk Hazard (glace)</option>
-        <option value="colosseum.webp">Corrida Colosseum</option>
-        <option value="green-bit.webp">Île de Green Bit</option>
-        <option value="mirror.webp">Monde des miroirs</option>
-        <option value="erbaf.webp">Île d'Erbaf</option>
-        <option value="wano-day.webp">Île de Wano (jour)</option>
-        <option value="wano-night.webp">Île de Wano (nuit)</option>
-        <option value="wano-beach.webp">Île de wano (plage)</option>
+    <div class="mode-selction solo">
+      <h3>MODE 1 JOUEUR</h3>
+      <h2><label for="ai-level">NIVEAU DE L'ORDI</label></h2>
+      <select name="ai-level" id="ai-level">
+        <option value="easy">Facile</option>
+        <option value="medium">Intermédiaire</option>
+        <option value="hard">Difficile</option>
       </select>
-    </section>
+    </div>
+  </section>
 
-    <section class="validate">
-      <button id="submit">COMMENCER !</button>
-    </section>
-    <script src="./scripts/selection.js"></script>
-  </body>
+  <section class="characters">
+    <h2>CHOISIS UN PERSONNAGE</h2>
+    <form id="character-list">
+      <!-- Character selection will be generated here -->
+    </form>
+  </section>
+
+  <section class="stadium">
+    <h2><label for="stadium">CHOISIS UN TERRAIN</label></h2>
+    <select name="stadium" id="stadium-list">
+      <!-- Stadium selection will be generated here -->
+    </select>
+  </section>
+
+  <section class="validate">
+    <button id="submit">COMMENCER !</button>
+  </section>
+  <script type="module" src="./scripts/home/selection.js"></script>
+</body>
+
 </html>

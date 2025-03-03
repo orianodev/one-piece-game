@@ -1,3 +1,5 @@
+import { SettingsInt, Position } from "../Types"
+
 export const def: SettingsInt = {
     canvasWidth: 800,
     canvasHeight: 500,

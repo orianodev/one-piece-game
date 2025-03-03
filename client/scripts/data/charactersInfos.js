@@ -1,5 +1,6 @@
 export const characterStats = {
     ace: {
+        id: "ace",
         name: "Portgas D. Ace",
         img: "/img/char/ace.png",
         type: "balance",
@@ -17,6 +18,7 @@ export const characterStats = {
         atkSpeed: 18,
     },
     baggy: {
+        id: "ace",
         name: "Baggy le Clown",
         img: "/img/char/baggy.png",
         type: "kunoichi",
