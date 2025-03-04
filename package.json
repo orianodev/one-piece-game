@@ -1,6 +1,6 @@
 {
   "name": "one-piece-game",
-  "version": "5.6.4",
+  "version": "5.7.0",
   "description": "One Piece 2D game using Typescript and Socket.IO for real-time multiplayer.",
   "author": "Oriano DEV",
   "repository": {
@@ -10,11 +10,10 @@
   "type": "commonjs",
   "main": "server/dist/server.js",
   "scripts": {
-    "build": "npm run build:server && npm run build:client && npm i",
+    "build": " npm i && npm run build:server && npm run build:client",
     "build:server": "npx tsc -p server/src",
     "build:client": "npx tsc -p client/src",
     "start": "node server/dist/server.js",
-    "watch": "npm run watch:client && npm run watch:server",
     "watch:server": "npx tsc --watch -p server/src",
     "watch:client": "npx tsc --watch -p client/src"
   },

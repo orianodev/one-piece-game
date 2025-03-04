@@ -11,7 +11,7 @@ Try now : https://one-piece-game.onrender.com/
 ## Technical details
 
 - Language: Typescript (OOP)
-- Server: Node.js + Socket.IO
+- Server: Node.js v22.14.0 + Socket.IO
 - Storage: LocalStorage for client, RAM only for server (No dB)
 - Images: SVG icons, PNG sprites in canvas, WebP for the rest
 

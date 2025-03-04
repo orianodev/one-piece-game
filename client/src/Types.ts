@@ -1,38 +1,9 @@
 import { CharacterID } from "./data/charactersInfos";
 
+export type GameStatus = "loading" | "playing" | "over";
+export type PlayerId = "A" | "B"
 export type Mode = "dual" | "solo";
 export type AiLevel = "easy" | "medium" | "hard";
-
-export interface SettingsInt {
-    canvasWidth: number;
-    canvasHeight: number;
-    canvasScaleMult: number;
-    playW: number;
-    playH: number;
-    atkW: number;
-    atkH: number;
-    refreshRate: number;
-    move60fpsRAFDivider: number;
-    freezeDelay: number;
-    superSizeMult: number;
-    superManaMult: number;
-    superDamageMult: number;
-    rageThreshold: number;
-    rageDuration: number;
-    rageSpeedMult: number;
-    rageStrengthMult: number;
-    rageAtkSpeedMult: number;
-    rageRegenFactor: number;
-    rageHealFactor: number;
-    collisionDist: number;
-    normalTextColor: string;
-    normalHpColor: string;
-    rageTextColor: string;
-    shadowBlur: number;
-    cursorSize: number;
-    aiLvlInterval: { [key in AiLevel]: number };
-}
-export type Position = { x: number; y: number };
 
 export interface OneCharacterStats {
     name: string;
@@ -47,9 +18,9 @@ export interface OneCharacterStats {
     maxMana: number;
     regenPow: number;
     strength: number;
-    atkImg: string;
-    atkCost: number;
-    atkSpeed: number;
+    attackImg: string;
+    attackCost: number;
+    attackSpeed: number;
 }
 
 export interface PlayerAttributes {
@@ -71,15 +42,14 @@ export interface PlayerAttributes {
     maxMana: number;
     regenPow: number;
     strength: number;
-    atkImg: string;
-    atkCost: number;
-    atkSpeed: number;
-    atks: AtkAttributesTuple[];
+    attackImg: string;
+    attackCost: number;
+    attackSpeed: number;
+    attacks: AttackAttributesTuple[];
 }
 
-export type PlayerId = "A" | "B"
 export type MoveDirections = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-export type AtkType = "sim" | "sup"
+export type AttackType = "sim" | "sup"
 
-export type PlayerAttributesTuple = [rage: boolean, x: number, y: number, dir: MoveDirections, hp: number, mana: number, atks: AtkAttributesTuple[]];
-export type AtkAttributesTuple = [id: PlayerId, type: AtkType, x: number, y: number, dir: MoveDirections];
+export type PlayerAttributesTuple = [rage: boolean, x: number, y: number, dir: MoveDirections, hp: number, mana: number, attacks: AttackAttributesTuple[]];
+export type AttackAttributesTuple = [id: PlayerId, type: AttackType, x: number, y: number, dir: MoveDirections];

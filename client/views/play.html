@@ -1,81 +1,81 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <link rel="icon" href="img/logo.webp" type="image/webp" />
-    <link rel="stylesheet" href="styles/base.css" />
-    <link rel="stylesheet" href="styles/play.css" />
-    <title>Jouer</title>
-    <meta
-      name="description"
-      content="Jouer à One Piece en duel en ligne ou seul contre l'IA."
-    />
-    <script src="https://cdn.socket.io/4.8.0/socket.io.min.js"></script>
-  </head>
-  <body>
-    <!-- JS -->
-    <id id="wallpaper"></id>
-    <id id="loading-screen"></id>
-    <id id="loading-icon"></id>
-    <div id="popup">
-      <p id="message"></p>
-      <div id="btn">
-        <button id="home">
-          <img src="img/icon/home.svg" alt="Accueil" class="icon" /> Retour
-        </button>
-        <button id="restart">
-          <img src="img/icon/restart.svg" alt="Recommencer" class="icon" />
-          Recommencer
-        </button>
-      </div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <link rel="icon" href="img/logo.webp" type="image/webp" />
+  <link rel="stylesheet" href="styles/base.css" />
+  <link rel="stylesheet" href="styles/play.css" />
+  <title>Jouer</title>
+  <meta name="description" content="Jouer à One Piece en duel en ligne ou seul contre l'IA." />
+  <script src="https://cdn.socket.io/4.8.0/socket.io.min.js"></script>
+</head>
+
+<body>
+  <!-- JS -->
+  <id id="wallpaper"></id>
+  <id id="loading-screen"></id>
+  <id id="loading-icon"></id>
+  <div id="popup">
+    <p id="message"></p>
+    <div id="btn">
+      <button id="home">
+        <img src="img/icon/home.svg" alt="Accueil" class="icon" /> Retour
+      </button>
+      <button id="restart">
+        <img src="img/icon/restart.svg" alt="Recommencer" class="icon" />
+        Recommencer
+      </button>
     </div>
-    <!-- PERMANENT -->
-    <div id="play">
-      <div class="infos" id="player-1">
-        <h4>Joueur 1</h4>
-        <ul>
-          <li><span class="cname" id="character-1"></span></li>
-          <li class="progress-bar-stats">
-            🧡
-            <div class="progress-container">
-              <div class="progress-bar" id="hp-bar-1"></div>
-            </div>
-            <span id="hp-1">0</span>
-          </li>
-          <li class="progress-bar-stats">
-            🔥
-            <div class="progress-container">
-              <div class="progress-bar" id="mana-bar-1"></div>
-            </div>
-            <span id="mana-1">0</span>
-          </li>
-          <li>🏆 <span id="score-1"></span></li>
-        </ul>
-      </div>
-      <canvas id="canvas" width="800" height="500"></canvas>
-      <div class="infos" id="player-2">
-        <h4>Joueur 2</h4>
-        <ul>
-          <li><span class="cname" id="character-2"></span></li>
-          <li class="progress-bar-stats">
-            🧡
-            <div class="progress-container">
-              <div class="progress-bar" id="hp-bar-2"></div>
-            </div>
-            <span id="hp-2">0</span>
-          </li>
-          <li class="progress-bar-stats">
-            🔥
-            <div class="progress-container">
-              <div class="progress-bar" id="mana-bar-2"></div>
-            </div>
-            <span id="mana-2">0</span>
-          </li>
-          <li>🏆 <span id="score-2"></span></li>
-        </ul>
-      </div>
+  </div>
+  <!-- PERMANENT -->
+  <div id="play">
+    <div class="infos" id="player-1">
+      <h4>Joueur 1</h4>
+      <ul>
+        <li><span class="cname" id="character-1"></span></li>
+        <li class="progress-bar-stats">
+          🧡
+          <div class="progress-container">
+            <div class="progress-bar" id="hp-bar-1"></div>
+          </div>
+          <span id="hp-1">0</span>
+        </li>
+        <li class="progress-bar-stats">
+          🔥
+          <div class="progress-container">
+            <div class="progress-bar" id="mana-bar-1"></div>
+          </div>
+          <span id="mana-1">0</span>
+        </li>
+        <li>🏆 <span id="score-1"></span></li>
+      </ul>
     </div>
-    <script type="module" src="./scripts/play.js"></script>
-  </body>
+    <canvas id="canvas" width="800" height="500"></canvas>
+    <div class="infos" id="player-2">
+      <h4>Joueur 2</h4>
+      <ul>
+        <li><span class="cname" id="character-2"></span></li>
+        <li class="progress-bar-stats">
+          🧡
+          <div class="progress-container">
+            <div class="progress-bar" id="hp-bar-2"></div>
+          </div>
+          <span id="hp-2">0</span>
+        </li>
+        <li class="progress-bar-stats">
+          🔥
+          <div class="progress-container">
+            <div class="progress-bar" id="mana-bar-2"></div>
+          </div>
+          <span id="mana-2">0</span>
+        </li>
+        <li>🏆 <span id="score-2"></span></li>
+      </ul>
+    </div>
+  </div>
+  <script type="module" src="./scripts/logic/play.js"></script>
+</body>
+
 </html>

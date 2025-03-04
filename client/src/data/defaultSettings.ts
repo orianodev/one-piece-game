@@ -1,13 +1,13 @@
-import { SettingsInt, Position } from "../Types"
+import { MoveDirections } from "../Types"
 
-export const def: SettingsInt = {
+export const def = {
     canvasWidth: 800,
     canvasHeight: 500,
     canvasScaleMult: 4,
     playW: 80,
     playH: 120,
-    atkW: 30,
-    atkH: 30,
+    attackW: 30,
+    attackH: 30,
     refreshRate: 50,
     move60fpsRAFDivider: 4,
     freezeDelay: 150,
@@ -19,7 +19,7 @@ export const def: SettingsInt = {
     rageDuration: 10000,
     rageSpeedMult: 1.3,
     rageStrengthMult: 1.3,
-    rageAtkSpeedMult: 1.3,
+    rageAttackSpeedMult: 1.3,
     rageRegenFactor: 1.3,
     rageHealFactor: 1.3,
     normalTextColor: "whitesmoke",
@@ -33,4 +33,6 @@ export const def: SettingsInt = {
         "hard": 100,
     }
 }
-export const defPos: { A: Position, B: Position } = { A: { x: 0, y: def.canvasHeight / 2 - def.playH }, B: { x: def.canvasWidth - def.playW, y: def.canvasHeight / 2 - def.playH } }
+
+export const defPlayerDirections: { A: MoveDirections, B: MoveDirections } = { A: 3, B: 7 }
+export const defPlayerPositions: { A: { x: number, y: number }, B: { x: number, y: number } } = { A: { x: 0, y: def.canvasHeight / 2 - def.playH }, B: { x: def.canvasWidth - def.playW, y: def.canvasHeight / 2 - def.playH } }

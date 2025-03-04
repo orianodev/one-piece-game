@@ -1,3 +1,4 @@
 /node_modules
-/server/dist/Types.js
-/client/scripts/Types.js
+/server/dist
+/client/scripts
+package-lock.json
