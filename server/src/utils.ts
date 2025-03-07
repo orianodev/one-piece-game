@@ -5,11 +5,11 @@
 */
 export function mimeType(fileExtension: string): string | undefined {
     const mimeTypes: Record<string, string> = {
-        css: "text/css",
         svg: "image/svg+xml",
         png: "image/png",
         gif: "image/gif",
         webp: "image/webp",
+        css: "text/css",
         js: "text/javascript",
     };
     return mimeTypes[fileExtension.toLowerCase()];

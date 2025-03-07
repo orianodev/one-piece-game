@@ -46,6 +46,8 @@ export async function sendStaticFile(pathFromUrl: string, res: ServerResponse<In
         let headers: StaticHeaders = { "Content-Type": fileMimetype };
         if (["png", "gif", "webp", "svg"].includes(fileExtension)) {
             headers["Cache-Control"] = "public, max-age=86400"; // Cache for 1 day (86400 seconds)
+        } else if (["css", "js"].includes(fileExtension)) {
+            headers["Cache-Control"] = "public, max-age=3600"; // Cache for 1 hour (3600 seconds)
         }
 
         return res.writeHead(200, headers).end(file);
