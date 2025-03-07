@@ -17,9 +17,34 @@ export class Game {
     public status: GameStatus;
     public pressedKeys: Set<string> = new Set<string>();
     private frameCount: number = 0;
+    private timerInterval: NodeJS.Timeout | undefined;
+    private timerSeconds: number = 0;
     constructor(state: GameStatus) {
         this.status = state
     }
+    startTimer() {
+        this.timerSeconds = 0;
+        this.updateTimerDisplay();
+        this.timerInterval = setInterval(() => {
+            this.timerSeconds++;
+            this.updateTimerDisplay();
+        }, 1000);
+    }
+
+    stopTimer() {
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+            this.timerInterval = undefined;
+        }
+    }
+
+    updateTimerDisplay() {
+        const minutes = Math.floor(this.timerSeconds / 60);
+        const seconds = this.timerSeconds % 60;
+        const timerElement = document.querySelector("#game-timer") as HTMLDivElement;
+        timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+
     getPlayer(playerId: PlayerId): Player {
         return playerId === this.thisPlayer.id ? this.thisPlayer : this.oppPlayer
     }
@@ -196,10 +221,14 @@ export class Game {
             if (this.status === "over") return
             if (this.thisPlayer.hp <= 0 || this.oppPlayer.hp <= 0) {
                 this.status = "over"
+                this.stopTimer();
                 const winnerName = this.thisPlayer.hp <= 0 ? this.oppPlayer.charName : this.thisPlayer.charName
-                if (this.thisPlayer.hp <= 0) displayPopup(`Tu as perdu face à ${winnerName}.`, true);
+                if (this.thisPlayer.hp <= 0) {
+                    localStorage.setItem("scoreAi", (this.oppPlayer.score + 1).toString());
+                    displayPopup(`Tu as perdu face à ${winnerName}.`, true);
+                }
                 else if (this.oppPlayer.hp <= 0) {
-                    localStorage.setItem("score", (this.thisPlayer.score + 1).toString());
+                    localStorage.setItem("scoreThis", (this.thisPlayer.score + 1).toString());
                     displayPopup(`Tu as gagné avec ${winnerName} !`, true);
                 }
             }

@@ -91,7 +91,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if ($selectedCharacter === "random") localStorage.setItem("characterId", characterIDList[Math.floor(Math.random() * characterIDList.length)] as CharacterID);
         else localStorage.setItem("characterId", $selectedCharacter);
 
-        if (!localStorage.getItem("score")) localStorage.setItem("score", "0");
+        if (!localStorage.getItem("scoreThis")) localStorage.setItem("scoreThis", "0");
+        if (!localStorage.getItem("scoreAi")) localStorage.setItem("scoreAi", "0");
         localStorage.setItem("mode", modeSelected);
         localStorage.setItem("roomId", $textId.value);
         localStorage.setItem("aiLevel", $aiLvlSelect.value);

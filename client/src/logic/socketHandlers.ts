@@ -11,7 +11,7 @@ export const socket = io();
 socket.on("getId", (playerId: PlayerId) => {
     Fight.thisPlayerId = playerId;
     displayPopup("En attente de l'adversaire...", false);
-    const thisScore = parseInt(localStorage.getItem("score") as string) as number;
+    const thisScore = parseInt(localStorage.getItem("scoreThis") as string) as number;
     const thisCharacterId: CharacterID = localStorage.getItem("characterId") as CharacterID;
     const thisCharacter = characterStats[thisCharacterId];
     const thisPlayer: Omit<PlayerAttributes, "attacks"> = {
@@ -44,7 +44,7 @@ socket.on("update", (msg: { A: PlayerAttributesTuple, B: PlayerAttributesTuple }
 });
 
 socket.on("over", (winningPlayerId: PlayerId) => {
-    if (winningPlayerId === Fight.thisPlayerId) localStorage.setItem("score", (Fight.thisPlayer.score + 1).toString());
+    if (winningPlayerId === Fight.thisPlayerId) localStorage.setItem("scoreThis", (Fight.thisPlayer.score + 1).toString());
     displayPopup(`Le joueur ${winningPlayerId === "A" ? "1" : "2"} a gagné!`, false);
     Fight.status = "over";
 });

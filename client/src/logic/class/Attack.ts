@@ -25,6 +25,50 @@ export class Attack {
         if (this.type === "sup") $ctx.drawImage(player.attackSprite, this.x, this.y, def.attackW * def.superSizeMult, def.attackH * def.superSizeMult);
         Fight.resetPen()
     }
+    // draw() { // Draw the attack sprite on the canvas
+    //     const player = Fight.getPlayer(this.id);
+    //     Fight.setShadow(player.color);
+
+    //     // Determine the sprite coordinates based on the direction
+    //     let spriteX = 0;
+    //     let spriteY = 0; // Assuming all frames are in a single row
+
+    //     switch (this.dir) {
+    //         case 1: // Up
+    //             spriteX = 2 * def.attackW;
+    //             break;
+    //         case 2: // Up-Right
+    //             spriteX = 1 * def.attackW;
+    //             break;
+    //         case 3: // Right
+    //             spriteX = 0;
+    //             break;
+    //         case 4: // Down-Right
+    //             spriteX = 7 * def.attackW;
+    //             break;
+    //         case 5: // Down
+    //             spriteX = 6 * def.attackW;
+    //             break;
+    //         case 6: // Down-Left
+    //             spriteX = 5 * def.attackW;
+    //             break;
+    //         case 7: // Left
+    //             spriteX = 4 * def.attackW;
+    //             break;
+    //         case 8: // Up-Left
+    //             spriteX = 3 * def.attackW;
+    //             break;
+    //     }
+
+    //     // Draw the image from the sprite sheet
+    //     if (this.type === "sim") {
+    //         $ctx.drawImage(player.attackSprite, spriteX, spriteY, def.attackW, def.attackH, this.x, this.y, def.attackW, def.attackH);
+    //     } else if (this.type === "sup") {
+    //         $ctx.drawImage(player.attackSprite, spriteX, spriteY, def.attackW, def.attackH, this.x, this.y, def.attackW * def.superSizeMult, def.attackH * def.superSizeMult);
+    //     }
+
+    //     Fight.resetPen();
+    // }
     move() {
         const player = Fight.thisPlayer.id === this.id ? Fight.thisPlayer : Fight.oppPlayer;
         switch (this.dir) {

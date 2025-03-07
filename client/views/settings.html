@@ -1,31 +1,26 @@
 <!DOCTYPE html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="img/logo.webp" type="image/webp" />
-    <link rel="stylesheet" href="styles/base.css" />
-    <link rel="stylesheet" href="styles/infos.css" />
-    <title>Réglages</title>
-    <meta
-      name="description"
-      content="Modifie les paramètres pour cet appareil"
-    />
-  </head>
-  <body>
-    <h1>Réglages</h1>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="img/logo.webp" type="image/webp" />
+  <link rel="stylesheet" href="styles/base.css" />
+  <link rel="stylesheet" href="styles/infos.css" />
+  <title>Réglages</title>
+  <meta name="description" content="Modifie les paramètres pour cet appareil" />
+</head>
+
+<body>
+  <h1>Réglages</h1>
+  <br />
+  <form id="settings-form">
+    <a href="https://github.com/giovanni-rn/one-piece-game" target="_blank" rel="noopener noreferrer">
+      Répertoire GitHub
+    </a>
+    <i>Ce site web ne conserve aucune donnée.</i>
     <br />
-    <form id="settings-form">
-      <a
-        href="https://github.com/giovanni-rn/one-piece-game"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Répertoire GitHub
-      </a>
-      <i>Ce site web ne conserve aucune donnée.</i>
-      <br />
-      <!-- <label for="hideMobileControls">
+    <!-- <label for="hideMobileControls">
         <input
           type="checkbox"
           name="hideMobileControls"
@@ -33,27 +28,29 @@
         />
         Cacher les commandes pour mobiles
       </label> -->
-      <label for="resetScore">
-        <input type="checkbox" name="resetScore" id="resetScore" />
-        Réinitialiser le score sur cet appareil
-      </label>
-      <br />
-      <button type="submit">Sauvegarder</button>
-    </form>
-    <script>
-      // const hideMobileControls = document.getElementById("hideMobileControls");
-      const resetScore = document.getElementById("resetScore");
-      const form = document.getElementById("settings-form");
+    <label for="resetScore">
+      <input type="checkbox" name="resetScore" id="resetScore" />
+      Réinitialiser le score sur cet appareil
+    </label>
+    <br />
+    <button type="submit">Sauvegarder</button>
+  </form>
+  <script>
+    // const hideMobileControls = document.getElementById("hideMobileControls");
+    const resetScore = document.getElementById("resetScore");
+    const form = document.getElementById("settings-form");
 
-      // if (localStorage.getItem("hideMobileControls") === "true")
-      //   hideMobileControls.checked = true;
+    // if (localStorage.getItem("hideMobileControls") === "true")
+    //   hideMobileControls.checked = true;
 
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
-        // localStorage.setItem("hideMobileControls", hideMobileControls.checked);
-        if (resetScore.checked) localStorage.setItem("score", 0);
-        alert("Réglages sauvegardés!");
-      });
-    </script>
-  </body>
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      // localStorage.setItem("hideMobileControls", hideMobileControls.checked);
+      if (resetScore.checked) localStorage.setItem("scoreThis", 0);
+      if (resetScore.checked) localStorage.setItem("scoreAi", 0);
+      alert("Réglages sauvegardés!");
+    });
+  </script>
+</body>
+
 </html>
