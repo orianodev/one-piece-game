@@ -30,14 +30,12 @@ export class Game {
             this.updateTimerDisplay();
         }, 1000);
     }
-
     stopTimer() {
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
             this.timerInterval = undefined;
         }
     }
-
     updateTimerDisplay() {
         const minutes = Math.floor(this.timerSeconds / 60);
         const seconds = this.timerSeconds % 60;
