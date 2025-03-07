@@ -36,6 +36,7 @@ socket.on("start", (msg: { A: Player, B: Player }) => {
     showGameScreen($loadingScreen)
     Fight.dualGameRefresh()
     Fight.status = "playing";
+    Fight.startTimer();
 });
 
 socket.on("update", (msg: { A: PlayerAttributesTuple, B: PlayerAttributesTuple }) => {
@@ -47,11 +48,13 @@ socket.on("over", (winningPlayerId: PlayerId) => {
     if (winningPlayerId === Fight.thisPlayerId) localStorage.setItem("scoreThis", (Fight.thisPlayer.score + 1).toString());
     displayPopup(`Le joueur ${winningPlayerId === "A" ? "1" : "2"} a gagné!`, false);
     Fight.status = "over";
+    Fight.stopTimer();
 });
 
 socket.on("stop", () => {
     displayPopup("Ton adversaire s'est deconnecté.", false);
     Fight.status = "over";
+    Fight.stopTimer();
 });
 
 socket.on("busy", () => {
