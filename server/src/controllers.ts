@@ -40,7 +40,15 @@ export async function sendStaticFile(pathFromUrl: string, res: ServerResponse<In
         if (!fileMimetype) return res.writeHead(415, { "Content-Type": "text/plain" }).end("Unsupported Media Type.");
 
         const file = await fs.readFile(filePath);
-        return res.writeHead(200, { "Content-Type": fileMimetype }).end(file);
+
+        // Set Cache-Control headers for specific image types
+
+        let headers: StaticHeaders = { "Content-Type": fileMimetype };
+        if (["png", "gif", "webp", "svg"].includes(fileExtension)) {
+            headers["Cache-Control"] = "public, max-age=86400"; // Cache for 1 day (86400 seconds)
+        }
+
+        return res.writeHead(200, headers).end(file);
     } catch (error: any) {
         if (error.code === "ENOENT") {
             return res.writeHead(404, { "Content-Type": "text/plain" }).end("File not found.");

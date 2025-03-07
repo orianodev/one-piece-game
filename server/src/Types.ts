@@ -1,3 +1,5 @@
+type StaticHeaders = { "Content-Type": string, "Cache-Control"?: string }
+
 type RoomID = number;
 type GameState = { A: PlayerAttributes | {}, B: PlayerAttributes | {} }
 type GameStateCollection = { [key: RoomID]: GameState }
