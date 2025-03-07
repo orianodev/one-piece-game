@@ -5,23 +5,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="shortcut icon" href="img/logo.webp" type="image/webp" />
-  <link rel="stylesheet" href="/styles/base.css" />
-  <link rel="stylesheet" href="/styles/menu.css" />
+  <link rel="stylesheet" href="styles/base.css" />
+  <link rel="stylesheet" href="styles/menu.css" />
   <title>Menu de sélection</title>
   <meta name="description" content="Jouer à One Piece en duel en ligne ou seul contre l'IA." />
 </head>
 
 <body>
-  <a href="/settings">
-    <button id="settings">
-      <img src="/img/icon/settings.svg" alt="Réglages" class="icon white" />
-    </button>
-  </a>
-  <a href="/controls">
-    <button id="controls">
-      <img src="/img/icon/question.svg" alt="Commandes" class="icon white" />
-    </button>
-  </a>
+  <nav>
+    <a href="/controls">
+      <button id="controls" class="icon-btn left">
+        <img src="/img/icon/question.svg" alt="Commandes" class="icon white" />
+      </button>
+    </a>
+    <a href="/settings">
+      <button id="settings" class="icon-btn right">
+        <img src="/img/icon/settings.svg" alt="Réglages" class="icon white" />
+      </button>
+    </a>
+  </nav>
 
   <section class="mode">
     <h2>MODE DE JEU</h2>

@@ -8,12 +8,22 @@
   <link rel="stylesheet" href="styles/base.css" />
   <link rel="stylesheet" href="styles/infos.css" />
   <title>Réglages</title>
-  <meta name="description" content="Modifie les paramètres pour cet appareil" />
+  <meta name="description" content="Modifie les paramètres pour cet ordinateur" />
 </head>
 
 <body>
-  <h1>Réglages</h1>
-  <br />
+  <nav>
+    <a href="/">
+      <button id="back" class="icon-btn left">
+        <img src="/img/icon/back.svg" alt="Retour au menu" class="icon white" />
+      </button>
+    </a>
+  </nav>
+
+  <header>
+    <h1>Réglages</h1>
+  </header>
+
   <form id="settings-form">
     <a href="https://github.com/giovanni-rn/one-piece-game" target="_blank" rel="noopener noreferrer">
       Répertoire GitHub
@@ -46,8 +56,11 @@
     form.addEventListener("submit", (event) => {
       event.preventDefault();
       // localStorage.setItem("hideMobileControls", hideMobileControls.checked);
-      if (resetScore.checked) localStorage.setItem("scoreThis", 0);
-      if (resetScore.checked) localStorage.setItem("scoreAi", 0);
+      if (resetScore.checked) {
+        localStorage.setItem("scoreThis", 0);
+        localStorage.setItem("scoreAi", 0);
+        resetScore.checked = false;
+      }
       alert("Réglages sauvegardés!");
     });
   </script>
