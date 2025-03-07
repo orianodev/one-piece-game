@@ -113,9 +113,13 @@ export class Attack {
         const thisAttackCenter = { x: this.x + def.attackW / 2, y: this.y + def.attackH / 2 }
         const distance = Math.sqrt(Math.pow(oppCenter.x - thisAttackCenter.x, 2) + Math.pow(oppCenter.y - thisAttackCenter.y, 2))
         if (distance < def.collisionDist) {
-            opp.hp -= this.type === "sim" ? player.strength : player.strength * def.superDamageMult
+            this.hit(player, opp)
             this.destroy(player)
         }
+    }
+    hit(player: Player, opp: Player) {
+        opp.hp -= this.type === "sim" ? player.strength : player.strength * def.superDamageMult
+        opp.mana += this.type === "sim" ? player.strength / def.manaGainOnHitDivider : player.strength / def.manaGainOnHitDivider * def.superDamageMult
     }
     destroy(player: Player) {
         player.attacks.splice(player.attacks.indexOf(this), 1)

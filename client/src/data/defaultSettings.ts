@@ -12,6 +12,7 @@ export const def = {
     move60fpsRAFDivider: 3,
     freezeDelay: 150,
     collisionDist: 75,
+    manaGainOnHitDivider: 10,
     superSizeMult: 3,
     superManaMult: 10,
     superDamageMult: 5,
