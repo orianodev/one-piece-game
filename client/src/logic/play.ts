@@ -1,7 +1,7 @@
 import { Game } from "./class/Game.js";
 import { setLoadingScreen, setStadium } from "./ui.js";
-import { soloGameSetup } from "./setupSolo.js";
-import { socket } from "./socketHandlers.js";
+import { soloGameSetup } from "./local.js";
+import { socket } from "./online.js";
 
 export const $loadingScreen = setLoadingScreen()
 export const stadium = setStadium()

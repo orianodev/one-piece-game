@@ -1,5 +1,5 @@
-import { PlayerId, AttackType as AttackType, MoveDirections } from "../../Types.js";
-import { def } from "../../data/defaultSettings.js";
+import { PlayerId, AttackType as AttackType, MoveDirections } from "../../../../shared/Types";
+import { def } from "../../data/settings.js";
 import { Fight } from "../play.js";
 import { $ctx } from "../ui.js";
 import { Player } from "./Player.js";

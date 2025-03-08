@@ -1,6 +1,6 @@
-import { OneCharacterStats, AiLevel } from "../Types.js";
-import { defPlayerDirections, defPlayerPositions } from "../data/defaultSettings.js";
-import { CharacterID, characterStats } from "../data/charactersInfos.js";
+import { OneCharacterStats, AiLevel } from "../../../shared/Types";
+import { defPlayerDirections, defPlayerPositions } from "../data/settings.js";
+import { CharacterID, characterStats } from "../data/characters.js";
 import { $infosBar, preloadImages, showGameScreen } from "./ui.js";
 import { $loadingScreen, Fight, stadium } from "./play.js";
 import { Player } from "./class/Player.js";
@@ -30,13 +30,12 @@ export function soloGameSetup() {
     preloadImages(thisPlayer, stadium, () => {
         preloadImages(aiPlayer, stadium, () => {
             showGameScreen($loadingScreen)
-            Fight.soloGameRefresh()
+            // Fight.soloGameRefresh()
             Fight.aiActionInterval(aiLevel)
+            Fight.attachKeyboardEvent();
+            Fight.updateMovement();
+            Fight.status = "playing";
+            Fight.startTimer();
         })
     });
-
-    Fight.attachKeyboardEvent();
-    Fight.updateMovement();
-    Fight.status = "playing";
-    Fight.startTimer();
 }

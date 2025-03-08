@@ -1,8 +1,8 @@
-import { PlayerId, PlayerAttributes, PlayerAttributesTuple } from "../Types.js";
+import { PlayerId, PlayerAttributes, PlayerAttributesTuple } from "../../../shared/Types";
 import { $loadingScreen, Fight, stadium } from "./play.js";
 import { displayPopup, $infosBar, preloadImages, showGameScreen } from "./ui.js";
-import { defPlayerDirections, defPlayerPositions } from "../data/defaultSettings.js";
-import { CharacterID, characterStats } from "../data/charactersInfos.js";
+import { defPlayerDirections, defPlayerPositions } from "../data/settings.js";
+import { CharacterID, characterStats } from "../data/characters.js";
 import { Player } from "./class/Player.js";
 
 // @ts-expect-error
@@ -31,10 +31,10 @@ socket.on("start", (msg: { A: Player, B: Player }) => {
     $infosBar[2].score.innerText = playerB.charName;
     $infosBar[2].score.innerText = playerB.score.toString();
 
+    showGameScreen($loadingScreen)
     Fight.attachKeyboardEvent();
     Fight.updateMovement();
-    showGameScreen($loadingScreen)
-    Fight.dualGameRefresh()
+    // Fight.dualGameRefresh()
     Fight.status = "playing";
     Fight.startTimer();
 });

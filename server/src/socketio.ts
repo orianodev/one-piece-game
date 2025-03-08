@@ -1,4 +1,5 @@
 import { DefaultEventsMap, DisconnectReason, Server, Socket } from "socket.io";
+import { GameState, GameStateCollection, PlayerAttributes, PlayerAttributesTuple, PlayerId, RoomID } from "../../shared/Types";
 
 let gameStateCollection: GameStateCollection = {};
 const socketRoomMap: Map<string, RoomID> = new Map();

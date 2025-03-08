@@ -1,7 +1,7 @@
-import { PlayerAttributes } from "../Types.js";
-import { def } from "../data/defaultSettings.js";
-import { StadiumID } from "../data/stadiumsInfos.js";
-import { Player } from "./class/Player.js";
+import { PlayerAttributes } from "../../../shared/Types";
+import { def } from "../data/settings.js";
+import { StadiumID } from "../data/stadiums.js";
+import { Player } from "../logic/class/Player.js";
 
 export const $infosBar = {
     1: {

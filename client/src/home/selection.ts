@@ -1,7 +1,7 @@
-import { CharacterID } from '../data/charactersInfos.js';
-import { Mode } from '../Types.js';
-import './generateCharactersList.js';
-import './generateStadiumsList.js';
+import { CharacterID } from '../data/characters.js';
+import { Mode } from '../../../shared/Types';
+import './listCharacters.js';
+import './listStadiums.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const $dualModeToggle = document.querySelector("button.dual") as HTMLButtonElement;

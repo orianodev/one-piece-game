@@ -5,5 +5,10 @@
     "rootDir": "./",
     "outDir": "../dist"
   },
-  "files": ["server.ts", "controllers.ts", "socketio.ts", "utils.ts", "Types.ts"]
+  "files": [
+    "server.ts",
+    "controllers.ts",
+    "socketio.ts",
+    "utils.ts"
+  ]
 }

@@ -1,4 +1,4 @@
-import { CharacterID, characterStats } from '../data/charactersInfos.js';
+import { CharacterID, characterStats } from '../data/characters.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const characterList = document.querySelector('#character-list') as HTMLFormElement;

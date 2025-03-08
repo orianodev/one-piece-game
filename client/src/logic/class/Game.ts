@@ -1,7 +1,7 @@
-import { Mode, PlayerId, PlayerAttributesTuple, AttackAttributesTuple, AiLevel, GameStatus } from "../../Types.js";
-import { def } from "../../data/defaultSettings.js";
+import { Mode, PlayerId, PlayerAttributesTuple, AttackAttributesTuple, AiLevel, GameStatus } from "../../../../shared/Types";
+import { def } from "../../data/settings.js";
 import { $ctx, displayPopup, updateLateralColumns } from "../ui.js";
-import { socket } from "../socketHandlers.js";
+import { socket } from "../online.js";
 import { Player } from "./Player.js";
 import { Attack } from "./Attack.js";
 
@@ -194,6 +194,14 @@ export class Game {
 
     updateMovement() {
         if (this.frameCount % def.move60fpsRAFDivider === 0) {
+            if (this.status === "over") return
+            this.thisPlayer.attacks.forEach((attack) => attack.move())
+            this.oppPlayer.attacks.forEach((attack) => attack.move())
+            this.drawAll()
+
+            if (this.mode === "solo") {
+                if (this.thisPlayer.hp <= 0 || this.oppPlayer.hp <= 0) this.endSoloGame();
+            }
             const player = this.thisPlayer;
 
             const movingUp = this.pressedKeys.has("ArrowUp");
@@ -214,26 +222,31 @@ export class Game {
         requestAnimationFrame(this.updateMovement.bind(this));
     }
 
-    soloGameRefresh() {
-        setInterval(() => {
-            if (this.status === "over") return
-            if (this.thisPlayer.hp <= 0 || this.oppPlayer.hp <= 0) {
-                this.status = "over"
-                this.stopTimer();
-                const winnerName = this.thisPlayer.hp <= 0 ? this.oppPlayer.charName : this.thisPlayer.charName
-                if (this.thisPlayer.hp <= 0) {
-                    localStorage.setItem("scoreAi", (this.oppPlayer.score + 1).toString());
-                    displayPopup(`Tu as perdu face à ${winnerName}.`, true);
-                }
-                else if (this.oppPlayer.hp <= 0) {
-                    localStorage.setItem("scoreThis", (this.thisPlayer.score + 1).toString());
-                    displayPopup(`Tu as gagné avec ${winnerName} !`, true);
-                }
-            }
-            this.thisPlayer.attacks.forEach((attack) => attack.move())
-            this.oppPlayer.attacks.forEach((attack) => attack.move())
-            this.drawAll()
-        }, def.refreshRate)
+    // soloGameRefresh() {
+    //     if (this.frameCount % def.move60fpsRAFDivider === 0) {
+    //         // setInterval(() => {
+    //         if (this.status === "over") return
+    //         if (this.thisPlayer.hp <= 0 || this.oppPlayer.hp <= 0) this.endSoloGame();
+    //         // this.thisPlayer.attacks.forEach((attack) => attack.move())
+    //         // this.oppPlayer.attacks.forEach((attack) => attack.move())
+    //         // this.drawAll()
+    //     }
+    //     this.frameCount++;
+    //     requestAnimationFrame(this.soloGameRefresh.bind(this));
+    //     // }, def.refreshRate)
+    // }
+    endSoloGame() {
+        this.status = "over"
+        this.stopTimer();
+        const winnerName = this.thisPlayer.hp <= 0 ? this.oppPlayer.charName : this.thisPlayer.charName
+        if (this.thisPlayer.hp <= 0) {
+            localStorage.setItem("scoreAi", (this.oppPlayer.score + 1).toString());
+            displayPopup(`Tu as perdu face à ${winnerName}.`, true);
+        }
+        else if (this.oppPlayer.hp <= 0) {
+            localStorage.setItem("scoreThis", (this.thisPlayer.score + 1).toString());
+            displayPopup(`Tu as gagné avec ${winnerName} !`, true);
+        }
     }
 
     aiActionInterval(aiLevel: AiLevel) {
@@ -243,12 +256,12 @@ export class Game {
         }, def.aiLvlInterval[aiLevel]);
     }
 
-    dualGameRefresh() {
-        setInterval(() => {
-            if (this.status === "over") return
-            this.thisPlayer.attacks.forEach((attack) => attack.move())
-            this.oppPlayer.attacks.forEach((attack) => attack.move())
-            this.drawAll()
-        }, def.refreshRate);
-    }
+    // dualGameRefresh() {
+    //     setInterval(() => {
+    //         if (this.status === "over") return
+    //         this.thisPlayer.attacks.forEach((attack) => attack.move())
+    //         this.oppPlayer.attacks.forEach((attack) => attack.move())
+    //         this.drawAll()
+    //     }, def.refreshRate);
+    // }
 }

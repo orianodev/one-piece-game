@@ -1,4 +1,4 @@
-import { StadiumID, stadiumStats } from "../data/stadiumsInfos.js";
+import { StadiumID, stadiumStats } from "../data/stadiums.js";
 
 document.addEventListener('DOMContentLoaded', () => {
     const select = document.querySelector('#stadium-list') as HTMLSelectElement;

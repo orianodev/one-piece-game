@@ -1,6 +1,6 @@
-import { PlayerId, MoveDirections } from "../../Types.js";
-import { def } from "../../data/defaultSettings.js";
-import { CharacterID, characterStats } from "../../data/charactersInfos.js";
+import { PlayerId, MoveDirections } from "../../../../shared/Types";
+import { def } from "../../data/settings.js";
+import { CharacterID, characterStats } from "../../data/characters.js";
 import { $ctx, $infosBar } from "../ui.js";
 import { Fight } from "../play.js";
 import { Attack } from "./Attack.js";

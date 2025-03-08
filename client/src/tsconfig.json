@@ -3,6 +3,18 @@
   "compilerOptions": {
     "module": "ESNext",
     "rootDir": "./",
-    "outDir": "../scripts"
-  }
+    "outDir": "../scripts",
+  },
+  // "files": [
+  //   "logic/ui.ts",
+  //   "logic/socketHandlers.ts",
+  //   "logic/setupSolo.ts",
+  //   "logic/play.ts",
+  //   "logic/class/Attack.ts",
+  //   "logic/class/Game.ts",
+  //   "logic/class/Player.ts",
+  //   "data/charactersInfos.ts",
+  //   "data/stadiumsInfos.ts",
+  //   "data/defaultSettings.ts",
+  // ]
 }

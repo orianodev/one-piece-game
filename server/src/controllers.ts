@@ -2,6 +2,7 @@ import { IncomingMessage, ServerResponse } from "node:http";
 import { join } from "node:path";
 import { promises as fs } from "node:fs";
 import { mimeType } from "./utils";
+import { StaticHeaders } from "../../shared/Types";
 
 /**
  * Sends an HTML page to the client.

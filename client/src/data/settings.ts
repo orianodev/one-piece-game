@@ -1,4 +1,4 @@
-import { MoveDirections } from "../Types"
+import { MoveDirections } from "../../../shared/Types"
 
 export const def = {
     canvasWidth: 800,
@@ -8,7 +8,7 @@ export const def = {
     playH: 135,
     attackW: 30,
     attackH: 30,
-    refreshRate: 50,
+    // refreshRate: 50,
     move60fpsRAFDivider: 3,
     freezeDelay: 150,
     collisionDist: 75,
