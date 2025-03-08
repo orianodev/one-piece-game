@@ -26,7 +26,7 @@ $home.addEventListener("click", () => window.location.href = "/");
 export let $ctx;
 export function setLoadingScreen() {
     const $loadingScreen = document.querySelector("#loading-screen");
-    const randomImg = Math.floor(Math.random() * 5);
+    const randomImg = 1 + Math.floor(Math.random() * 3);
     $loadingScreen.style.backgroundImage = `url(/img/wait/${randomImg}.gif)`;
     displayPopup("Chargement en cours...", false, false);
     return $loadingScreen;

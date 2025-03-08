@@ -32,7 +32,7 @@ export let $ctx: CanvasRenderingContext2D;
 
 export function setLoadingScreen(): HTMLDivElement {
     const $loadingScreen = document.querySelector("#loading-screen") as HTMLDivElement;
-    const randomImg = Math.floor(Math.random() * 5);
+    const randomImg = 1 + Math.floor(Math.random() * 3);
     $loadingScreen.style.backgroundImage = `url(/img/wait/${randomImg}.gif)`;
     displayPopup("Chargement en cours...", false, false);
     return $loadingScreen;
