@@ -34,7 +34,7 @@ export function setLoadingScreen(): HTMLDivElement {
     const $loadingScreen = document.querySelector("#loading-screen") as HTMLDivElement;
     const randomImg = Math.floor(Math.random() * 5);
     $loadingScreen.style.backgroundImage = `url(/img/wait/${randomImg}.gif)`;
-    displayPopup("Chargement en cours...", false);
+    displayPopup("Chargement en cours...", false, false);
     return $loadingScreen;
 }
 
@@ -45,11 +45,11 @@ export function setStadium(): StadiumID {
     return stadium;
 }
 
-export function displayPopup(msg: string, displayRestart: boolean) {
+export function displayPopup(msg: string, restart: boolean, home: boolean) {
     $popup.style.display = 'flex';
     $popup.querySelector("#message")!.textContent = msg;
-    if (displayRestart) $restart.style.display = 'flex';
-    else $restart.style.display = 'none';
+    $restart.style.display = restart ? 'flex' : 'none';
+    $home.style.display = home ? 'flex' : 'none';
 }
 
 export function updateLateralColumns(player: Player) {

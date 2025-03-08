@@ -226,11 +226,11 @@ export class Game {
         const winnerName = this.thisPlayer.hp <= 0 ? this.oppPlayer.charName : this.thisPlayer.charName
         if (this.thisPlayer.hp <= 0) {
             localStorage.setItem("scoreBot", (this.oppPlayer.score + 1).toString());
-            displayPopup(`Tu as perdu face à ${winnerName}.`, true);
+            displayPopup(`Tu as perdu face à ${winnerName}.`, true, true);
         }
         else if (this.oppPlayer.hp <= 0) {
             localStorage.setItem("scoreThis", (this.thisPlayer.score + 1).toString());
-            displayPopup(`Tu as gagné avec ${winnerName} !`, true);
+            displayPopup(`Tu as gagné avec ${winnerName} !`, true, true);
         }
     }
     botActionInterval(botLevel: BotLevel) {

@@ -10,7 +10,7 @@ export const socket = io();
 
 socket.on("getId", (playerId: PlayerId) => {
     Fight.thisPlayerId = playerId;
-    displayPopup("En attente de l'adversaire...", false);
+    displayPopup("En attente de l'adversaire...", false, false);
     const thisScore = parseInt(localStorage.getItem("scoreThis") as string) as number;
     const thisCharacterId: CharacterID = localStorage.getItem("characterId") as CharacterID;
     const thisCharacter = characterStats[thisCharacterId];
@@ -46,17 +46,17 @@ socket.on("update", (msg: { A: PlayerAttributesTuple, B: PlayerAttributesTuple }
 
 socket.on("over", (winningPlayerId: PlayerId) => {
     if (winningPlayerId === Fight.thisPlayerId) localStorage.setItem("scoreThis", (Fight.thisPlayer.score + 1).toString());
-    displayPopup(`Le joueur ${winningPlayerId === "A" ? "1" : "2"} a gagné!`, false);
+    displayPopup(`Le joueur ${winningPlayerId === "A" ? "1" : "2"} a gagné!`, true, true);
     Fight.status = "over";
     Fight.stopTimer();
 });
 
 socket.on("stop", () => {
-    displayPopup("Ton adversaire s'est deconnecté.", false);
+    displayPopup("Ton adversaire s'est deconnecté.", false, true);
     Fight.status = "over";
     Fight.stopTimer();
 });
 
 socket.on("busy", () => {
-    displayPopup("Cette partie est occupée, choisis un autre ID de jeu.", false);
+    displayPopup("Cette partie est occupée, choisis un autre ID de jeu.", false, true);
 });
