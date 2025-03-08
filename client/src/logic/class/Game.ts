@@ -1,4 +1,4 @@
-import { Mode, PlayerId, PlayerAttributesTuple, AttackAttributesTuple, AiLevel, GameStatus } from "../../../../shared/Types";
+import { Mode, PlayerId, PlayerAttributesTuple, AttackAttributesTuple, BotLevel, GameStatus } from "../../../../shared/Types";
 import { def } from "../../data/settings.js";
 import { $ctx, displayPopup, updateLateralColumns } from "../ui.js";
 import { socket } from "../online.js";
@@ -49,14 +49,14 @@ export class Game {
     unfreezeThisPlayer() {
         setTimeout(() => this.isThisPlayerFrozen = false, def.freezeDelay);
     }
-    aiAction(): void {
-        const aiActions = ["move", "move", "attack", "super", "heal", "regen", "rage"];
+    botAction(): void {
+        const botActions = ["move", "move", "attack", "super", "heal", "regen", "rage"];
         let attempt = 0;
         const maxAttempts = 10;
 
         while (attempt < maxAttempts) {
-            const aiChoice = aiActions[Math.floor(Math.random() * aiActions.length)];
-            if (aiChoice === "move") {
+            const botChoice = botActions[Math.floor(Math.random() * botActions.length)];
+            if (botChoice === "move") {
                 const xDiff = this.thisPlayer.x - this.oppPlayer.x;
                 const yDiff = this.thisPlayer.y - this.oppPlayer.y;
                 const threshold = def.playW / 3;
@@ -80,19 +80,19 @@ export class Game {
                 else if (verticalDirection === 1) this.oppPlayer.move(1);
                 else if (verticalDirection === 3) this.oppPlayer.move(5);
 
-            } else if (aiChoice === "attack") {
+            } else if (botChoice === "attack") {
                 this.oppPlayer.attack();
                 break;
-            } else if (aiChoice === "super" && this.oppPlayer.mana >= this.oppPlayer.attackCost * def.superManaMult) {
+            } else if (botChoice === "super" && this.oppPlayer.mana >= this.oppPlayer.attackCost * def.superManaMult) {
                 this.oppPlayer.superAttack();
                 break;
-            } else if (aiChoice === "heal" && this.oppPlayer.hp < this.oppPlayer.maxHp + this.oppPlayer.healPow) {
+            } else if (botChoice === "heal" && this.oppPlayer.hp < this.oppPlayer.maxHp + this.oppPlayer.healPow) {
                 this.oppPlayer.heal();
                 break;
-            } else if (aiChoice === "regen" && this.oppPlayer.mana < this.oppPlayer.maxMana + this.oppPlayer.regenPow) {
+            } else if (botChoice === "regen" && this.oppPlayer.mana < this.oppPlayer.maxMana + this.oppPlayer.regenPow) {
                 this.oppPlayer.regen();
                 break;
-            } else if (aiChoice === "rage" && !this.oppPlayer.rage && this.oppPlayer.hp <= this.oppPlayer.maxHp * def.rageThreshold) {
+            } else if (botChoice === "rage" && !this.oppPlayer.rage && this.oppPlayer.hp <= this.oppPlayer.maxHp * def.rageThreshold) {
                 this.oppPlayer.enrage();
                 break;
             }
@@ -192,7 +192,7 @@ export class Game {
         }
     }
     updateMovement() {
-        if (this.frameCount % def.move60fpsRAFDivider === 0) {
+        if (this.frameCount % def.refresh60fpsDivider === 0) {
             if (this.status === "over") return
             this.thisPlayer.attacks.forEach((attack) => attack.move())
             this.oppPlayer.attacks.forEach((attack) => attack.move())
@@ -225,7 +225,7 @@ export class Game {
         this.stopTimer();
         const winnerName = this.thisPlayer.hp <= 0 ? this.oppPlayer.charName : this.thisPlayer.charName
         if (this.thisPlayer.hp <= 0) {
-            localStorage.setItem("scoreAi", (this.oppPlayer.score + 1).toString());
+            localStorage.setItem("scoreBot", (this.oppPlayer.score + 1).toString());
             displayPopup(`Tu as perdu face à ${winnerName}.`, true);
         }
         else if (this.oppPlayer.hp <= 0) {
@@ -233,10 +233,10 @@ export class Game {
             displayPopup(`Tu as gagné avec ${winnerName} !`, true);
         }
     }
-    aiActionInterval(aiLevel: AiLevel) {
+    botActionInterval(botLevel: BotLevel) {
         setInterval(() => {
             if (this.status === "over") return
-            this.aiAction(), def.aiLvlInterval[aiLevel]
-        }, def.aiLvlInterval[aiLevel]);
+            this.botAction(), def.botLvlInterval[botLevel]
+        }, def.botLvlInterval[botLevel]);
     }
 }

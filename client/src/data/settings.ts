@@ -8,8 +8,7 @@ export const def = {
     playH: 135,
     attackW: 30,
     attackH: 30,
-    // refreshRate: 50,
-    move60fpsRAFDivider: 3,
+    refresh60fpsDivider: 3,
     freezeDelay: 150,
     collisionDist: 75,
     manaGainOnHitDivider: 10,
@@ -28,7 +27,7 @@ export const def = {
     rageTextColor: "red",
     shadowBlur: 250,
     cursorSize: 15,
-    aiLvlInterval: {
+    botLvlInterval: {
         "easy": 240,
         "medium": 170,
         "hard": 90,

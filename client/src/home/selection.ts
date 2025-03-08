@@ -64,9 +64,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // AI LEVEL SELECTION
-    const $aiLvlSelect = document.querySelector("select#ai-level") as HTMLSelectElement;
-    const previousAiLvl = localStorage.getItem("aiLevel");
-    if (previousAiLvl) $aiLvlSelect.value = previousAiLvl;
+    const $botLvlSelect = document.querySelector("select#bot-level") as HTMLSelectElement;
+    const previousBotLvl = localStorage.getItem("botLevel");
+    if (previousBotLvl) $botLvlSelect.value = previousBotLvl;
 
     // PLAYER PRE-SELECTION
     const previousCharacterId: CharacterID = localStorage.getItem("characterId") as CharacterID
@@ -92,10 +92,10 @@ document.addEventListener('DOMContentLoaded', () => {
         else localStorage.setItem("characterId", $selectedCharacter);
 
         if (!localStorage.getItem("scoreThis")) localStorage.setItem("scoreThis", "0");
-        if (!localStorage.getItem("scoreAi")) localStorage.setItem("scoreAi", "0");
+        if (!localStorage.getItem("scoreBot")) localStorage.setItem("scoreBot", "0");
         localStorage.setItem("mode", modeSelected);
         localStorage.setItem("roomId", $textId.value);
-        localStorage.setItem("aiLevel", $aiLvlSelect.value);
+        localStorage.setItem("botLevel", $botLvlSelect.value);
         localStorage.setItem("stadium", $stadiumSelect.value);
         window.location.href = "/play";
     });

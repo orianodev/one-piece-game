@@ -41,7 +41,7 @@ export function setLoadingScreen(): HTMLDivElement {
 export function setStadium(): StadiumID {
     const stadium: StadiumID = localStorage.getItem("stadium") as StadiumID;
     const $wallpaper = document.querySelector("#wallpaper") as HTMLDivElement;
-    $wallpaper.style.backgroundImage = `url(/img/stadium/${stadium})`;
+    $wallpaper.style.backgroundImage = `url(/img/stadium/${stadium}.webp)`;
     return stadium;
 }
 

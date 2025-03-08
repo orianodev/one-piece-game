@@ -42,7 +42,7 @@ export type AttackType = "sim" | "sup";
 
 export type GameStatus = "loading" | "playing" | "over";
 export type Mode = "dual" | "solo";
-export type AiLevel = "easy" | "medium" | "hard";
+export type BotLevel = "easy" | "medium" | "hard";
 
 export interface OneCharacterStats {
     name: string;

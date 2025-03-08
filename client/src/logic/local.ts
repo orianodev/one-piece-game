@@ -1,4 +1,4 @@
-import { OneCharacterStats, AiLevel } from "../../../shared/Types";
+import { OneCharacterStats, BotLevel } from "../../../shared/Types";
 import { defPlayerDirections, defPlayerPositions } from "../data/settings.js";
 import { CharacterID, characterStats } from "../data/characters.js";
 import { $infosBar, preloadImages, showGameScreen } from "./ui.js";
@@ -7,7 +7,7 @@ import { Player } from "./class/Player.js";
 
 export function soloGameSetup() {
     const thisScore = parseInt(localStorage.getItem("scoreThis") as string) as number;
-    const aiScore = parseInt(localStorage.getItem("scoreAi") as string) as number;
+    const botScore = parseInt(localStorage.getItem("scoreBot") as string) as number;
     Fight.thisPlayerId = "A";
 
     const thisCharacterId: CharacterID = localStorage.getItem("characterId") as CharacterID;
@@ -16,21 +16,21 @@ export function soloGameSetup() {
 
     const charactersIdList: CharacterID[] = Object.keys(characterStats).filter((id) => id !== thisCharacterId) as CharacterID[];
 
-    const aiCharacterId: CharacterID = charactersIdList[Math.floor(Math.random() * charactersIdList.length)] as CharacterID;
-    const aiCharacter: OneCharacterStats = characterStats[aiCharacterId];
-    const aiPlayer = new Player("B", aiCharacterId, aiCharacter.name, aiCharacter.color, aiCharacter.img, aiScore, defPlayerPositions.B.x, defPlayerPositions.B.y, defPlayerDirections.B, aiCharacter.speed, aiCharacter.hp, aiCharacter.maxHp, aiCharacter.healPow, aiCharacter.mana, aiCharacter.maxMana, aiCharacter.regenPow, aiCharacter.strength, aiCharacter.attackImg, aiCharacter.attackCost, aiCharacter.attackSpeed, []);
+    const botCharacterId: CharacterID = charactersIdList[Math.floor(Math.random() * charactersIdList.length)] as CharacterID;
+    const botCharacter: OneCharacterStats = characterStats[botCharacterId];
+    const botPlayer = new Player("B", botCharacterId, botCharacter.name, botCharacter.color, botCharacter.img, botScore, defPlayerPositions.B.x, defPlayerPositions.B.y, defPlayerDirections.B, botCharacter.speed, botCharacter.hp, botCharacter.maxHp, botCharacter.healPow, botCharacter.mana, botCharacter.maxMana, botCharacter.regenPow, botCharacter.strength, botCharacter.attackImg, botCharacter.attackCost, botCharacter.attackSpeed, []);
 
-    const aiLevel: AiLevel = localStorage.getItem("aiLevel") as AiLevel;
-    Fight.buildPlayers(thisPlayer, aiPlayer);
+    const botLevel: BotLevel = localStorage.getItem("botLevel") as BotLevel;
+    Fight.buildPlayers(thisPlayer, botPlayer);
 
     $infosBar[1].character.innerText = thisPlayer.charName;
     $infosBar[1].score.innerText = thisScore.toString();
-    $infosBar[2].character.innerText = aiPlayer.charName;
-    $infosBar[2].score.innerText = aiScore.toString();
+    $infosBar[2].character.innerText = botPlayer.charName;
+    $infosBar[2].score.innerText = botScore.toString();
     preloadImages(thisPlayer, stadium, () => {
-        preloadImages(aiPlayer, stadium, () => {
+        preloadImages(botPlayer, stadium, () => {
             showGameScreen($loadingScreen)
-            Fight.aiActionInterval(aiLevel)
+            Fight.botActionInterval(botLevel)
             Fight.attachKeyboardEvent();
             Fight.updateMovement();
             Fight.status = "playing";
