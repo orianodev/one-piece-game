@@ -80,7 +80,7 @@ export function showGameScreen($loadingScreen: HTMLDivElement) {
 }
 
 export function preloadImages(thisPlayer: Player | Omit<PlayerAttributes, "attacks">, stadium: StadiumID, callback: { (): void; (): void; }) {
-    const imagePaths = [`/img/stadium/${stadium}`, thisPlayer.img, thisPlayer.attackImg, thisPlayer.img.replace("char", "rage")];
+    const imagePaths = [`/img/stadium/${stadium}.webp`, thisPlayer.img, thisPlayer.attackImg, thisPlayer.img.replace("char", "rage")];
 
     let loadedImages = 0;
     const totalImages = imagePaths.length;
@@ -100,6 +100,4 @@ export function preloadImages(thisPlayer: Player | Omit<PlayerAttributes, "attac
             if (loadedImages === totalImages && callback) callback();
         };
     });
-
-    console.log("All images preloaded, starting the game...")
 }

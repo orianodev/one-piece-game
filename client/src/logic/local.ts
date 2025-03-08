@@ -30,7 +30,6 @@ export function soloGameSetup() {
     preloadImages(thisPlayer, stadium, () => {
         preloadImages(aiPlayer, stadium, () => {
             showGameScreen($loadingScreen)
-            // Fight.soloGameRefresh()
             Fight.aiActionInterval(aiLevel)
             Fight.attachKeyboardEvent();
             Fight.updateMovement();

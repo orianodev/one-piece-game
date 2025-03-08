@@ -191,7 +191,6 @@ export class Game {
                 break;
         }
     }
-
     updateMovement() {
         if (this.frameCount % def.move60fpsRAFDivider === 0) {
             if (this.status === "over") return
@@ -221,20 +220,6 @@ export class Game {
         this.frameCount++;
         requestAnimationFrame(this.updateMovement.bind(this));
     }
-
-    // soloGameRefresh() {
-    //     if (this.frameCount % def.move60fpsRAFDivider === 0) {
-    //         // setInterval(() => {
-    //         if (this.status === "over") return
-    //         if (this.thisPlayer.hp <= 0 || this.oppPlayer.hp <= 0) this.endSoloGame();
-    //         // this.thisPlayer.attacks.forEach((attack) => attack.move())
-    //         // this.oppPlayer.attacks.forEach((attack) => attack.move())
-    //         // this.drawAll()
-    //     }
-    //     this.frameCount++;
-    //     requestAnimationFrame(this.soloGameRefresh.bind(this));
-    //     // }, def.refreshRate)
-    // }
     endSoloGame() {
         this.status = "over"
         this.stopTimer();
@@ -248,20 +233,10 @@ export class Game {
             displayPopup(`Tu as gagné avec ${winnerName} !`, true);
         }
     }
-
     aiActionInterval(aiLevel: AiLevel) {
         setInterval(() => {
             if (this.status === "over") return
             this.aiAction(), def.aiLvlInterval[aiLevel]
         }, def.aiLvlInterval[aiLevel]);
     }
-
-    // dualGameRefresh() {
-    //     setInterval(() => {
-    //         if (this.status === "over") return
-    //         this.thisPlayer.attacks.forEach((attack) => attack.move())
-    //         this.oppPlayer.attacks.forEach((attack) => attack.move())
-    //         this.drawAll()
-    //     }, def.refreshRate);
-    // }
 }
