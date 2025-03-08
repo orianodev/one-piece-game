@@ -1,13 +1,9 @@
-export type CharacterID = keyof typeof characterStats;
-
-export function charSpritePathFromId(id: CharacterID): string {
+export function charSpritePathFromId(id) {
     return `/img/char/${id}.png`;
 }
-
-export function attackSpritePathFromName(name: string): string {
+export function attackSpritePathFromName(name) {
     return `/img/attack/${name}.png`;
 }
-
 export const characterStats = {
     ace: {
         id: "ace",

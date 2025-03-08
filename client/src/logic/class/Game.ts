@@ -100,12 +100,12 @@ export class Game {
         }
     }
     buildPlayers(thisPlayer: Player, oppPlayer: Player) {
-        this.thisPlayer = new Player(thisPlayer.id, thisPlayer.charId, thisPlayer.charName, thisPlayer.color, thisPlayer.img, thisPlayer.score, thisPlayer.x, thisPlayer.y, thisPlayer.dir, thisPlayer.speed, thisPlayer.hp, thisPlayer.maxHp, thisPlayer.healPow, thisPlayer.mana, thisPlayer.maxMana, thisPlayer.regenPow, thisPlayer.strength, thisPlayer.attackImg, thisPlayer.attackCost, thisPlayer.attackSpeed, []);
-        this.oppPlayer = new Player(oppPlayer.id, oppPlayer.charId, oppPlayer.charName, oppPlayer.color, oppPlayer.img, oppPlayer.score, oppPlayer.x, oppPlayer.y, oppPlayer.dir, oppPlayer.speed, oppPlayer.hp, oppPlayer.maxHp, oppPlayer.healPow, oppPlayer.mana, oppPlayer.maxMana, oppPlayer.regenPow, oppPlayer.strength, oppPlayer.attackImg, oppPlayer.attackCost, oppPlayer.attackSpeed, []);
+        this.thisPlayer = new Player(thisPlayer.id, thisPlayer.charId, thisPlayer.charName, thisPlayer.color, thisPlayer.img, thisPlayer.score, thisPlayer.x, thisPlayer.y, thisPlayer.dir, thisPlayer.speed, thisPlayer.hp, thisPlayer.maxHp, thisPlayer.healPow, thisPlayer.mana, thisPlayer.maxMana, thisPlayer.regenPow, thisPlayer.strength, thisPlayer.attackName, thisPlayer.attackCost, thisPlayer.attackSpeed, []);
+        this.oppPlayer = new Player(oppPlayer.id, oppPlayer.charId, oppPlayer.charName, oppPlayer.color, oppPlayer.img, oppPlayer.score, oppPlayer.x, oppPlayer.y, oppPlayer.dir, oppPlayer.speed, oppPlayer.hp, oppPlayer.maxHp, oppPlayer.healPow, oppPlayer.mana, oppPlayer.maxMana, oppPlayer.regenPow, oppPlayer.strength, oppPlayer.attackName, oppPlayer.attackCost, oppPlayer.attackSpeed, []);
         this.oppPlayer.sprite.src = this.oppPlayer.img
-        this.oppPlayer.attackSprite.src = this.oppPlayer.attackImg
+        this.oppPlayer.attackSprite.src = this.oppPlayer.attackName
         this.thisPlayer.sprite.src = this.thisPlayer.img
-        this.thisPlayer.attackSprite.src = this.thisPlayer.attackImg
+        this.thisPlayer.attackSprite.src = this.thisPlayer.attackName
     }
     updatePlayers(thisPlayer: PlayerAttributesTuple, oppPlayer: PlayerAttributesTuple) {
         this.thisPlayer.rage = thisPlayer[0]

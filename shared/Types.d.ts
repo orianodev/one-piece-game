@@ -29,7 +29,7 @@ export interface PlayerAttributes {
     maxMana: number;
     regenPow: number;
     strength: number;
-    attackImg: string;
+    attackName: string;
     attackCost: number;
     attackSpeed: number;
     attacks: Attack[];
@@ -45,8 +45,8 @@ export type Mode = "dual" | "solo";
 export type BotLevel = "easy" | "medium" | "hard";
 
 export interface OneCharacterStats {
+    id: CharacterID;
     name: string;
-    img: string;
     type: string | "tank" | "balance" | "kunoichi" | "doctor";
     color: string;
     speed: number;
@@ -57,7 +57,7 @@ export interface OneCharacterStats {
     maxMana: number;
     regenPow: number;
     strength: number;
-    attackImg: string;
+    attackName: string;
     attackCost: number;
     attackSpeed: number;
 }

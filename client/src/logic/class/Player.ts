@@ -26,12 +26,12 @@ export class Player {
     readonly maxMana: number;
     public regenPow: number;
     public strength: number;
-    readonly attackImg: string;
+    readonly attackName: string;
     readonly attackCost: number;
     public attackSpeed: number;
     public attacks: Attack[];
 
-    constructor(id: PlayerId, charId: CharacterID, charName: string, color: string, img: string, score: number, x: number, y: number, dir: MoveDirections, speed: number, hp: number, maxHp: number, healPow: number, mana: number, maxMana: number, regenPow: number, strength: number, attackImg: string, attackCost: number, attackSpeed: number, attacks: Attack[] | []) {
+    constructor(id: PlayerId, charId: CharacterID, charName: string, color: string, img: string, score: number, x: number, y: number, dir: MoveDirections, speed: number, hp: number, maxHp: number, healPow: number, mana: number, maxMana: number, regenPow: number, strength: number, attackName: string, attackCost: number, attackSpeed: number, attacks: Attack[] | []) {
         this.id = id
         this.charId = charId
         this.charName = charName
@@ -49,7 +49,7 @@ export class Player {
         this.maxMana = maxMana
         this.regenPow = regenPow
         this.strength = strength
-        this.attackImg = attackImg
+        this.attackName = attackName
         this.attackCost = attackCost
         this.attackSpeed = attackSpeed
         this.attacks = attacks

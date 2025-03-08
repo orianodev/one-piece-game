@@ -1,6 +1,6 @@
 import { PlayerAttributes } from "../../../shared/Types";
 import { def } from "../data/settings.js";
-import { StadiumID } from "../data/stadiums.js";
+import { StadiumID, stadiumPathFormId } from "../data/stadiums.js";
 import { Player } from "../logic/class/Player.js";
 
 export const $infosBar = {
@@ -79,8 +79,9 @@ export function showGameScreen($loadingScreen: HTMLDivElement) {
     $popup.style.display = "none";
 }
 
-export function preloadImages(thisPlayer: Player | Omit<PlayerAttributes, "attacks">, stadium: StadiumID, callback: { (): void; (): void; }) {
-    const imagePaths = [`/img/stadium/${stadium}.webp`, thisPlayer.img, thisPlayer.attackImg, thisPlayer.img.replace("char", "rage")];
+export function preloadImages(stadium: StadiumID, thisPlayer: Player | Omit<PlayerAttributes, "attacks">, oppPlayer: Player | Omit<PlayerAttributes, "attacks"> | null, callback: { (): void; (): void; }) {
+    const imagePaths = [stadiumPathFormId(stadium), thisPlayer.img, thisPlayer.attackName, thisPlayer.img.replace("char", "rage")];
+    if (oppPlayer) imagePaths.push(oppPlayer.img, oppPlayer.attackName, oppPlayer.img.replace("char", "rage"));
 
     let loadedImages = 0;
     const totalImages = imagePaths.length;

@@ -1,4 +1,4 @@
-import { CharacterID } from '../data/characters.js';
+import { CharacterID, characterStats } from '../data/characters.js';
 import { Mode } from '../../../shared/Types';
 import './listCharacters.js';
 import './listStadiums.js';
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!$selectedCharacterRadio) return alert("Choisis un personnage.");
 
         const $selectedCharacter: CharacterID | "random" = $selectedCharacterRadio.value as CharacterID | "random";
-        const characterIDList: CharacterID[] = ["luffy", "zoro", "sanji", "ace", "jinbe", "law", "franky", "brook", "baggy", "chopper", "kuma", "nami", "robin", "sabo", "smoker", "usopp", "kid", "perona", "crocodile", "marco"]
+        const characterIDList: CharacterID[] = Object.keys(characterStats) as CharacterID[];
 
         if ($selectedCharacter === "random") localStorage.setItem("characterId", characterIDList[Math.floor(Math.random() * characterIDList.length)] as CharacterID);
         else localStorage.setItem("characterId", $selectedCharacter);

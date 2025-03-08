@@ -1,9 +1,6 @@
-export type StadiumID = keyof typeof stadiumStats;
-
-export function stadiumPathFormId(id: StadiumID): string {
+export function stadiumPathFormId(id) {
     return `/img/stadium/${id}.webp`;
 }
-
 export const stadiumStats = {
     skypiea: {
         id: "skypiea",
