@@ -15,11 +15,11 @@ export class Attack {
         this.dir = dir;
     }
     draw() {
-        const player = Fight.getPlayer(this.id);
+        const player = this.id === Fight.thisPlayerId ? Fight.thisPlayer : Fight.oppPlayer;
         Fight.setShadow(player.color);
-        if (this.type === "sim")
+        if (this.type === 0)
             $ctx.drawImage(player.attackSprite, this.x, this.y, def.attackW, def.attackH);
-        if (this.type === "sup")
+        if (this.type === 1)
             $ctx.drawImage(player.attackSprite, this.x, this.y, def.attackW * def.superSizeMult, def.attackH * def.superSizeMult);
         Fight.resetPen();
     }
@@ -73,8 +73,8 @@ export class Attack {
         }
     }
     hit(playerStrength, opp) {
-        opp.hp -= this.type === "sim" ? playerStrength : playerStrength * def.superDamageMult;
-        opp.mana += this.type === "sim" ? playerStrength / def.manaGainOnHitDivider : playerStrength / def.manaGainOnHitDivider * def.superDamageMult;
+        opp.hp -= this.type === 0 ? playerStrength : playerStrength * def.superDamageMult;
+        opp.mana += this.type === 1 ? playerStrength / def.manaGainOnHitDivider : playerStrength / def.manaGainOnHitDivider * def.superDamageMult;
     }
     destroy(player) {
         player.attacks.splice(player.attacks.indexOf(this), 1);

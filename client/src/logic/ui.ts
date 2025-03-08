@@ -53,15 +53,15 @@ export function displayPopup(msg: string, restart: boolean, home: boolean) {
 }
 
 export function updateLateralColumns(player: Player) {
-    const playerDom = player.id === "A" ? $infosBar[1] : $infosBar[2];
-    playerDom.character.style.color = player.rage ? def.rageTextColor : def.normalTextColor;
+    const playerColumn = $infosBar[player.id];
+    playerColumn.character.style.color = player.rage ? def.rageTextColor : def.normalTextColor;
     const hpPercent = (player.hp / player.maxHp) * 100;
     const manaPercent = (player.mana / player.maxMana) * 100;
-    playerDom.hpBar.style.width = `${hpPercent}%`;
-    playerDom.hpBar.style.backgroundColor = player.hp <= player.maxHp * def.rageThreshold ? def.rageTextColor : def.normalHpColor;
-    playerDom.hp.innerText = player.hp.toFixed(0);
-    playerDom.manaBar.style.width = `${manaPercent}%`;
-    playerDom.mana.innerText = player.mana.toFixed(0);
+    playerColumn.hpBar.style.width = `${hpPercent}%`;
+    playerColumn.hpBar.style.backgroundColor = player.hp <= player.maxHp * def.rageThreshold ? def.rageTextColor : def.normalHpColor;
+    playerColumn.hp.innerText = player.hp.toFixed(0);
+    playerColumn.manaBar.style.width = `${manaPercent}%`;
+    playerColumn.mana.innerText = player.mana.toFixed(0);
 }
 
 export function showGameScreen($loadingScreen: HTMLDivElement) {

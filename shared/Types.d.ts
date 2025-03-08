@@ -1,16 +1,18 @@
 import { CharacterID } from "./data/charactersInfos";
-// import { Attack } from "../client/src/logic/class/Attack";
 
 export type StaticHeaders = { "Content-Type": string, "Cache-Control"?: string }
 
 export type RoomID = number;
-export type GameState = { A: PlayerAttributes | {}, B: PlayerAttributes | {} }
+export type GameState = { 1: PlayerAttributes | {}, 2: PlayerAttributes | {} }
 export type GameStateCollection = { [key: RoomID]: GameState }
+
+export type PostMessage = { player: PlayerAttributes, roomId: RoomID, playerId: PlayerId }
+export type UpdateMessage = { roomId: RoomID, 1: PlayerAttributesTuple, 2: PlayerAttributesTuple }
 
 export type PlayerAttributesTuple = [rage: boolean, x: number, y: number, dir: MoveDirections, hp: number, mana: number, attacks: AttackAttributesTuple[]];
 export type AttackAttributesTuple = [id: PlayerId, type: AttackType, x: number, y: number, dir: MoveDirections];
 
-export interface PlayerAttributes {
+export type PlayerAttributes = {
     id: PlayerId;
     charId: CharacterID;
     charName: string;
@@ -36,15 +38,15 @@ export interface PlayerAttributes {
 }
 
 export type CharacterID = string;
-export type PlayerId = "A" | "B";
+export type PlayerId = 1 | 2;
 export type MoveDirections = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
-export type AttackType = "sim" | "sup";
+export type AttackType = 0 | 1; // 0: simple, 1: super
 
 export type GameStatus = "loading" | "playing" | "over";
 export type Mode = "dual" | "solo";
 export type BotLevel = "easy" | "medium" | "hard";
 
-export interface OneCharacterStats {
+export type OneCharacterStats = {
     id: CharacterID;
     name: string;
     type: string | "tank" | "balance" | "kunoichi" | "doctor";

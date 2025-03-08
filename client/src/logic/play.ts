@@ -7,5 +7,5 @@ export const $loadingScreen = setLoadingScreen()
 export const stadium = setStadium()
 export const Fight = new Game("loading");
 
-if (Fight.mode === "solo") soloGameSetup()
-else if (Fight.mode === "dual") socket.emit("askId", Fight.roomId);
+if (Fight.mode === "dual") socket.emit("askId", Fight.roomId);
+else if (Fight.mode === "solo") soloGameSetup()

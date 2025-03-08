@@ -6,7 +6,8 @@ import { Player } from "./Player.js";
 import { Attack } from "./Attack.js";
 
 export class Game {
-    public thisPlayerId: PlayerId | undefined;
+    public thisPlayerId: PlayerId = 1;
+    public oppPlayerId: PlayerId = 2;
     // @ts-expect-error
     public thisPlayer: Player;
     // @ts-expect-error
@@ -14,11 +15,12 @@ export class Game {
     isThisPlayerFrozen = false;
     readonly roomId: number = parseInt(localStorage.getItem("roomId") as string)
     readonly mode: Mode = localStorage.getItem("mode") as Mode;
-    public status: GameStatus;
+    public status: GameStatus = "loading";
     public pressedKeys: Set<string> = new Set<string>();
     private frameCount: number = 0;
     private timerInterval: NodeJS.Timeout | undefined;
     private timerSeconds: number = 0;
+    public botActionLoop: NodeJS.Timeout | undefined;
     constructor(state: GameStatus) {
         this.status = state
     }
@@ -42,14 +44,12 @@ export class Game {
         const timerElement = document.querySelector("#game-timer") as HTMLDivElement;
         timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     }
-
-    getPlayer(playerId: PlayerId): Player {
-        return playerId === this.thisPlayer.id ? this.thisPlayer : this.oppPlayer
-    }
     unfreezeThisPlayer() {
         setTimeout(() => this.isThisPlayerFrozen = false, def.freezeDelay);
     }
     botAction(): void {
+        if (this.thisPlayer.hp <= 0 || this.oppPlayer.hp <= 0) this.endSoloGame();
+
         const botActions = ["move", "move", "attack", "super", "heal", "regen", "rage"];
         let attempt = 0;
         const maxAttempts = 10;
@@ -131,22 +131,24 @@ export class Game {
         return attacks.map((attack) => [attack.id, attack.type, attack.x, attack.y, attack.dir]);
     }
     updateServer() {
-        if (this.mode === "solo") return;
-        if (this.thisPlayerId == "A") socket.emit("update", { roomId: this.roomId, A: this.getPlayerDeltaAttributes(this.thisPlayer), B: this.getPlayerDeltaAttributes(this.oppPlayer) });
-        else if (this.thisPlayerId == "B") socket.emit("update", { roomId: this.roomId, A: this.getPlayerDeltaAttributes(this.oppPlayer), B: this.getPlayerDeltaAttributes(this.thisPlayer) });
+        if (this.mode === "dual") {
+            socket.emit("update", { roomId: this.roomId, 1: this.getPlayerDeltaAttributes(this.thisPlayerId == 1 ? this.thisPlayer : this.oppPlayer), 2: this.getPlayerDeltaAttributes(this.thisPlayerId == 1 ? this.oppPlayer : this.thisPlayer) });
+        }
     };
     drawAll() {
         $ctx.clearRect(0, 0, def.canvasWidth, def.canvasHeight);
+
+        // Draw players
         this.thisPlayer.draw();
         this.oppPlayer.draw();
 
+        // Draw attacks
         this.thisPlayer.attacks.forEach((attack) => attack.draw());
         this.oppPlayer.attacks.forEach((attack) => attack.draw());
 
-        const playerA = this.thisPlayer.id === "A" ? this.thisPlayer : this.oppPlayer;
-        const playerB = this.thisPlayer.id === "B" ? this.thisPlayer : this.oppPlayer;
-        updateLateralColumns(playerA);
-        updateLateralColumns(playerB);
+        // Update lateral infos bars
+        updateLateralColumns(this.thisPlayer);
+        updateLateralColumns(this.oppPlayer);
     }
     rebuildAttackArray(flattedAttackArray: AttackAttributesTuple[]): Attack[] {
         return flattedAttackArray.map((attack) => new Attack(attack[0], attack[1], attack[2], attack[3], attack[4]))
@@ -191,31 +193,34 @@ export class Game {
                 break;
         }
     }
+    startBotActionLoop(botLevel: BotLevel) {
+        this.botActionLoop = setInterval(this.botAction.bind(this), def.botLvlInterval[botLevel]);
+    }
     updateMovement() {
         if (this.frameCount % def.refresh60fpsDivider === 0) {
-            if (this.status === "over") return
-            this.thisPlayer.attacks.forEach((attack) => attack.move())
-            this.oppPlayer.attacks.forEach((attack) => attack.move())
-            this.drawAll()
+            if (this.status === "playing") {
+                // Move attacks
+                this.thisPlayer.attacks.forEach((attack) => attack.move());
+                this.oppPlayer.attacks.forEach((attack) => attack.move());
 
-            if (this.mode === "solo") {
-                if (this.thisPlayer.hp <= 0 || this.oppPlayer.hp <= 0) this.endSoloGame();
+                // Get pressed keys
+                const movingUp = this.pressedKeys.has("ArrowUp");
+                const movingRight = this.pressedKeys.has("ArrowRight");
+                const movingDown = this.pressedKeys.has("ArrowDown");
+                const movingLeft = this.pressedKeys.has("ArrowLeft");
+
+                // Move local player
+                if (movingUp && movingRight) this.thisPlayer.move(2);
+                else if (movingUp && movingLeft) this.thisPlayer.move(8);
+                else if (movingDown && movingRight) this.thisPlayer.move(4);
+                else if (movingDown && movingLeft) this.thisPlayer.move(6);
+                else if (movingUp) this.thisPlayer.move(1);
+                else if (movingRight) this.thisPlayer.move(3);
+                else if (movingDown) this.thisPlayer.move(5);
+                else if (movingLeft) this.thisPlayer.move(7);
+
+                this.drawAll();
             }
-            const player = this.thisPlayer;
-
-            const movingUp = this.pressedKeys.has("ArrowUp");
-            const movingRight = this.pressedKeys.has("ArrowRight");
-            const movingDown = this.pressedKeys.has("ArrowDown");
-            const movingLeft = this.pressedKeys.has("ArrowLeft");
-
-            if (movingUp && movingRight) player.move(2);
-            else if (movingUp && movingLeft) player.move(8);
-            else if (movingDown && movingRight) player.move(4);
-            else if (movingDown && movingLeft) player.move(6);
-            else if (movingUp) player.move(1);
-            else if (movingRight) player.move(3);
-            else if (movingDown) player.move(5);
-            else if (movingLeft) player.move(7);
         }
         this.frameCount++;
         requestAnimationFrame(this.updateMovement.bind(this));
@@ -223,7 +228,10 @@ export class Game {
     endSoloGame() {
         this.status = "over"
         this.stopTimer();
+        clearInterval(this.botActionLoop);
+        this.botActionLoop = undefined;
         const winnerName = this.thisPlayer.hp <= 0 ? this.oppPlayer.charName : this.thisPlayer.charName
+
         if (this.thisPlayer.hp <= 0) {
             localStorage.setItem("scoreBot", (this.oppPlayer.score + 1).toString());
             displayPopup(`Tu as perdu face à ${winnerName}.`, true, true);
@@ -232,11 +240,5 @@ export class Game {
             localStorage.setItem("scoreThis", (this.thisPlayer.score + 1).toString());
             displayPopup(`Tu as gagné avec ${winnerName} !`, true, true);
         }
-    }
-    botActionInterval(botLevel: BotLevel) {
-        setInterval(() => {
-            if (this.status === "over") return
-            this.botAction(), def.botLvlInterval[botLevel]
-        }, def.botLvlInterval[botLevel]);
     }
 }

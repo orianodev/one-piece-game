@@ -96,39 +96,39 @@ export class Player {
         return true;
     }
     attack() {
-        if ((Fight.mode === "dual" || this.id === "A") && !this.freeze()) return;
+        if ((Fight.mode === "dual" || this.id === 1) && !this.freeze()) return;
         if (this.mana < this.attackCost) return;
         this.mana -= this.attackCost;
-        const attack = new Attack(this.id, "sim", this.x + def.playW / 2, this.y + def.playH / 2, this.dir);
+        const attack = new Attack(this.id, 0, this.x + def.playW / 2, this.y + def.playH / 2, this.dir);
         this.attacks.push(attack);
         attack.draw();
         Fight.updateServer();
     }
     superAttack() {
-        if ((Fight.mode === "dual" || this.id === "A") && !this.freeze()) return;
+        if ((Fight.mode === "dual" || this.id === 1) && !this.freeze()) return;
         if (this.mana < this.attackCost * def.superManaMult) return
         this.mana -= this.attackCost * def.superManaMult
-        const attack = new Attack(this.id, "sup", this.x + def.playW / 2 - def.attackW, this.y + def.playH / 2 - def.attackH, this.dir);
+        const attack = new Attack(this.id, 1, this.x + def.playW / 2 - def.attackW, this.y + def.playH / 2 - def.attackH, this.dir);
         this.attacks.push(attack)
         attack.draw()
         Fight.updateServer()
     }
     heal() {
-        if ((Fight.mode === "dual" || this.id === "A") && !this.freeze()) return;
+        if ((Fight.mode === "dual" || this.id === 1) && !this.freeze()) return;
         if (this.hp + this.healPow > this.maxHp) this.hp = this.maxHp
         if (this.hp === this.maxHp) return
         this.hp += this.healPow
         Fight.updateServer()
     }
     regen() {
-        if ((Fight.mode === "dual" || this.id === "A") && !this.freeze()) return;
+        if ((Fight.mode === "dual" || this.id === 1) && !this.freeze()) return;
         if (this.mana + this.regenPow > this.maxMana) this.mana = this.maxMana
         if (this.mana === this.maxMana) return
         this.mana += this.regenPow
         Fight.updateServer()
     }
     enrage() {
-        if ((Fight.mode === "dual" || this.id === "A") && !this.freeze()) return console.log("Rage disabled in freeze mode");
+        if ((Fight.mode === "dual" || this.id === 1) && !this.freeze()) return console.log("Rage disabled in freeze mode");
         if (this.rage || this.hp > this.maxHp * def.rageThreshold) return console.log("Already enraged or HP above threshold");
         this.rage = true;
         this.speed *= def.rageSpeedMult
@@ -137,8 +137,7 @@ export class Player {
         this.regenPow *= def.rageRegenFactor
         this.healPow *= def.rageHealFactor
         this.sprite.src = this.getRageImg();
-        if (this.id === "A") $infosBar[1].character.style.color = def.rageTextColor
-        else if (this.id === "B") $infosBar[2].character.style.color = def.rageTextColor
+        $infosBar[this.id].character.style.color = def.rageTextColor
         setTimeout(() => this.unRage(this.img), def.rageDuration)
         Fight.updateServer()
     }
@@ -148,8 +147,7 @@ export class Player {
         this.strength = characterStats[this.charId].strength
         this.regenPow = characterStats[this.charId].regenPow
         this.healPow = characterStats[this.charId].healPow
-        if (this.id === "A") $infosBar[1].character.style.color = def.normalTextColor
-        else if (this.id === "B") $infosBar[2].character.style.color = def.normalTextColor
+        $infosBar[this.id].character.style.color = def.normalTextColor
         this.rage = false;
         Fight.updateServer()
     }

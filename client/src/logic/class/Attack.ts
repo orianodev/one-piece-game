@@ -19,56 +19,12 @@ export class Attack {
         this.dir = dir
     }
     draw() {
-        const player = Fight.getPlayer(this.id)
-        Fight.setShadow(player.color)
-        if (this.type === "sim") $ctx.drawImage(player.attackSprite, this.x, this.y, def.attackW, def.attackH);
-        if (this.type === "sup") $ctx.drawImage(player.attackSprite, this.x, this.y, def.attackW * def.superSizeMult, def.attackH * def.superSizeMult);
-        Fight.resetPen()
+        const player = this.id === Fight.thisPlayerId ? Fight.thisPlayer : Fight.oppPlayer;
+        Fight.setShadow(player.color);
+        if (this.type === 0) $ctx.drawImage(player.attackSprite, this.x, this.y, def.attackW, def.attackH);
+        if (this.type === 1) $ctx.drawImage(player.attackSprite, this.x, this.y, def.attackW * def.superSizeMult, def.attackH * def.superSizeMult);
+        Fight.resetPen();
     }
-    // draw() { // Draw the attack sprite on the canvas
-    //     const player = Fight.getPlayer(this.id);
-    //     Fight.setShadow(player.color);
-
-    //     // Determine the sprite coordinates based on the direction
-    //     let spriteX = 0;
-    //     let spriteY = 0; // Assuming all frames are in a single row
-
-    //     switch (this.dir) {
-    //         case 1: // Up
-    //             spriteX = 2 * def.attackW;
-    //             break;
-    //         case 2: // Up-Right
-    //             spriteX = 1 * def.attackW;
-    //             break;
-    //         case 3: // Right
-    //             spriteX = 0;
-    //             break;
-    //         case 4: // Down-Right
-    //             spriteX = 7 * def.attackW;
-    //             break;
-    //         case 5: // Down
-    //             spriteX = 6 * def.attackW;
-    //             break;
-    //         case 6: // Down-Left
-    //             spriteX = 5 * def.attackW;
-    //             break;
-    //         case 7: // Left
-    //             spriteX = 4 * def.attackW;
-    //             break;
-    //         case 8: // Up-Left
-    //             spriteX = 3 * def.attackW;
-    //             break;
-    //     }
-
-    //     // Draw the image from the sprite sheet
-    //     if (this.type === "sim") {
-    //         $ctx.drawImage(player.attackSprite, spriteX, spriteY, def.attackW, def.attackH, this.x, this.y, def.attackW, def.attackH);
-    //     } else if (this.type === "sup") {
-    //         $ctx.drawImage(player.attackSprite, spriteX, spriteY, def.attackW, def.attackH, this.x, this.y, def.attackW * def.superSizeMult, def.attackH * def.superSizeMult);
-    //     }
-
-    //     Fight.resetPen();
-    // }
     move() {
         const player = Fight.thisPlayer.id === this.id ? Fight.thisPlayer : Fight.oppPlayer;
         switch (this.dir) {
@@ -118,8 +74,8 @@ export class Attack {
         }
     }
     hit(playerStrength: number, opp: Player) {
-        opp.hp -= this.type === "sim" ? playerStrength : playerStrength * def.superDamageMult
-        opp.mana += this.type === "sim" ? playerStrength / def.manaGainOnHitDivider : playerStrength / def.manaGainOnHitDivider * def.superDamageMult
+        opp.hp -= this.type === 0 ? playerStrength : playerStrength * def.superDamageMult
+        opp.mana += this.type === 1 ? playerStrength / def.manaGainOnHitDivider : playerStrength / def.manaGainOnHitDivider * def.superDamageMult
     }
     destroy(player: Player) {
         player.attacks.splice(player.attacks.indexOf(this), 1)

@@ -31,5 +31,5 @@ export const def = {
         "hard": 90,
     }
 };
-export const defPlayerDirections = { A: 3, B: 7 };
-export const defPlayerPositions = { A: { x: 0, y: def.canvasHeight / 2 - def.playH }, B: { x: def.canvasWidth - def.playW, y: def.canvasHeight / 2 - def.playH } };
+export const defPlayerDirections = { 1: 3, 2: 7 };
+export const defPlayerPositions = { 1: { x: 0, y: def.canvasHeight / 2 - def.playH }, 2: { x: def.canvasWidth - def.playW, y: def.canvasHeight / 2 - def.playH } };

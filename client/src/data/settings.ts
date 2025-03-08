@@ -34,5 +34,5 @@ export const def = {
     }
 }
 
-export const defPlayerDirections: { A: MoveDirections, B: MoveDirections } = { A: 3, B: 7 }
-export const defPlayerPositions: { A: { x: number, y: number }, B: { x: number, y: number } } = { A: { x: 0, y: def.canvasHeight / 2 - def.playH }, B: { x: def.canvasWidth - def.playW, y: def.canvasHeight / 2 - def.playH } }
+export const defPlayerDirections: { 1: MoveDirections, 2: MoveDirections } = { 1: 3, 2: 7 }
+export const defPlayerPositions: { 1: { x: number, y: number }, 2: { x: number, y: number } } = { 1: { x: 0, y: def.canvasHeight / 2 - def.playH }, 2: { x: def.canvasWidth - def.playW, y: def.canvasHeight / 2 - def.playH } }
