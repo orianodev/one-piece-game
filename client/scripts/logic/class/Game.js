@@ -1,16 +1,16 @@
 import { def } from "../../data/settings.js";
+import { spritePath } from "../../data/characters.js";
 import { $ctx, displayPopup, updateLateralColumns } from "../ui.js";
 import { socket } from "../online.js";
-import { Player } from "./Player.js";
 import { Attack } from "./Attack.js";
 export class Game {
-    thisPlayerId = 1;
-    oppPlayerId = 2;
-    thisPlayer;
-    oppPlayer;
+    selfId = "p1";
+    enemyId = "p2";
+    self;
+    enemy;
     isThisPlayerFrozen = false;
-    roomId = parseInt(localStorage.getItem("roomId"));
-    mode = localStorage.getItem("mode");
+    roomId = parseInt(localStorage.getItem("roomId")) || 0;
+    mode = localStorage.getItem("mode") || "solo";
     status = "loading";
     pressedKeys = new Set();
     frameCount = 0;
@@ -44,7 +44,7 @@ export class Game {
         setTimeout(() => this.isThisPlayerFrozen = false, def.freezeDelay);
     }
     botAction() {
-        if (this.thisPlayer.hp <= 0 || this.oppPlayer.hp <= 0)
+        if (this.self.hp <= 0 || this.enemy.hp <= 0)
             this.endSoloGame();
         const botActions = ["move", "move", "attack", "super", "heal", "regen", "rage"];
         let attempt = 0;
@@ -52,9 +52,9 @@ export class Game {
         while (attempt < maxAttempts) {
             const botChoice = botActions[Math.floor(Math.random() * botActions.length)];
             if (botChoice === "move") {
-                const xDiff = this.thisPlayer.x - this.oppPlayer.x;
-                const yDiff = this.thisPlayer.y - this.oppPlayer.y;
-                const threshold = def.playW / 3;
+                const xDiff = this.self.x - this.enemy.x;
+                const yDiff = this.self.y - this.enemy.y;
+                const threshold = this.enemy.width / 3;
                 let horizontalDirection = null;
                 let verticalDirection = null;
                 if (xDiff > threshold)
@@ -66,92 +66,80 @@ export class Game {
                 else if (yDiff < -threshold)
                     verticalDirection = 1;
                 if (horizontalDirection === 2 && verticalDirection === 1)
-                    this.oppPlayer.move(2);
+                    this.enemy.move(2, "move");
                 else if (horizontalDirection === 2 && verticalDirection === 3)
-                    this.oppPlayer.move(4);
+                    this.enemy.move(4, "move");
                 else if (horizontalDirection === 4 && verticalDirection === 1)
-                    this.oppPlayer.move(8);
+                    this.enemy.move(8, "move");
                 else if (horizontalDirection === 4 && verticalDirection === 3)
-                    this.oppPlayer.move(6);
+                    this.enemy.move(6, "move");
                 else if (horizontalDirection === 2)
-                    this.oppPlayer.move(3);
+                    this.enemy.move(3, "move");
                 else if (horizontalDirection === 4)
-                    this.oppPlayer.move(7);
+                    this.enemy.move(7, "move");
                 else if (verticalDirection === 1)
-                    this.oppPlayer.move(1);
+                    this.enemy.move(1, "move");
                 else if (verticalDirection === 3)
-                    this.oppPlayer.move(5);
+                    this.enemy.move(5, "move");
             }
             else if (botChoice === "attack") {
-                this.oppPlayer.attack();
+                this.enemy.attack();
                 break;
             }
-            else if (botChoice === "super" && this.oppPlayer.mana >= this.oppPlayer.attackCost * def.superManaMult) {
-                this.oppPlayer.superAttack();
+            else if (botChoice === "super" && this.enemy.mana >= this.enemy.attackCost * def.superManaMult) {
+                this.enemy.superAttack();
                 break;
             }
-            else if (botChoice === "heal" && this.oppPlayer.hp < this.oppPlayer.maxHp + this.oppPlayer.healPow) {
-                this.oppPlayer.heal();
+            else if (botChoice === "heal" && this.enemy.hp < this.enemy.maxHp + this.enemy.healPow) {
+                this.enemy.heal();
                 break;
             }
-            else if (botChoice === "regen" && this.oppPlayer.mana < this.oppPlayer.maxMana + this.oppPlayer.regenPow) {
-                this.oppPlayer.regen();
+            else if (botChoice === "regen" && this.enemy.mana < this.enemy.maxMana + this.enemy.regenPow) {
+                this.enemy.regen();
                 break;
             }
-            else if (botChoice === "rage" && !this.oppPlayer.rage && this.oppPlayer.hp <= this.oppPlayer.maxHp * def.rageThreshold) {
-                this.oppPlayer.enrage();
+            else if (botChoice === "rage" && !this.enemy.rage && this.enemy.hp <= this.enemy.maxHp * def.rageThreshold) {
+                this.enemy.enrage();
                 break;
             }
             attempt++;
         }
     }
-    buildPlayers(thisPlayer, oppPlayer) {
-        this.thisPlayer = new Player(thisPlayer.id, thisPlayer.charId, thisPlayer.charName, thisPlayer.color, thisPlayer.img, thisPlayer.score, thisPlayer.x, thisPlayer.y, thisPlayer.dir, thisPlayer.speed, thisPlayer.hp, thisPlayer.maxHp, thisPlayer.healPow, thisPlayer.mana, thisPlayer.maxMana, thisPlayer.regenPow, thisPlayer.strength, thisPlayer.attackName, thisPlayer.attackCost, thisPlayer.attackSpeed, []);
-        this.oppPlayer = new Player(oppPlayer.id, oppPlayer.charId, oppPlayer.charName, oppPlayer.color, oppPlayer.img, oppPlayer.score, oppPlayer.x, oppPlayer.y, oppPlayer.dir, oppPlayer.speed, oppPlayer.hp, oppPlayer.maxHp, oppPlayer.healPow, oppPlayer.mana, oppPlayer.maxMana, oppPlayer.regenPow, oppPlayer.strength, oppPlayer.attackName, oppPlayer.attackCost, oppPlayer.attackSpeed, []);
-        this.oppPlayer.sprite.src = this.oppPlayer.img;
-        this.oppPlayer.attackSprite.src = this.oppPlayer.attackName;
-        this.thisPlayer.sprite.src = this.thisPlayer.img;
-        this.thisPlayer.attackSprite.src = this.thisPlayer.attackName;
+    createImage(id, width, height, folder) {
+        const img = new Image(width, height);
+        img.src = spritePath(id, folder);
+        return img;
     }
-    updatePlayers(thisPlayer, oppPlayer) {
-        this.thisPlayer.rage = thisPlayer[0];
-        this.thisPlayer.x = thisPlayer[1];
-        this.thisPlayer.y = thisPlayer[2];
-        this.thisPlayer.dir = thisPlayer[3];
-        this.thisPlayer.hp = thisPlayer[4];
-        this.thisPlayer.mana = thisPlayer[5];
-        this.thisPlayer.attacks = this.rebuildAttackArray(thisPlayer[6]);
-        this.oppPlayer.rage = oppPlayer[0];
-        this.oppPlayer.x = oppPlayer[1];
-        this.oppPlayer.y = oppPlayer[2];
-        this.oppPlayer.dir = oppPlayer[3];
-        this.oppPlayer.hp = oppPlayer[4];
-        this.oppPlayer.mana = oppPlayer[5];
-        this.oppPlayer.attacks = this.rebuildAttackArray(oppPlayer[6]);
+    rebuildAttackArray(flattedAttackArray) {
+        return flattedAttackArray.map((attack) => new Attack(attack[0] === 1 ? "p1" : "p2", attack[1] === 1 ? "simple" : "super", attack[2], attack[3], attack[4]));
     }
-    getPlayerDeltaAttributes(player) {
-        return [player.rage, Math.round(player.x), Math.round(player.y), player.dir, Math.round(player.hp), Math.round(player.mana), this.getAttackDeltaAttributes(player.attacks)];
-    }
-    getAttackDeltaAttributes(attacks) {
-        return attacks.map((attack) => [attack.id, attack.type, attack.x, attack.y, attack.dir]);
+    updatePlayers(player, role) {
+        this[role].rage = player[0];
+        this[role].x = player[1];
+        this[role].y = player[2];
+        this[role].dir = player[3];
+        this[role].hp = player[4];
+        this[role].mana = player[5];
+        this[role].attacks = this.rebuildAttackArray(player[6]);
     }
     updateServer() {
         if (this.mode === "dual") {
-            socket.emit("update", { roomId: this.roomId, 1: this.getPlayerDeltaAttributes(this.thisPlayerId == 1 ? this.thisPlayer : this.oppPlayer), 2: this.getPlayerDeltaAttributes(this.thisPlayerId == 1 ? this.oppPlayer : this.thisPlayer) });
+            const updateMessage = {
+                roomId: this.roomId,
+                p1: this.selfId == "p1" ? this.self.getDeltaAttributes() : this.enemy.getDeltaAttributes(),
+                p2: this.selfId == "p1" ? this.enemy.getDeltaAttributes() : this.self.getDeltaAttributes()
+            };
+            socket.emit("update", updateMessage);
         }
     }
-    ;
     drawAll() {
         $ctx.clearRect(0, 0, def.canvasWidth, def.canvasHeight);
-        this.thisPlayer.draw();
-        this.oppPlayer.draw();
-        this.thisPlayer.attacks.forEach((attack) => attack.draw());
-        this.oppPlayer.attacks.forEach((attack) => attack.draw());
-        updateLateralColumns(this.thisPlayer);
-        updateLateralColumns(this.oppPlayer);
-    }
-    rebuildAttackArray(flattedAttackArray) {
-        return flattedAttackArray.map((attack) => new Attack(attack[0], attack[1], attack[2], attack[3], attack[4]));
+        this.self.draw();
+        this.enemy.draw();
+        this.self.attacks.forEach((attack) => attack.draw());
+        this.enemy.attacks.forEach((attack) => attack.draw());
+        updateLateralColumns(this.self);
+        updateLateralColumns(this.enemy);
     }
     resetPen() {
         $ctx.globalAlpha = 1;
@@ -176,19 +164,31 @@ export class Game {
     handleActionKeys(key) {
         switch (key) {
             case "z":
-                this.thisPlayer.attack();
+                this.self.attack();
                 break;
             case "d":
-                this.thisPlayer.heal();
+                this.self.heal();
                 break;
             case "q":
-                this.thisPlayer.regen();
+                this.self.regen();
                 break;
             case "s":
-                this.thisPlayer.superAttack();
+                this.self.superAttack();
                 break;
             case " ":
-                this.thisPlayer.enrage();
+                this.self.enrage();
+                break;
+            case "Z":
+                this.self.attack();
+                break;
+            case "D":
+                this.self.heal();
+                break;
+            case "Q":
+                this.self.regen();
+                break;
+            case "S":
+                this.self.superAttack();
                 break;
         }
     }
@@ -198,28 +198,29 @@ export class Game {
     updateMovement() {
         if (this.frameCount % def.refresh60fpsDivider === 0) {
             if (this.status === "playing") {
-                this.thisPlayer.attacks.forEach((attack) => attack.move());
-                this.oppPlayer.attacks.forEach((attack) => attack.move());
+                this.self.attacks.forEach((attack) => attack.move());
+                this.enemy.attacks.forEach((attack) => attack.move());
+                const moveType = this.pressedKeys.has("Shift") ? "dash" : "move";
                 const movingUp = this.pressedKeys.has("ArrowUp");
                 const movingRight = this.pressedKeys.has("ArrowRight");
                 const movingDown = this.pressedKeys.has("ArrowDown");
                 const movingLeft = this.pressedKeys.has("ArrowLeft");
                 if (movingUp && movingRight)
-                    this.thisPlayer.move(2);
+                    this.self.move(2, moveType);
                 else if (movingUp && movingLeft)
-                    this.thisPlayer.move(8);
+                    this.self.move(8, moveType);
                 else if (movingDown && movingRight)
-                    this.thisPlayer.move(4);
+                    this.self.move(4, moveType);
                 else if (movingDown && movingLeft)
-                    this.thisPlayer.move(6);
+                    this.self.move(6, moveType);
                 else if (movingUp)
-                    this.thisPlayer.move(1);
+                    this.self.move(1, moveType);
                 else if (movingRight)
-                    this.thisPlayer.move(3);
+                    this.self.move(3, moveType);
                 else if (movingDown)
-                    this.thisPlayer.move(5);
+                    this.self.move(5, moveType);
                 else if (movingLeft)
-                    this.thisPlayer.move(7);
+                    this.self.move(7, moveType);
                 this.drawAll();
             }
         }
@@ -231,13 +232,13 @@ export class Game {
         this.stopTimer();
         clearInterval(this.botActionLoop);
         this.botActionLoop = undefined;
-        const winnerName = this.thisPlayer.hp <= 0 ? this.oppPlayer.charName : this.thisPlayer.charName;
-        if (this.thisPlayer.hp <= 0) {
-            localStorage.setItem("scoreBot", (this.oppPlayer.score + 1).toString());
+        const winnerName = this.self.hp <= 0 ? this.enemy.charName : this.self.charName;
+        if (this.self.hp <= 0) {
+            localStorage.setItem("scoreBot", (this.enemy.score + 1).toString());
             displayPopup(`Tu as perdu face à ${winnerName}.`, true, true);
         }
-        else if (this.oppPlayer.hp <= 0) {
-            localStorage.setItem("scoreThis", (this.thisPlayer.score + 1).toString());
+        else if (this.enemy.hp <= 0) {
+            localStorage.setItem("scoreThis", (this.self.score + 1).toString());
             displayPopup(`Tu as gagné avec ${winnerName} !`, true, true);
         }
     }

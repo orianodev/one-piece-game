@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // PLAYER PRE-SELECTION
     const previousCharacterId: CharacterID = localStorage.getItem("characterId") as CharacterID
     const $previousCharacterRadio = document.querySelector(`input#${previousCharacterId}`) as HTMLInputElement;
-    if (previousCharacterId) { $previousCharacterRadio.checked = true }
+    if (previousCharacterId && $previousCharacterRadio) { $previousCharacterRadio.checked = true }
 
     // STADIUM SELECTION
     const $stadiumSelect = document.querySelector("select#stadium-list") as HTMLSelectElement;

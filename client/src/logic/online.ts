@@ -1,8 +1,8 @@
-import { PlayerId, PlayerAttributes, PostMessage, UpdateMessage } from "../../../shared/Types";
+import { OneCharacterStats, PlayerId, PostMessage, UpdateMessage } from "../../../shared/Types";
 import { $loadingScreen, Fight, stadium } from "./play.js";
 import { displayPopup, $infosBar, preloadImages, showGameScreen } from "./ui.js";
-import { defPlayerDirections, defPlayerPositions } from "../data/settings.js";
-import { attackSpritePathFromName, CharacterID, characterStats, charSpritePathFromId } from "../data/characters.js";
+import { defDir, defPosition } from "../data/settings.js";
+import { CharacterID, characterStats } from "../data/characters.js";
 import { Player } from "./class/Player.js";
 
 // @ts-expect-error
@@ -11,29 +11,40 @@ export const socket = io();
 socket.on("getId", (playerId: PlayerId) => {
     displayPopup("En attente de l'adversaire...", false, false);
 
-    Fight.thisPlayerId = playerId;
-    Fight.oppPlayerId = playerId === 1 ? 2 : 1;
-    const thisCharacterId: CharacterID = localStorage.getItem("characterId") as CharacterID;
-    const thisScore = parseInt(localStorage.getItem("scoreThis") as string) as number;
-    const thisCharacter = characterStats[thisCharacterId];
-    const thisPlayer: PlayerAttributes = {
-        id: playerId, charId: thisCharacterId, charName: thisCharacter.name, color: thisCharacter.color, img: charSpritePathFromId(thisCharacterId), score: thisScore, rage: false, x: defPlayerPositions[playerId].x, y: defPlayerPositions[playerId].y, dir: defPlayerDirections[Fight.thisPlayerId], speed: thisCharacter.speed, hp: thisCharacter.hp, maxHp: thisCharacter.maxHp, healPow: thisCharacter.healPow, mana: thisCharacter.mana, maxMana: thisCharacter.maxMana, regenPow: thisCharacter.regenPow, strength: thisCharacter.strength, attackName: attackSpritePathFromName(thisCharacter.attackName), attackCost: thisCharacter.attackCost, attackSpeed: thisCharacter.attackSpeed, attacks: []
-    }
-    preloadImages(stadium, thisPlayer, null, () => {
-        socket.emit("postPlayer", { player: thisPlayer, roomId: Fight.roomId, playerId } as PostMessage)
+    // Attribute player ID
+    Fight.selfId = playerId;
+    Fight.enemyId = playerId === "p1" ? "p2" : "p1";
+
+    // Fetch self player infos
+    const selfScore = parseInt(localStorage.getItem("scoreThis") as string) as number;
+    const selfCharacterId: CharacterID = localStorage.getItem("characterId") as CharacterID;
+    const selfCharacter: OneCharacterStats = characterStats[selfCharacterId];
+    const selfPosition = defPosition(Fight.selfId, selfCharacter.width, selfCharacter.height);
+
+    Fight.self = new Player(playerId, selfScore, selfCharacterId, selfCharacter.name, selfCharacter.color, Fight.createImage(selfCharacter.id, selfCharacter.width, selfCharacter.height, "normal"), Fight.createImage(selfCharacter.id, selfCharacter.width, selfCharacter.height, "rage"), selfCharacter.width, selfCharacter.height, selfPosition.x, selfPosition.y, selfPosition.x, selfPosition.y, defDir[playerId], selfCharacter.speed, selfCharacter.hp, selfCharacter.maxHp, selfCharacter.healPow, selfCharacter.mana, selfCharacter.maxMana, selfCharacter.regenPow, selfCharacter.strength, selfCharacter.attackName, Fight.createImage(selfCharacter.attackName, selfCharacter.attackWidth, selfCharacter.attackHeight, "attack"), selfCharacter.attackWidth, selfCharacter.attackHeight, selfCharacter.attackCost, selfCharacter.attackSpeed, []);
+
+    // Submit self player infos to server
+    preloadImages(stadium, Fight.self, null, () => {
+        socket.emit("postPlayer", { player: Fight.self, roomId: Fight.roomId, playerId } as PostMessage)
     });
 })
 
-socket.on("start", (msg: { 1: Player, 2: Player }) => {
-    Fight.buildPlayers(msg[Fight.thisPlayerId], msg[Fight.oppPlayerId])
-    const player1 = Fight.thisPlayer.id === 1 ? Fight.thisPlayer : Fight.oppPlayer;
-    const player2 = Fight.thisPlayer.id === 2 ? Fight.thisPlayer : Fight.oppPlayer;
+socket.on("start", (msg: { "p1": Player, "p2": Player }) => {
+    // Extract enemy player infos
+    const enemy = msg[Fight.enemyId];
+    const enemyPosition = defPosition(enemy.id, enemy.width, enemy.height);
 
-    $infosBar[1].score.innerText = player1.charName;
-    $infosBar[1].score.innerText = player1.score.toString();
-    $infosBar[2].score.innerText = player2.charName;
-    $infosBar[2].score.innerText = player2.score.toString();
+    Fight.enemy = new Player(enemy.id, enemy.score, enemy.charId, enemy.charName, enemy.color, Fight.createImage(enemy.charId, enemy.width, enemy.height, "normal"), Fight.createImage(enemy.charId, enemy.width, enemy.height, "rage"), enemy.width, enemy.height, enemyPosition.x, enemyPosition.y, enemyPosition.x, enemyPosition.y, defDir[enemy.id], enemy.speed, enemy.hp, enemy.maxHp, enemy.healPow, enemy.mana, enemy.maxMana, enemy.regenPow, enemy.strength, enemy.attackName, Fight.createImage(enemy.attackName, enemy.attackWidth, enemy.attackHeight, "attack"), enemy.attackWidth, enemy.attackHeight, enemy.attackCost, enemy.attackSpeed, []);
 
+    // Build the UI
+    const player1 = Fight.self.id === "p1" ? Fight.self : Fight.enemy;
+    const player2 = Fight.self.id === "p2" ? Fight.self : Fight.enemy;
+    $infosBar.p1.score.innerText = player1.charName;
+    $infosBar.p1.score.innerText = player1.score.toString();
+    $infosBar.p2.score.innerText = player2.charName;
+    $infosBar.p2.score.innerText = player2.score.toString();
+
+    // Load the fight
     showGameScreen($loadingScreen)
     Fight.attachKeyboardEvent();
     Fight.updateMovement();
@@ -42,14 +53,15 @@ socket.on("start", (msg: { 1: Player, 2: Player }) => {
 });
 
 socket.on("update", (msg: UpdateMessage) => {
-    Fight.updatePlayers(msg[Fight.thisPlayerId], msg[Fight.oppPlayerId])
+    Fight.updatePlayers(msg[Fight.selfId], "self")
+    Fight.updatePlayers(msg[Fight.enemyId], "enemy")
     Fight.drawAll()
 });
 
 socket.on("over", (winningPlayerId: PlayerId) => {
     Fight.status = "over";
     Fight.stopTimer();
-    if (winningPlayerId === Fight.thisPlayerId) localStorage.setItem("scoreThis", (Fight.thisPlayer.score + 1).toString());
+    if (winningPlayerId === Fight.selfId) localStorage.setItem("scoreThis", (Fight.self.score + 1).toString());
     displayPopup(`Le joueur ${winningPlayerId} a gagné!`, true, true);
 });
 

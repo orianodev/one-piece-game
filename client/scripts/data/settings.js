@@ -2,12 +2,10 @@ export const def = {
     canvasWidth: 800,
     canvasHeight: 500,
     canvasScaleMult: 4,
-    playW: 90,
-    playH: 135,
-    attackW: 30,
-    attackH: 30,
     refresh60fpsDivider: 3,
     freezeDelay: 150,
+    dashSpeedMult: 1.5,
+    dashCost: 1,
     collisionDist: 75,
     manaGainOnHitDivider: 10,
     superSizeMult: 3,
@@ -31,5 +29,7 @@ export const def = {
         "hard": 90,
     }
 };
-export const defPlayerDirections = { 1: 3, 2: 7 };
-export const defPlayerPositions = { 1: { x: 0, y: def.canvasHeight / 2 - def.playH }, 2: { x: def.canvasWidth - def.playW, y: def.canvasHeight / 2 - def.playH } };
+export const defDir = { "p1": 3, "p2": 7 };
+export function defPosition(id, width, height) {
+    return { x: id === "p1" ? 0 : def.canvasWidth - width, y: def.canvasHeight / 2 - height };
+}

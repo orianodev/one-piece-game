@@ -1,7 +1,8 @@
 import { def } from "../data/settings.js";
+import { spritePath } from "../data/characters.js";
 import { stadiumPathFormId } from "../data/stadiums.js";
 export const $infosBar = {
-    1: {
+    p1: {
         character: document.querySelector("#character-1"),
         hpBar: document.querySelector("#hp-bar-1"),
         hp: document.querySelector("#hp-1"),
@@ -9,7 +10,7 @@ export const $infosBar = {
         mana: document.querySelector("#mana-1"),
         score: document.querySelector("#score-1"),
     },
-    2: {
+    p2: {
         character: document.querySelector("#character-2"),
         hpBar: document.querySelector("#hp-bar-2"),
         hp: document.querySelector("#hp-2"),
@@ -67,10 +68,10 @@ export function showGameScreen($loadingScreen) {
     $loadingScreen.style.display = "none";
     $popup.style.display = "none";
 }
-export function preloadImages(stadium, thisPlayer, oppPlayer, callback) {
-    const imagePaths = [stadiumPathFormId(stadium), thisPlayer.img, thisPlayer.attackName, thisPlayer.img.replace("char", "rage")];
-    if (oppPlayer)
-        imagePaths.push(oppPlayer.img, oppPlayer.attackName, oppPlayer.img.replace("char", "rage"));
+export function preloadImages(stadium, self, enemy, callback) {
+    const imagePaths = [stadiumPathFormId(stadium), spritePath(self.charId, "normal"), spritePath(self.charId, "rage"), spritePath(self.attackName, "attack")];
+    if (enemy)
+        imagePaths.push(spritePath(enemy.charId, "normal"), spritePath(enemy.charId, "rage"), spritePath(enemy.attackName, "attack"));
     let loadedImages = 0;
     const totalImages = imagePaths.length;
     imagePaths.forEach((path) => {

@@ -1,10 +1,10 @@
-import { PlayerAttributes } from "../../../shared/Types";
 import { def } from "../data/settings.js";
+import { spritePath } from "../data/characters.js";
 import { StadiumID, stadiumPathFormId } from "../data/stadiums.js";
 import { Player } from "../logic/class/Player.js";
 
 export const $infosBar = {
-    1: {
+    p1: {
         character: document.querySelector("#character-1") as HTMLSpanElement,
         hpBar: document.querySelector("#hp-bar-1") as HTMLDivElement,
         hp: document.querySelector("#hp-1") as HTMLSpanElement,
@@ -12,7 +12,7 @@ export const $infosBar = {
         mana: document.querySelector("#mana-1") as HTMLSpanElement,
         score: document.querySelector("#score-1") as HTMLSpanElement,
     },
-    2: {
+    p2: {
         character: document.querySelector("#character-2") as HTMLSpanElement,
         hpBar: document.querySelector("#hp-bar-2") as HTMLDivElement,
         hp: document.querySelector("#hp-2") as HTMLSpanElement,
@@ -79,9 +79,9 @@ export function showGameScreen($loadingScreen: HTMLDivElement) {
     $popup.style.display = "none";
 }
 
-export function preloadImages(stadium: StadiumID, thisPlayer: Player | Omit<PlayerAttributes, "attacks">, oppPlayer: Player | Omit<PlayerAttributes, "attacks"> | null, callback: { (): void; (): void; }) {
-    const imagePaths = [stadiumPathFormId(stadium), thisPlayer.img, thisPlayer.attackName, thisPlayer.img.replace("char", "rage")];
-    if (oppPlayer) imagePaths.push(oppPlayer.img, oppPlayer.attackName, oppPlayer.img.replace("char", "rage"));
+export function preloadImages(stadium: StadiumID, self: Player, enemy: Player | null, callback: { (): void; (): void; }) {
+    const imagePaths = [stadiumPathFormId(stadium), spritePath(self.charId, "normal"), spritePath(self.charId, "rage"), spritePath(self.attackName, "attack")];
+    if (enemy) imagePaths.push(spritePath(enemy.charId, "normal"), spritePath(enemy.charId, "rage"), spritePath(enemy.attackName, "attack"));
 
     let loadedImages = 0;
     const totalImages = imagePaths.length;

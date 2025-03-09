@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
         $botLvlSelect.value = previousBotLvl;
     const previousCharacterId = localStorage.getItem("characterId");
     const $previousCharacterRadio = document.querySelector(`input#${previousCharacterId}`);
-    if (previousCharacterId) {
+    if (previousCharacterId && $previousCharacterRadio) {
         $previousCharacterRadio.checked = true;
     }
     const $stadiumSelect = document.querySelector("select#stadium-list");

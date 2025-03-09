@@ -1,15 +1,17 @@
-import { MoveDirections } from "../../../shared/Types"
+import { MoveDirections, PlayerId } from "../../../shared/Types"
 
 export const def = {
     canvasWidth: 800,
     canvasHeight: 500,
     canvasScaleMult: 4,
-    playW: 90,
-    playH: 135,
-    attackW: 30,
-    attackH: 30,
+    // playW: 90,
+    // playH: 135,
+    // attackW: 30,
+    // attackH: 30,
     refresh60fpsDivider: 3,
     freezeDelay: 150,
+    dashSpeedMult: 1.5,
+    dashCost: 1,
     collisionDist: 75,
     manaGainOnHitDivider: 10,
     superSizeMult: 3,
@@ -34,5 +36,8 @@ export const def = {
     }
 }
 
-export const defPlayerDirections: { 1: MoveDirections, 2: MoveDirections } = { 1: 3, 2: 7 }
-export const defPlayerPositions: { 1: { x: number, y: number }, 2: { x: number, y: number } } = { 1: { x: 0, y: def.canvasHeight / 2 - def.playH }, 2: { x: def.canvasWidth - def.playW, y: def.canvasHeight / 2 - def.playH } }
+export const defDir: { "p1": MoveDirections, "p2": MoveDirections } = { "p1": 3, "p2": 7 }
+
+export function defPosition(id: PlayerId, width: number, height: number) {
+    return { x: id === "p1" ? 0 : def.canvasWidth - width, y: def.canvasHeight / 2 - height }
+}

@@ -1,36 +1,39 @@
 import { OneCharacterStats, BotLevel } from "../../../shared/Types";
-import { defPlayerDirections, defPlayerPositions } from "../data/settings.js";
-import { attackSpritePathFromName as attackSpritePath, CharacterID, characterStats, charSpritePathFromId as charSpritePath } from "../data/characters.js";
+import { defDir, defPosition } from "../data/settings.js";
+import { CharacterID, characterStats } from "../data/characters.js";
 import { $infosBar, preloadImages, showGameScreen } from "./ui.js";
 import { $loadingScreen, Fight, stadium } from "./play.js";
 import { Player } from "./class/Player.js";
 
 export function soloGameSetup() {
-    // Create player
-    Fight.thisPlayerId = 1;
-    const thisCharacterId: CharacterID = localStorage.getItem("characterId") as CharacterID;
-    const thisScore = parseInt(localStorage.getItem("scoreThis") as string);
-    const thisCharacter: OneCharacterStats = characterStats[thisCharacterId];
-    const thisPlayer = new Player(1, thisCharacterId, thisCharacter.name, thisCharacter.color, charSpritePath(thisCharacter.id), thisScore, defPlayerPositions[1].x, defPlayerPositions[1].y, defPlayerDirections[1], thisCharacter.speed, thisCharacter.hp, thisCharacter.maxHp, thisCharacter.healPow, thisCharacter.mana, thisCharacter.maxMana, thisCharacter.regenPow, thisCharacter.strength, attackSpritePath(thisCharacter.attackName), thisCharacter.attackCost, thisCharacter.attackSpeed, []);
+    // Create self player
+    Fight.selfId = "p1";
+    const selfCharacterId: CharacterID = localStorage.getItem("characterId") as CharacterID;
+    const selfScore = parseInt(localStorage.getItem("scoreThis") as string);
+    const selfCharacter: OneCharacterStats = characterStats[selfCharacterId];
+    const selfPosition = defPosition(Fight.selfId, selfCharacter.width, selfCharacter.height);
 
-    // Create bot
-    Fight.oppPlayerId = 2;
-    const botCharChoices: CharacterID[] = Object.keys(characterStats).filter((id) => id !== thisCharacterId) as CharacterID[];
+    Fight.self = new Player(Fight.selfId, selfScore, selfCharacterId, selfCharacter.name, selfCharacter.color, Fight.createImage(selfCharacter.id, selfCharacter.width, selfCharacter.height, "normal"), Fight.createImage(selfCharacter.id, selfCharacter.width, selfCharacter.height, "rage"), selfCharacter.width, selfCharacter.height, selfPosition.x, selfPosition.y, selfPosition.x, selfPosition.y, defDir[Fight.selfId], selfCharacter.speed, selfCharacter.hp, selfCharacter.maxHp, selfCharacter.healPow, selfCharacter.mana, selfCharacter.maxMana, selfCharacter.regenPow, selfCharacter.strength, selfCharacter.attackName, Fight.createImage(selfCharacter.attackName, selfCharacter.attackWidth, selfCharacter.attackHeight, "attack"), selfCharacter.attackWidth, selfCharacter.attackHeight, selfCharacter.attackCost, selfCharacter.attackSpeed, []);
+
+    // Create bot player
+    Fight.enemyId = "p2";
+    const botCharChoices: CharacterID[] = Object.keys(characterStats).filter((id) => id !== selfCharacterId) as CharacterID[];
     const botCharacterId: CharacterID = botCharChoices[Math.floor(Math.random() * botCharChoices.length)] as CharacterID;
     const botScore = parseInt(localStorage.getItem("scoreBot") as string);
     const botCharacter: OneCharacterStats = characterStats[botCharacterId];
-    const botPlayer = new Player(2, botCharacterId, botCharacter.name, botCharacter.color, charSpritePath(botCharacter.id), botScore, defPlayerPositions[2].x, defPlayerPositions[2].y, defPlayerDirections[2], botCharacter.speed, botCharacter.hp, botCharacter.maxHp, botCharacter.healPow, botCharacter.mana, botCharacter.maxMana, botCharacter.regenPow, botCharacter.strength, attackSpritePath(botCharacter.attackName), botCharacter.attackCost, botCharacter.attackSpeed, []);
+    const botPosition = defPosition(Fight.enemyId, botCharacter.width, botCharacter.height);
+
+    Fight.enemy = new Player(Fight.enemyId, botScore, botCharacter.id, botCharacter.name, botCharacter.color, Fight.createImage(botCharacter.id, botCharacter.width, botCharacter.height, "normal"), Fight.createImage(botCharacter.id, botCharacter.width, botCharacter.height, "rage"), botCharacter.width, botCharacter.height, botPosition.x, botPosition.y, botPosition.x, botPosition.y, defDir[Fight.enemyId], botCharacter.speed, botCharacter.hp, botCharacter.maxHp, botCharacter.healPow, botCharacter.mana, botCharacter.maxMana, botCharacter.regenPow, botCharacter.strength, botCharacter.attackName, Fight.createImage(botCharacter.attackName, botCharacter.attackWidth, botCharacter.attackHeight, "attack"), botCharacter.attackWidth, botCharacter.attackHeight, botCharacter.attackCost, botCharacter.attackSpeed, []);
     const botLevel: BotLevel = localStorage.getItem("botLevel") as BotLevel;
 
-    // Build players
-    Fight.buildPlayers(thisPlayer, botPlayer);
-    $infosBar[1].character.innerText = thisPlayer.charName;
-    $infosBar[1].score.innerText = thisScore.toString();
-    $infosBar[2].character.innerText = botPlayer.charName;
-    $infosBar[2].score.innerText = botScore.toString();
+    // Build the UI
+    $infosBar.p1.character.innerText = Fight.self.charName;
+    $infosBar.p1.score.innerText = selfScore.toString();
+    $infosBar.p2.character.innerText = Fight.enemy.charName;
+    $infosBar.p2.score.innerText = botScore.toString();
 
     // Load the fight
-    preloadImages(stadium, thisPlayer, botPlayer, () => {
+    preloadImages(stadium, Fight.self, Fight.enemy, () => {
         showGameScreen($loadingScreen)
         Fight.startBotActionLoop(botLevel)
         Fight.attachKeyboardEvent();
