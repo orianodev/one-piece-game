@@ -29,21 +29,22 @@ function socketIOListener(socket, io) {
             if (Object.keys(thisGameState.p1).length > 0 && Object.keys(thisGameState.p2).length > 0) {
                 io.to(msg.roomId.toString()).emit('start', gameStateCollection[msg.roomId]);
                 console.log(`Game started in room ${msg.roomId}.`);
+                console.log(gameStateCollection);
             }
         }
         else
             console.error(`The room ${msg.roomId} does not exist.`);
-        console.log(gameStateCollection);
     });
     socket.on('update', (msg) => {
         if (msg.p1[4] <= 0 || msg.p2[4] <= 0) {
             io.to(msg.roomId.toString()).emit('over', msg.p1[4] <= 0 ? "p2" : "p1");
-            console.log(`Game over in room ${msg.roomId}.`);
-            setTimeout(() => delete gameStateCollection[msg.roomId], 1000);
+            setTimeout(() => {
+                delete gameStateCollection[msg.roomId];
+                console.log(`Game over in room ${msg.roomId}.`);
+            }, 1000);
         }
         else {
-            console.log(`Update from ${socket.id} :\n${JSON.stringify(msg.p1)}\n${JSON.stringify(msg.p2)}`);
-            console.log(`Packet Size: ${Buffer.byteLength(JSON.stringify(msg))} bytes.`);
+            console.log(`Update by ${socket.id} (${Buffer.byteLength(JSON.stringify(msg))}b):\t${JSON.stringify(msg.p1)}\t${JSON.stringify(msg.p2)}`);
             io.to(msg.roomId.toString()).emit('update', { "p1": msg.p1, "p2": msg.p2 });
         }
     });
@@ -60,10 +61,6 @@ function socketIOListener(socket, io) {
                 }
             }
             delete gameStateCollection[roomToClear];
-            console.log("Game state after deletion:");
-            console.log(gameStateCollection);
-            console.log("Socket map after deletion:");
-            console.log(socketRoomMap);
         }
     });
     socket.on("test", (msg) => {
